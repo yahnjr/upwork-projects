@@ -45,6 +45,25 @@
             border-left-color: #2ecc71;
             transform: translateX(5px);
         }
+        
+        @media (max-width: 768px) {
+            body {
+                display: flex;
+                flex-direction: column-reverse;
+            }
+
+            #map {
+                width: 100vw;
+                height: 60vh;
+            }
+
+            #sidebar {
+                width: 100vw;
+                height: 40vh;
+                font-size: 0.8rem;
+            }
+            
+        }
     </style>
 </head>
 <body>
