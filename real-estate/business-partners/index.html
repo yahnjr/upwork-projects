@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Partners Map</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
+    <link href='style.css' rel='stylesheet'>
+
+</head>
+<body>
+    
+    <div id="map"></div>
+    <div id="coverageBox">
+        <div id="nationalCoverage">
+            <div class="coverageType" id="nationalType">
+                <div class="coverageHeader">
+                    <div class="coverageTitle">
+                        <input type="checkbox" id="nationalCheckbox" name="nationalCheckbox" checked>
+                        <label for="nationalCheckbox">National</label>
+                    </div>
+                    <div class="toggleArrow" id="nationalToggle">▶</div>
+                </div>
+                <div class="coverageDropdown" id="nationalDropdown"></div>
+            </div>
+            <div class="coverageType" id="localType">  
+                <div class="coverageHeader">
+                    <div class="coverageTitle">
+                        <input type="checkbox" id="localCheckbox" name="localCheckbox" checked>
+                        <label for="localCheckbox">Local</label>
+                    </div>
+                    <div class="toggleArrow" id="localToggle">▶</div>
+                </div>
+                <div class="coverageDropdown" id="localDropdown"></div>
+            </div>
+        </div>
+    </div>
+    <div id="currentVisible"></div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

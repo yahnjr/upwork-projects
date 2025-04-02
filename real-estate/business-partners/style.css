@@ -1,0 +1,192 @@
+body {
+    margin: 0;
+    display: flex;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+#map {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#coverageBox {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 15%;
+    z-index: 10;
+}
+
+.coverageType {
+    width: 100%;
+    margin: 20px;
+    padding: 20px;
+    background-color: rgba(240,240,240,0.6);
+    border-radius: 10px;
+    border: 2px solid beige;
+    transition: all 0.3s ease;
+}
+
+.coverageHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: default;
+}
+
+.coverageTitle {
+    display: flex;
+    align-items: center;
+}
+
+.toggleArrow {
+    cursor: pointer;
+    font-size: 12px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    transition: background-color 0.2s;
+}
+
+.toggleArrow:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.coverageDropdown {
+    max-height: 0;
+    overflow-y: hidden;
+    border: 0;
+    padding: 0;
+    margin-top: 0;
+    background-color: rgba(249, 249, 249, 0.8);
+    border-radius: 4px;
+    transition: all 0.3s ease; 
+}
+
+.coverageDropdown.expanded {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 8px;
+    margin-top: 10px;
+}
+
+.partnerItem {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.partnerItem:last-child {
+    border-bottom: none;
+}
+
+.partnerName {
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.partnerDetails {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+}
+
+label {
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+.noPartners {
+    color: #777;
+    font-style: italic;
+}
+/* Add to your existing CSS */
+.partnerItem {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.partnerItem:hover {
+    background-color: rgba(0, 124, 191, 0.1);
+}
+
+.partnerItem.selected {
+    background-color: rgba(0, 124, 191, 0.2);
+}
+
+.docked-popup {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 300px;
+    background-color: rgba(240, 240, 240, 0.9);
+    border-radius: 10px;
+    border: 2px solid beige;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    padding: 0;
+    overflow: hidden;
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: rgba(0, 124, 191, 0.7);
+    color: white;
+}
+
+.popup-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+#close-popup {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+#close-popup:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.popup-content {
+    padding: 15px;
+}
+
+.popup-detail {
+    margin-bottom: 8px;
+}
+
+.popup-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #007cbf;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.popup-link:hover {
+    text-decoration: underline;
+}
