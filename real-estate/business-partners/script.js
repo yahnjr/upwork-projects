@@ -1,6 +1,8 @@
 mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
 let activeCompany = null;
 let partnerData, geographicData;
+let selectMode = null;
+let selectedPoint = null;
 
 const map = new mapboxgl.Map({
     container: 'map',
@@ -42,6 +44,7 @@ function processPartnerData(geojsonData) {
             const webLink = feature.properties.webLink || '#';
             const headquarters = feature.properties.Headquarters || 'N/A';
             const coverageLoc = feature.properties.CoverageLoc || '';
+            const extentCoords = feature.properties.extent || '';
             
             const partnerItem = document.createElement('div');
             partnerItem.className = 'partnerItem';
@@ -92,14 +95,40 @@ function resetGeographicUnitHighlight() {
 }
 
 function selectPartner(feature) {
+    if (typeof feature === 'string') {
+        const businessName = feature;
+
+        const matchingFeature = partnerData.features.find(f =>
+            f.properties && f.properties.busName === businessName
+        );
+
+        if (matchingFeature) {
+            feature = matchingFeature;
+        } else {
+            console.error('Could not find parner data for:', businessName);
+            return;
+        }
+    }
+
+
     const properties = feature.properties;
     activeCompany = properties;
+    const extentCoords = JSON.parse(properties.extentCoords);
 
     highlightGeographicUnit(properties.CoverageLoc);
 
     createOrUpdatePopup(properties);
 
     highlightSelectedPartnerItem(properties.CoverageLoc);
+
+    const bounds = new mapboxgl.LngLatBounds(extentCoords[0], extentCoords[1]);
+    console.log(bounds);
+
+    map.fitBounds(bounds, {
+        padding: 50,
+        maxZoom: 15,
+        duration: 1500
+    });
 }
 
 function createOrUpdatePopup(properties) {
@@ -115,12 +144,13 @@ function createOrUpdatePopup(properties) {
     popup.innerHTML = `
         <div class="popup-header">
             <h3>${properties.busName || 'Unnamed Partner'}</h3>
-            <button id="close-popup">×</button>
+            <button class="close-button" id="close-popup">×</button>
         </div>
         <div class="popup-content">
             <div class="popup-detail"><strong>Headquarters:</strong> ${properties.Headquarters || 'N/A'}</div>
-            <div class="popup-detail"><strong>Coverage:</strong> ${properties.Coverage || 'N/A'}</div>
+            <div class="popup-detail"><strong>Description:</strong> ${properties.description || 'N/A'}</div>
             <div class="popup-detail"><strong>Coverage Area:</strong> ${properties.CoverageLoc || 'N/A'}</div>
+            <div class="popup-detail"><strong>Military Affiliation:</strong> ${properties.milAffil || 'N/A'}</div>
             ${properties.webLink ? `<a href="${properties.webLink}" target="_blank" class="popup-link">Visit Website</a>` : ''}
         </div>
     `;
@@ -185,8 +215,28 @@ function setupMapFilters() {
 
         applyMapFilter();
         
-        nationalCheckbox.addEventListener('change', applyMapFilter);
-        localCheckbox.addEventListener('change', applyMapFilter);
+        nationalCheckbox.addEventListener('change', function() {
+            applyMapFilter();
+
+            if (selectMode === 'visible') {
+                readExtentFeatures();
+            } else if (selectMode === 'point' && selectedPoint) {
+                const point = map.project(selectedPoint.getLngLat());
+                const features = map.queryRenderedFeatures(point, { layers: ['invisible-units'] });
+                updateSelectionList(features);
+            }
+        });
+        localCheckbox.addEventListener('change', function() {
+            applyMapFilter();
+
+            if (selectMode === 'visible') {
+                readExtentFeatures();
+            } else if (selectMode === 'point' && selectedPoint) {
+                const point = map.project(selectedPoint.getLngLat());
+                const features = map.queryRenderedFeatures(point, { layers: ['invisible-units'] });
+                updateSelectionList(features);
+            }
+        });
     });
 }
 
@@ -233,8 +283,8 @@ function loadFeatures() {
             source: 'partners',
             paint: {
                 'circle-radius': 6,
-                'circle-color': '#007cbf',
-                'circle-opacity': 0.8
+                'circle-color': '#429ef5',
+                'circle-opacity': 0.95
             }
         });
         
@@ -244,11 +294,21 @@ function loadFeatures() {
         });
         
         map.addLayer({
-            id: 'units-layer',
+            id: 'invisible-units',
             type: 'fill',
             source: 'geographicUnits',
             paint: {
                 'fill-color': '#33ff99',
+                'fill-opacity': 0
+            }
+        });
+
+        map.addLayer({
+            id: 'units-layer',
+            type: 'fill',
+            source: 'geographicUnits',
+            paint: {
+                'fill-color': '#f5b042',
                 'fill-opacity': 0.3,
                 'fill-outline-color': '#d7f531'
             },
@@ -264,16 +324,134 @@ function loadFeatures() {
     });
 }
 
+function setupMapClickHandlers() {
+    map.on('click', 'business-points', (e) => {
+        if (selectMode === 'point') return;
+
+        const clickedFeature = e.features[0];
+        if (clickedFeature) {
+            selectPartner(clickedFeature);
+        }
+    });
+}
+
+document.getElementById('currentVisible').addEventListener('click', function() {
+    selectMode = 'visible';
+    document.getElementById('selectionList').style.display = 'block';
+    document.getElementById('selectionList').style.height = '200px';
+    document.getElementById('selectionLabel').innerHTML = '<b>Visible Partners</b>';
+    document.getElementById('listedFeatures').innerHTML = '';
+
+    readExtentFeatures();
+});
+
+function readExtentFeatures() {
+    document.getElementById('listedFeatures').innerHTML = '';
+
+    const features = map.queryRenderedFeatures({ layers: ['invisible-units']});
+    updateSelectionList(features);
+}
+
+document.getElementById('currentPoint').addEventListener('click', function() {
+    selectMode = 'point';
+    document.getElementById('selectionList').style.display = 'block';
+    document.getElementById('selectionList').style.height = '200px';
+    document.getElementById('selectionLabel').innerHTML = '<b>Partners Covering Selected Area</b>';
+    document.getElementById('listedFeatures').innerHTML = '';
+    document.getElementById('map').style.cursor = "crosshair";
+});
+
+map.on('click', (e) => {
+    if (selectMode != "point") return;
+    document.getElementById('listedFeatures').innerHTML = '';
+
+    if (selectedPoint) {
+        selectedPoint.remove();
+    }
+
+    selectedPoint = new mapboxgl.Marker().setLngLat(e.lngLat).addTo(map);
+
+    const features = map.queryRenderedFeatures(e.point, { layers: ['invisible-units'] });
+    console.log(features);
+    updateSelectionList(features);
+});
+
+function updateSelectionList(features) {
+    const listContainer = document.getElementById('listedFeatures');
+    listContainer.innerHtml = '';
+    
+    if (features.length === 0) {
+        listContainer.innerHTML = '<p>No matching features found.</p>'
+        return;
+    }
+
+    const uniqueBusinesses = new Set();
+    const nationalChecked = document.getElementById('nationalCheckbox').checked;
+    const localChecked = document.getElementById('localCheckbox').checked;
+
+    features.forEach(feature => {
+        const businesses = feature.properties.businesses;
+        
+        if (businesses && businesses.trim() !== "") {
+            const items = businesses.split(',,').map(item => item.trim()).filter(item => item !== "");
+
+            if (items.length > 0) {
+                items.forEach(item => uniqueBusinesses.add(item));
+            }
+        }
+    });
+
+    const sortedBusinesses = Array.from(uniqueBusinesses).sort();
+    let filteredBusinesses = [];
+
+    sortedBusinesses.forEach(businessName => {
+        const matchingFeature = partnerData.features.find(f => 
+            f.properties && f.properties.busName === businessName
+        );
+
+        if (matchingFeature) {
+            const coverage = matchingFeature.properties.Coverage;
+            if ((nationalChecked && coverage === 'Nationwide') ||
+                (localChecked && coverage === 'Local')) {
+                    filteredBusinesses.push(businessName)
+                }
+            }
+    });
+
+    if (filteredBusinesses.length === 0) {
+        listContainer.HTML = '<p>No partners match the current filters</p>'
+        return;
+    }
+
+    filteredBusinesses.forEach(item => {
+        console.log(item);
+        const listItem = document.createElement("div");
+        listItem.innerText = `${item}`;
+        listItem.classList.add('selection-item');
+        listContainer.appendChild(listItem);
+        listItem.addEventListener('click', function() {
+            selectPartner(item);
+        });
+    });
+}
+
+document.getElementById('close-list').addEventListener('click', function() {
+    document.getElementById('selectionList').style.display = 'none';
+    document.getElementById('listedFeatures').innerHTML = "";
+    selectMode = null;
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     loadPartnerData();
 });
 
+map.on('moveend', () => {
+    if (selectMode != 'visible') return;
+
+    readExtentFeatures();
+});
+
 map.on('load', function() {
     loadFeatures();
-
-    // map.on('styledata', function() {
-    //     if (map.getLayer('units-layer')) {
-    //         map.setLayoutProperty('units-layer', 'visibility', 'none');
-    //     }
-    // });
+    setupMapClickHandlers();
 });

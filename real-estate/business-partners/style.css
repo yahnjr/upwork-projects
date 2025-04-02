@@ -15,17 +15,62 @@ body {
     position: absolute;
     top: 10px;
     left: 10px;
-    width: 15%;
+    width: 20%;
     z-index: 10;
 }
 
-.coverageType {
-    width: 100%;
+#selectionList {
+    position: absolute;
+    bottom: 124px;
+    right: 10px;
+    width: 25vw;
+    z-index: 10;
+    height: 0px;
+    display: none;
+    overflow-y: auto;
+}
+
+#selectionBox {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 15%;
+    z-index: 10;
+    display: flex;
+}
+
+.selectMode {
+    margin: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fa {
+    color: white;
+    font-size: 3rem;
+}
+
+.controlBox, .selection-item {
     margin: 20px;
     padding: 20px;
     background-color: rgba(240,240,240,0.6);
     border-radius: 10px;
     border: 2px solid beige;
+}
+
+.selectMode {
+    width: 30px;
+    height: 30px;
+}
+
+#selectionListHeader {
+    display: flex;
+    justify-content: space-between;
+}
+
+.coverageType {
+    width: 100%;
     transition: all 0.3s ease;
 }
 
@@ -107,7 +152,7 @@ label {
     color: #777;
     font-style: italic;
 }
-/* Add to your existing CSS */
+
 .partnerItem {
     padding: 8px;
     border-bottom: 1px solid #eee;
@@ -151,7 +196,7 @@ label {
     font-size: 16px;
 }
 
-#close-popup {
+.close-button {
     background: none;
     border: none;
     color: white;
@@ -167,7 +212,7 @@ label {
     transition: background-color 0.2s;
 }
 
-#close-popup:hover {
+.close-button:hover {
     background-color: rgba(255, 255, 255, 0.3);
 }
 
