@@ -168,11 +168,13 @@ function closePopup() {
         popup.remove();
     }
 
-    activeCompany = null;
-    map.setLayoutProperty('units-layer', 'visibility', 'none');
+    if (!window.isHoverPopup) {
+        activeCompany = null;
+        map.setLayoutProperty('units-layer', 'visibility', 'none');
 
-    const selectedItems = document.querySelectorAll('.partnerItem.selected');
-    selectedItems.forEach(item => item.classList.remove('selected'));
+        const selectedItems = document.querySelectorAll('.partnerItem.selected');
+        selectedItems.forEach(item => item.classList.remove('selected'));
+    }
 }
 
 function highlightSelectedPartnerItem(coverageLoc) {
@@ -330,6 +332,7 @@ function setupMapClickHandlers() {
 
         const clickedFeature = e.features[0];
         if (clickedFeature) {
+            window.isHoverPopup = false;
             selectPartner(clickedFeature);
         }
     });
@@ -435,6 +438,26 @@ function updateSelectionList(features) {
     });
 }
 
+function setupHoverEffects() {
+    map.on('mouseenter', 'business-points', (e) => {
+        if (e.features.length > 0) {
+            const feature = e.features[0];
+            const properties = feature.properties;
+
+            createOrUpdatePopup(properties);
+
+            window.isHoverPopup = true;
+        }
+    });
+
+    map.on('mouseleave', 'business-points', () => {
+        if (window.isHoverPopup) {
+            closePopup();
+            window.isHoverPopup = false;
+        }
+    });
+}
+
 document.getElementById('close-list').addEventListener('click', function() {
     document.getElementById('selectionList').style.display = 'none';
     document.getElementById('listedFeatures').innerHTML = "";
@@ -454,4 +477,5 @@ map.on('moveend', () => {
 map.on('load', function() {
     loadFeatures();
     setupMapClickHandlers();
+    setupHoverEffects();
 });
