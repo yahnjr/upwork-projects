@@ -212,34 +212,28 @@ function setupMapFilters() {
     const nationalCheckbox = document.getElementById('nationalCheckbox');
     const localCheckbox = document.getElementById('localCheckbox');
     
+    nationalCheckbox.removeEventListener('change', handleFilterChange);
+    localCheckbox.removeEventListener('change', handleFilterChange);
+    
+    nationalCheckbox.addEventListener('change', handleFilterChange);
+    localCheckbox.addEventListener('change', handleFilterChange);
+    
     map.on('idle', function() {
         if (!map.getLayer('business-points')) return;
-
         applyMapFilter();
-        
-        nationalCheckbox.addEventListener('change', function() {
-            applyMapFilter();
-
-            if (selectMode === 'visible') {
-                readExtentFeatures();
-            } else if (selectMode === 'point' && selectedPoint) {
-                const point = map.project(selectedPoint.getLngLat());
-                const features = map.queryRenderedFeatures(point, { layers: ['invisible-units'] });
-                updateSelectionList(features);
-            }
-        });
-        localCheckbox.addEventListener('change', function() {
-            applyMapFilter();
-
-            if (selectMode === 'visible') {
-                readExtentFeatures();
-            } else if (selectMode === 'point' && selectedPoint) {
-                const point = map.project(selectedPoint.getLngLat());
-                const features = map.queryRenderedFeatures(point, { layers: ['invisible-units'] });
-                updateSelectionList(features);
-            }
-        });
     });
+}
+
+function handleFilterChange() {
+    applyMapFilter();
+
+    if (selectMode === 'visible') {
+        readExtentFeatures();
+    } else if (selectMode === 'point' && selectedPoint) {
+        const point = map.project(selectedPoint.getLngLat());
+        const features = map.queryRenderedFeatures(point, { layers: ['invisible-units'] });
+        updateSelectionList(features);
+    }
 }
 
 function applyMapFilter() {
@@ -421,8 +415,12 @@ function updateSelectionList(features) {
             }
     });
 
+    if (document.getElementById('no-partners-notice')) {
+        document.getElementById('no-partners-notice').remove();
+    }
+
     if (filteredBusinesses.length === 0) {
-        listContainer.HTML = '<p>No partners match the current filters</p>'
+        listContainer.innerHTML = '<p id="no-partners-notice">No partners match the current filters</p>'
         return;
     }
 

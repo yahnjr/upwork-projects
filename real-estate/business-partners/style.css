@@ -17,6 +17,19 @@ body {
     left: 10px;
     width: 20%;
     z-index: 10;
+    min-width: 200px;
+}
+
+label {
+    font-size: 2rem;
+    color: white;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+input[type="checkbox"] {
+    transform: scale(2);
+    accent-color: #a4ccf1;
+    margin-right: 20px;
 }
 
 #selectionList {
@@ -24,6 +37,7 @@ body {
     bottom: 124px;
     right: 10px;
     width: 25vw;
+    min-width: 250px;
     z-index: 10;
     height: 0px;
     display: none;
@@ -35,6 +49,7 @@ body {
     bottom: 10px;
     right: 10px;
     width: 15%;
+    min-width: 200px;
     z-index: 10;
     display: flex;
 }
@@ -54,9 +69,40 @@ body {
 .controlBox, .selection-item {
     margin: 20px;
     padding: 20px;
-    background-color: rgba(240,240,240,0.6);
+    background-color: rgba(240,240,240,0.4);
     border-radius: 10px;
     border: 2px solid beige;
+    position: relative;
+}
+
+#nationalType:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Flag_of_the_United_States_%28Pantone%29.svg/255px-Flag_of_the_United_States_%28Pantone%29.svg.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: -1;
+}
+
+#localType:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/City_Skyline_from_Above_%28Unsplash%29.jpg/640px-City_Skyline_from_Above_%28Unsplash%29.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: -1;
 }
 
 .selectMode {
@@ -172,7 +218,8 @@ label {
     position: fixed;
     bottom: 20px;
     left: 20px;
-    width: 300px;
+    width: 24%;
+    min-width: 350px;
     background-color: rgba(240, 240, 240, 0.9);
     border-radius: 10px;
     border: 2px solid beige;
