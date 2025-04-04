@@ -4,226 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Social Media Map</title>
+    <link href='style.css' rel='stylesheet' />
     <script src='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
-    <style>
-        body {
-            margin: 0;
-            display: flex;
-            height: 100vh;
-            font-family: Arial, sans-serif;
-        }
-        #map {
-            width: 100%;
-            height: 100%;
-        }
-        .mapboxgl-popup {
-            max-width: 400px;
-            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-   
+    <div id="national-accounts-panel" class="side-panel hidden">
+        <div id="national-list-header">
+            <h3>National Accounts</h3>
+            <i id="hide-national-list" class="fa-solid fa-eye-slash"></i>
+            <i id="show-national-list" class="fa-solid fa-eye" style="display: none"></i>
+        </div>
+        <div id="accounts-list"></div>
+    </div>
+
     <div id="map"></div>
    
-    <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
-        let activeCompany = null;
-        let map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/satellite-streets-v11',
-            bounds: [
-                [-128.272, 30.165],
-                [-64.152, 48.046]
-            ],
-            zoom: 4 
-        });
-
-        function loadSocialMedia() {
-            let localSocial, nationalSocial, nationalAccountData;
-
-            console.log('Starting to load data...');
-            
-            Promise.all([
-                fetch('LocalSocialMedia.geojson')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                        return response.json();
-                    }),
-                fetch('NationalAccounts.geojson')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                        return response.json();
-                    }),
-                fetch('NationalAccountData.json')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-            ])
-            .then(([localSocialData, nationalSocialData, nationalData]) => {
-                console.log('Data loaded successfully');
-                console.log('Local social data points:', localSocialData.features?.length || 'No features found');
-                
-                localSocial = localSocialData;
-                nationalSocial = nationalSocialData;
-                nationalAccountData = nationalData;
-                
-                map.addSource('nationalSocial', {
-                    type: 'geojson',
-                    data: nationalSocial
-                });
-                
-                map.addLayer({
-                    id: 'national-social',
-                    type: 'fill',
-                    source: 'nationalSocial',
-                    paint: {
-                        'fill-color': '#33ff99',
-                        'fill-opacity': 0.0
-                    }
-                });
-                
-                map.addSource('localSocial', {
-                    type: 'geojson',
-                    data: localSocial,
-                    cluster: true, 
-                    clusterMaxZoom: 14, 
-                    clusterRadius: 50 
-                });
-                
-
-                map.addLayer({
-                    id: 'clusters',
-                    type: 'circle',
-                    source: 'localSocial',
-                    filter: ['has', 'point_count'],
-                    paint: {
-                        'circle-radius': [
-                            'step',
-                            ['get', 'point_count'],
-                            20, 
-                            10, 
-                            30, 
-                            50,
-                            40 
-                        ],
-                        'circle-color': [
-                            'step',
-                            ['get', 'point_count'],
-                            '#51bbd6', 
-                            10,
-                            '#2196F3',
-                            50,
-                            '#0D47A1'
-                        ],
-                        'circle-opacity': 0.8
-                    }
-                });
-                
-
-                map.addLayer({
-                    id: 'cluster-count',
-                    type: 'symbol',
-                    source: 'localSocial',
-                    filter: ['has', 'point_count'],
-                    layout: {
-                        'text-field': '{point_count_abbreviated}',
-                        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                        'text-size': 12
-                    },
-                    paint: {
-                        'text-color': '#ffffff'
-                    }
-                });
-                
-                map.addLayer({
-                    id: 'unclustered-point',
-                    type: 'symbol',
-                    source: 'localSocial',
-                    filter: ['!', ['has', 'point_count']],
-                    layout: {
-                        'icon-image': 'fblogo',
-                        'icon-size': 0.02
-                    }
-                });
-                
-                map.on('click', 'clusters', (e) => {
-                    const features = map.queryRenderedFeatures(e.point, {
-                        layers: ['clusters']
-                    });
-                    
-                    const clusterId = features[0].properties.cluster_id;
-                    map.getSource('localSocial').getClusterExpansionZoom(
-                        clusterId,
-                        (err, zoom) => {
-                            if (err) return;
-                            
-                            map.easeTo({
-                                center: features[0].geometry.coordinates,
-                                zoom: zoom
-                            });
-                        }
-                    );
-                });
-
-                map.on('click', 'unclustered-point', (e) => {
-                    const coordinates = e.features[0].geometry.coordinates.slice();
-                    const properties = e.features[0].properties;
-
-                    let popupContent = '<div>';
-                    for (const [key, value] of Object.entries(properties)) {
-                        popupContent += `<strong>${key}:</strong> ${value}<br>`;
-                    }
-                    popupContent += '</div>';
-                    
-                    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                    }
-                    
-                    new mapboxgl.Popup()
-                        .setLngLat(coordinates)
-                        .setHTML(popupContent)
-                        .addTo(map);
-                });
-                
-                map.on('mouseenter', 'clusters', () => {
-                    map.getCanvas().style.cursor = 'pointer';
-                });
-                map.on('mouseleave', 'clusters', () => {
-                    map.getCanvas().style.cursor = '';
-                });
-                
-                map.on('mouseenter', 'unclustered-point', () => {
-                    map.getCanvas().style.cursor = 'pointer';
-                });
-                map.on('mouseleave', 'unclustered-point', () => {
-                    map.getCanvas().style.cursor = '';
-                });
-            })
-            .catch(error => {
-                console.error('Error loading data:', error);
-            });
-        }
-        
-        map.on('load', function() {
-            map.loadImage(
-                'facebook-icon.png',
-                (error, image) => {
-                    if (error) throw error;
-
-                    map.addImage('fblogo', image);
-                });
-
-            loadSocialMedia();
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

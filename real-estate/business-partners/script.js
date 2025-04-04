@@ -45,15 +45,19 @@ function processPartnerData(geojsonData) {
             const headquarters = feature.properties.Headquarters || 'N/A';
             const coverageLoc = feature.properties.CoverageLoc || '';
             const extentCoords = feature.properties.extent || '';
+            const logo = feature.properties.logo || '';
             
             const partnerItem = document.createElement('div');
             partnerItem.className = 'partnerItem';
             partnerItem.setAttribute('data-coverage-loc', coverageLoc);
             
             partnerItem.innerHTML = `
-                <div class="partnerName">${busName}</div>
+                <img class="list-logo" src="logos/${logo}.png">
                 <div class="partnerDetails">
-                    <div class="partnerHQ">HQ: ${headquarters}</div>
+                    <div class="list-name-hq">
+                        <div class="partnerName">${busName}</div>
+                        <div class="partnerHQ">HQ: ${headquarters}</div>
+                    </div>
                     <a href="${webLink}" target="_blank" class="partnerWebsite">Website</a>
                 </div>
             `;
@@ -153,6 +157,7 @@ function createOrUpdatePopup(properties) {
             <div class="popup-detail"><strong>Military Affiliation:</strong> ${properties.milAffil || 'N/A'}</div>
             ${properties.webLink ? `<a href="${properties.webLink}" target="_blank" class="popup-link">Visit Website</a>` : ''}
         </div>
+        <img class="popup-logo" src="logos/${properties.logo}.png">
     `;
 
     document.body.appendChild(popup);

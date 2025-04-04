@@ -115,6 +115,21 @@ input[type="checkbox"] {
     justify-content: space-between;
 }
 
+.list-logo, .popup-logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    margin-right: 10px;
+}
+
+.popup-logo {
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
 .coverageType {
     width: 100%;
     transition: all 0.3s ease;
@@ -172,6 +187,8 @@ input[type="checkbox"] {
 .partnerItem {
     padding: 8px;
     border-bottom: 1px solid #eee;
+    display: flex;
+    flex: 2;
 }
 
 .partnerItem:last-child {
@@ -184,9 +201,10 @@ input[type="checkbox"] {
 }
 
 .partnerDetails {
+    font-size: 0.9em;
     display: flex;
     justify-content: space-between;
-    font-size: 0.9em;
+    width: 100%;
 }
 
 label {

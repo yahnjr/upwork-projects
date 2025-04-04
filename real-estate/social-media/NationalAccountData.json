@@ -1,639 +1,524 @@
-{
-  "displayFieldName" : "",
-  "fieldAliases" : {
-    "OBJECTID" : "OBJECTID",
-    "Community_Name" : "Community Name",
-    "id" : "id",
-    "Link" : "Link",
-    "State" : "State",
-    "Location" : "Location",
-    "Location_Decimal" : "Location Decimal",
-    "Location_Decimal_X" : "Location Decimal_X",
-    "Location_Decimal_Y" : "Location Decimal_Y",
-    "Pin" : "Pin",
-    "Professional_or_User_Customer" : "Professional or User/Customer",
-    "Card_Logo" : "Card Logo",
-    "Intro_Added" : "Intro Added",
-    "Rules_Added" : "Rules Added",
-    "Canva_Added" : "Canva Added",
-    "Zapier_App_Added" : "Zapier App Added",
-    "Description" : "Description",
-    "New_Member_Intro" : "New Member Intro",
-    "Home_Buying_Community__Alabama" : "Home Buying Community- Alabama",
-    "All_Academy_Real_Estate_Community" : "All Academy Real Estate Community",
-    "All_Service_Academy_Real_Estate_Network" : "All Service Academy Real Estate Network",
-    "Home_Buying_Community" : "Home Buying Community",
-    "Home_Buying_Community___Alaska" : "Home Buying Community - Alaska",
-    "Home_Buying_Community___Southern_California" : "Home Buying Community - Southern California",
-    "Home_Buying_Journey_Community" : "Home Buying Journey Community",
-    "Home_Search_Community___Georgia" : "Home Search Community - Georgia",
-    "Home_Search_Community___Illinois" : "Home Search Community - Illinois",
-    "Home_Search_Community___Nebraska" : "Home Search Community - Nebraska",
-    "Home_Search_Community___Tennessee" : "Home Search Community - Tennessee",
-    "Home_Search_Community___Texas" : "Home Search Community - Texas",
-    "Home_Search_Community___Utah" : "Home Search Community - Utah",
-    "Home_Search_Community___Virginia" : "Home Search Community - Virginia",
-    "Home_Selling_Journey" : "Home Selling Journey",
-    "Mil_Move_PCS_Community" : "Mil Move PCS Community",
-    "Military_Affiliated_Real_Estate_Referral" : "Military Affiliated Real Estate Referral",
-    "Military_Listings_Community" : "Military Listings Community",
-    "Military_Loan_Originators__VA_Loan_Experts__Community" : "Military Loan Originators (VA Loan Experts) Community",
-    "Military_Move_Community" : "Military Move Community",
-    "Military_Movers_Community" : "Military Movers Community",
-    "Military_PCS_Community___Arizona" : "Military PCS Community - Arizona",
-    "Military_PCS_Community___Central_Texas" : "Military PCS Community - Central Texas",
-    "Military_PCS_Community___Colorado" : "Military PCS Community - Colorado",
-    "Military_PCS_Community___Florida" : "Military PCS Community - Florida",
-    "Military_PCS_Community___Ft_Carson__CO" : "Military PCS Community - Ft Carson, CO",
-    "Military_PCS_Community___Ft_Cavazos__Ft_Hood_" : "Military PCS Community - Ft Cavazos (Ft Hood)",
-    "Military_PCS_Community___Ft_Knox" : "Military PCS Community - Ft Knox",
-    "Military_PCS_Community___Ft_Liberty__Bragg_" : "Military PCS Community - Ft Liberty (Bragg)",
-    "Military_PCS_Community___Hawaii" : "Military PCS Community - Hawaii",
-    "Military_PCS_Community___Idaho" : "Military PCS Community - Idaho",
-    "Military_PCS_Community___Iowa" : "Military PCS Community - Iowa",
-    "Military_PCS_Community___Kansas" : "Military PCS Community - Kansas",
-    "Military_PCS_Community___Kentucky" : "Military PCS Community - Kentucky",
-    "Military_PCS_Community___Key_West__Florida" : "Military PCS Community - Key West, Florida",
-    "Military_PCS_Community___Las_Vegas" : "Military PCS Community - Las Vegas",
-    "Military_PCS_Community___Louisiana" : "Military PCS Community - Louisiana",
-    "Military_PCS_Community___Maryland" : "Military PCS Community - Maryland",
-    "Military_PCS_Community___Missouri" : "Military PCS Community - Missouri",
-    "Military_PCS_Community___Nevada" : "Military PCS Community - Nevada",
-    "Military_PCS_Community___New_Mexico" : "Military PCS Community - New Mexico",
-    "Military_PCS_Community___New_York" : "Military PCS Community - New York",
-    "Military_PCS_Community___North_Carolina" : "Military PCS Community - North Carolina",
-    "Military_PCS_Community___Oklahoma" : "Military PCS Community - Oklahoma",
-    "Military_PCS_Community___Oregon" : "Military PCS Community - Oregon",
-    "Military_PCS_Community___Orlando_Florida" : "Military PCS Community - Orlando Florida",
-    "Military_PCS_Community___Pennsylvania" : "Military PCS Community - Pennsylvania",
-    "Military_PCS_Community___Pentagon" : "Military PCS Community - Pentagon",
-    "Military_PCS_Community___Randolph_AFB" : "Military PCS Community - Randolph AFB",
-    "Military_PCS_Community___South_Carolina" : "Military PCS Community - South Carolina",
-    "Military_PCS_Community___Tampa__Florida" : "Military PCS Community - Tampa, Florida",
-    "Military_PCS_Community___Washington" : "Military PCS Community - Washington",
-    "Military_PCS_Community___Wichita_Falls__Texas" : "Military PCS Community - Wichita Falls, Texas",
-    "Military_PCS_US_Community" : "Military PCS US Community",
-    "Military_Real_Estate_Agents_Community" : "Military Real Estate Agents Community",
-    "Military_Realtor_Community" : "Military Realtor Community",
-    "Military_Relocate_Community" : "Military Relocate Community",
-    "Military_Spouse_Community" : "Military Spouse Community",
-    "Mortgage_Lender_Community" : "Mortgage Lender Community",
-    "MustWants" : "MustWants",
-    "NOVA_DC_Military_Spouse_Community" : "NOVA/DC Military Spouse Community",
-    "PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews" : "PCS - National Capital Region (Meade, Belvoir, Quantico, Andrews, Bethesda)",
-    "PCS_Community___Tampa" : "PCS Community - Tampa",
-    "Real_Estate_Agents_Brokers_Lenders_Community" : "Real Estate Agents/Brokers/Lenders Community",
-    "Real_Estate_Journey_Community" : "Real Estate Journey Community",
-    "Real_Estate_Professionals" : "Real Estate Professionals",
-    "Real_Estate_Professionals_Community" : "Real Estate Professionals Community",
-    "Real_Estate_Professionals_Community___MustWants" : "Real Estate Professionals Community - MustWants",
-    "Service_Academy_Real_Estate_Community" : "Service Academy Real Estate Community",
-    "VA_Loan_Question_Community" : "VA Loan Question Community",
-    "Veteran_Military_Move_Community" : "Veteran Military Move Community",
-    "Veteran_Movers_Community" : "Veteran Movers Community"
+[
+  {
+    "Community_Name": "All Academy Real Estate Community",
+    "id": 1,
+    "Link": "https://www.facebook.com/groups/allmilitaryacademy/",
+    "State": "All States",
+    "Location": "32°52'53.0N 67°18'03.0W",
+    "Location_Decimal": "32.881389, -67.300833",
+    "Location_Decimal_X": -67.300833,
+    "Location_Decimal_Y": 32.881389,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "['Zapier', 'Service Academy Real Estate Community']"
   },
-  "geometryType" : "esriGeometryPoint",
-  "spatialReference" : {
-    "wkid" : 4326,
-    "latestWkid" : 4326
+  {
+    "Community_Name": "All Service Academy Real Estate Network",
+    "id": 2,
+    "Link": "https://www.facebook.com/groups/allserviceacademyrealestate/",
+    "State": "All States",
+    "Location": "33°52'53.0N 67°18'03.0W",
+    "Location_Decimal": "33.881389, -67.300833",
+    "Location_Decimal_X": -67.300833,
+    "Location_Decimal_Y": 33.881389,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "['Zapier', 'Service Academy Real Estate Community']"
   },
-  "fields" : [
-    {
-      "name" : "OBJECTID",
-      "type" : "esriFieldTypeOID",
-      "alias" : "OBJECTID"
-    },
-    {
-      "name" : "Community_Name",
-      "type" : "esriFieldTypeString",
-      "alias" : "Community Name",
-      "length" : 8000
-    },
-    {
-      "name" : "id",
-      "type" : "esriFieldTypeInteger",
-      "alias" : "id"
-    },
-    {
-      "name" : "Link",
-      "type" : "esriFieldTypeString",
-      "alias" : "Link",
-      "length" : 8000
-    },
-    {
-      "name" : "State",
-      "type" : "esriFieldTypeString",
-      "alias" : "State",
-      "length" : 8000
-    },
-    {
-      "name" : "Location",
-      "type" : "esriFieldTypeString",
-      "alias" : "Location",
-      "length" : 8000
-    },
-    {
-      "name" : "Location_Decimal",
-      "type" : "esriFieldTypeString",
-      "alias" : "Location Decimal",
-      "length" : 8000
-    },
-    {
-      "name" : "Location_Decimal_X",
-      "type" : "esriFieldTypeDouble",
-      "alias" : "Location Decimal_X"
-    },
-    {
-      "name" : "Location_Decimal_Y",
-      "type" : "esriFieldTypeDouble",
-      "alias" : "Location Decimal_Y"
-    },
-    {
-      "name" : "Pin",
-      "type" : "esriFieldTypeString",
-      "alias" : "Pin",
-      "length" : 8000
-    },
-    {
-      "name" : "Professional_or_User_Customer",
-      "type" : "esriFieldTypeString",
-      "alias" : "Professional or User/Customer",
-      "length" : 8000
-    },
-    {
-      "name" : "Card_Logo",
-      "type" : "esriFieldTypeString",
-      "alias" : "Card Logo",
-      "length" : 8000
-    },
-    {
-      "name" : "Intro_Added",
-      "type" : "esriFieldTypeString",
-      "alias" : "Intro Added",
-      "length" : 8000
-    },
-    {
-      "name" : "Rules_Added",
-      "type" : "esriFieldTypeString",
-      "alias" : "Rules Added",
-      "length" : 8000
-    },
-    {
-      "name" : "Canva_Added",
-      "type" : "esriFieldTypeString",
-      "alias" : "Canva Added",
-      "length" : 8000
-    },
-    {
-      "name" : "Zapier_App_Added",
-      "type" : "esriFieldTypeString",
-      "alias" : "Zapier App Added",
-      "length" : 8000
-    },
-    {
-      "name" : "Description",
-      "type" : "esriFieldTypeString",
-      "alias" : "Description",
-      "length" : 8000
-    },
-    {
-      "name" : "New_Member_Intro",
-      "type" : "esriFieldTypeString",
-      "alias" : "New Member Intro",
-      "length" : 8000
-    },
-    {
-      "name" : "Home_Buying_Community__Alabama",
-      "type" : "esriFieldTypeString",
-      "alias" : "Home Buying Community- Alabama",
-      "length" : 8000
-    },
-    {
-      "name" : "All_Academy_Real_Estate_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "All Academy Real Estate Community",
-      "length" : 8000
-    },
-    {
-      "name" : "All_Service_Academy_Real_Estate_Network",
-      "type" : "esriFieldTypeString",
-      "alias" : "All Service Academy Real Estate Network",
-      "length" : 8000
-    },
-    {
-      "name" : "Home_Buying_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Home Buying Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Home_Buying_Community___Alaska",
-      "type" : "esriFieldTypeString",
-      "alias" : "Home Buying Community - Alaska",
-      "length" : 8000
-    },
-    {
-      "name" : "Home_Buying_Community___Southern_California",
-      "type" : "esriFieldTypeString",
-      "alias" : "Home Buying Community - Southern California",
-      "length" : 8000
-    },
-    {
-      "name" : "Home_Buying_Journey_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Home Buying Journey Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Home_Search_Community___Georgia",
-      "type" : "esriFieldTypeString",
-      "alias" : "Home Search Community - Georgia",
-      "length" : 8000
-    },
-    {
-      "name" : "Home_Search_Community___Illinois",
-      "type" : "esriFieldTypeString",
-      "alias" : "Home Search Community - Illinois",
-      "length" : 8000
-    },
-    {
-      "name" : "Home_Search_Community___Nebraska",
-      "type" : "esriFieldTypeString",
-      "alias" : "Home Search Community - Nebraska",
-      "length" : 8000
-    },
-    {
-      "name" : "Home_Search_Community___Tennessee",
-      "type" : "esriFieldTypeString",
-      "alias" : "Home Search Community - Tennessee",
-      "length" : 8000
-    },
-    {
-      "name" : "Home_Search_Community___Texas",
-      "type" : "esriFieldTypeString",
-      "alias" : "Home Search Community - Texas",
-      "length" : 8000
-    },
-    {
-      "name" : "Home_Search_Community___Utah",
-      "type" : "esriFieldTypeString",
-      "alias" : "Home Search Community - Utah",
-      "length" : 8000
-    },
-    {
-      "name" : "Home_Search_Community___Virginia",
-      "type" : "esriFieldTypeString",
-      "alias" : "Home Search Community - Virginia",
-      "length" : 8000
-    },
-    {
-      "name" : "Home_Selling_Journey",
-      "type" : "esriFieldTypeString",
-      "alias" : "Home Selling Journey",
-      "length" : 8000
-    },
-    {
-      "name" : "Mil_Move_PCS_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Mil Move PCS Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_Affiliated_Real_Estate_Referral",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military Affiliated Real Estate Referral",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_Listings_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military Listings Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_Loan_Originators__VA_Loan_Experts__Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military Loan Originators (VA Loan Experts) Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_Move_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military Move Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_Movers_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military Movers Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Arizona",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Arizona",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Central_Texas",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Central Texas",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Colorado",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Colorado",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Florida",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Florida",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Ft_Carson__CO",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Ft Carson, CO",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Ft_Cavazos__Ft_Hood_",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Ft Cavazos (Ft Hood)",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Ft_Knox",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Ft Knox",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Ft_Liberty__Bragg_",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Ft Liberty (Bragg)",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Hawaii",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Hawaii",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Idaho",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Idaho",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Iowa",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Iowa",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Kansas",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Kansas",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Kentucky",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Kentucky",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Key_West__Florida",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Key West, Florida",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Las_Vegas",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Las Vegas",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Louisiana",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Louisiana",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Maryland",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Maryland",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Missouri",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Missouri",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Nevada",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Nevada",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___New_Mexico",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - New Mexico",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___New_York",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - New York",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___North_Carolina",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - North Carolina",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Oklahoma",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Oklahoma",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Oregon",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Oregon",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Orlando_Florida",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Orlando Florida",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Pennsylvania",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Pennsylvania",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Pentagon",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Pentagon",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Randolph_AFB",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Randolph AFB",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___South_Carolina",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - South Carolina",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Tampa__Florida",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Tampa, Florida",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Washington",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Washington",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_Community___Wichita_Falls__Texas",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS Community - Wichita Falls, Texas",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_PCS_US_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military PCS US Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_Real_Estate_Agents_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military Real Estate Agents Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_Realtor_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military Realtor Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_Relocate_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military Relocate Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Military_Spouse_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Military Spouse Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Mortgage_Lender_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Mortgage Lender Community",
-      "length" : 8000
-    },
-    {
-      "name" : "MustWants",
-      "type" : "esriFieldTypeString",
-      "alias" : "MustWants",
-      "length" : 8000
-    },
-    {
-      "name" : "NOVA_DC_Military_Spouse_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "NOVA/DC Military Spouse Community",
-      "length" : 8000
-    },
-    {
-      "name" : "PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews",
-      "type" : "esriFieldTypeString",
-      "alias" : "PCS - National Capital Region (Meade, Belvoir, Quantico, Andrews, Bethesda)",
-      "length" : 8000
-    },
-    {
-      "name" : "PCS_Community___Tampa",
-      "type" : "esriFieldTypeString",
-      "alias" : "PCS Community - Tampa",
-      "length" : 8000
-    },
-    {
-      "name" : "Real_Estate_Agents_Brokers_Lenders_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Real Estate Agents/Brokers/Lenders Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Real_Estate_Journey_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Real Estate Journey Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Real_Estate_Professionals",
-      "type" : "esriFieldTypeString",
-      "alias" : "Real Estate Professionals",
-      "length" : 8000
-    },
-    {
-      "name" : "Real_Estate_Professionals_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Real Estate Professionals Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Real_Estate_Professionals_Community___MustWants",
-      "type" : "esriFieldTypeString",
-      "alias" : "Real Estate Professionals Community - MustWants",
-      "length" : 8000
-    },
-    {
-      "name" : "Service_Academy_Real_Estate_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Service Academy Real Estate Community",
-      "length" : 8000
-    },
-    {
-      "name" : "VA_Loan_Question_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "VA Loan Question Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Veteran_Military_Move_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Veteran Military Move Community",
-      "length" : 8000
-    },
-    {
-      "name" : "Veteran_Movers_Community",
-      "type" : "esriFieldTypeString",
-      "alias" : "Veteran Movers Community",
-      "length" : 8000
-    }
-  ],
-  "features" : [{"attributes":{"OBJECTID":1,"Community_Name":"All Academy Real Estate Community","id":1,"Link":"https://www.facebook.com/groups/allmilitaryacademy/","State":"All States","Location":"32°52'53.0\"N 67°18'03.0\"W","Location_Decimal":"32.881389, -67.300833","Location_Decimal_X":-67.300832999999997,"Location_Decimal_Y":32.881388999999999,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"N","Zapier_App_Added":"Y","Description":"A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"Y","All_Service_Academy_Real_Estate_Network":"Y","Home_Buying_Community":"N","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"N","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"N","Mil_Move_PCS_Community":"N","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"N","Military_Loan_Originators__VA_Loan_Experts__Community":"N","Military_Move_Community":"N","Military_Movers_Community":"N","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"N","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"N","Military_Spouse_Community":"N","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"N","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"N","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"Y","VA_Loan_Question_Community":"N","Veteran_Military_Move_Community":"N","Veteran_Movers_Community":"N"},"geometry":{"x":-67.300832999999955,"y":32.88138900000007}},{"attributes":{"OBJECTID":2,"Community_Name":"All Service Academy Real Estate Network","id":2,"Link":"https://www.facebook.com/groups/allserviceacademyrealestate/","State":"All States","Location":"33°52'53.0\"N 67°18'03.0\"W","Location_Decimal":"33.881389, -67.300833","Location_Decimal_X":-67.300832999999997,"Location_Decimal_Y":33.881388999999999,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"N","Zapier_App_Added":"Y","Description":"A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"Y","All_Service_Academy_Real_Estate_Network":"Y","Home_Buying_Community":"N","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"N","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"N","Mil_Move_PCS_Community":"N","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"N","Military_Loan_Originators__VA_Loan_Experts__Community":"N","Military_Move_Community":"N","Military_Movers_Community":"N","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"N","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"N","Military_Spouse_Community":"N","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"N","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"N","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"Y","VA_Loan_Question_Community":"N","Veteran_Military_Move_Community":"N","Veteran_Movers_Community":"N"},"geometry":{"x":-67.300832999999955,"y":33.88138900000007}},{"attributes":{"OBJECTID":3,"Community_Name":"Home Buying Community","id":3,"Link":"https://www.facebook.com/groups/homebuy/","State":"All States","Location":"35°52'53.0\"N 67°18'03.0\"W","Location_Decimal":"35.881389, -67.300833","Location_Decimal_X":-67.300832999999997,"Location_Decimal_Y":35.881388999999999,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"Y","Zapier_App_Added":"Y","Description":"A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-67.300832999999955,"y":35.88138900000007}},{"attributes":{"OBJECTID":7,"Community_Name":"Home Buying Journey Community","id":7,"Link":"https://www.facebook.com/groups/homebuyingjourney","State":"All States","Location":"36°52'53.0\"N 67°18'03.0\"W","Location_Decimal":"36.881389, -67.300833","Location_Decimal_X":-67.300832999999997,"Location_Decimal_Y":36.881388999999999,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"Y","Zapier_App_Added":"Y","Description":"Welcome to \"Home Buying Journey: A MustWants Community\"! A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Powered by MustWants.com","New_Member_Intro":"Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-67.300832999999955,"y":36.88138900000007}},{"attributes":{"OBJECTID":15,"Community_Name":"Home Selling Journey","id":15,"Link":"https://www.facebook.com/groups/homeselling","State":"All States","Location":"37°52'53.0\"N 67°18'03.0\"W","Location_Decimal":"37.881389, -67.300833","Location_Decimal_X":-67.300832999999997,"Location_Decimal_Y":37.881388999999999,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"N","Zapier_App_Added":"Y","Description":"A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-67.300832999999955,"y":37.88138900000007}},{"attributes":{"OBJECTID":16,"Community_Name":"Mil Move PCS Community","id":16,"Link":"www.facebook.com/groups/mypcsmilitary/","State":"All States","Location":"41°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"41.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":41.082082999999997,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"Y","Zapier_App_Added":"Y","Description":"A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the PCS community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-129.65711099999999,"y":41.082083000000068}},{"attributes":{"OBJECTID":17,"Community_Name":"Military Affiliated Real Estate Referral","id":17,"Link":"https://www.facebook.com/groups/militaryreferral","State":"All States","Location":"42°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"42.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":42.082082999999997,"Pin":null,"Professional_or_User_Customer":"Professional","Card_Logo":null,"Intro_Added":null,"Rules_Added":null,"Canva_Added":null,"Zapier_App_Added":null,"Description":"Welcome to the Military Affiliated Real Estate Referral community. Assist in helping Military Families relocate with Military Real Estate Professionals who actually understand relocation. Visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the Military Affiliated Real Estate Referral community. This network is tailored for real estate agents, lenders dedicated to referring military members, veterans, to experienced Military Real Estate Professionals. Those who have actually relocated in the military.","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"N","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"N","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"N","Mil_Move_PCS_Community":"N","Military_Affiliated_Real_Estate_Referral":"Y","Military_Listings_Community":"N","Military_Loan_Originators__VA_Loan_Experts__Community":"N","Military_Move_Community":"N","Military_Movers_Community":"N","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"N","Military_Real_Estate_Agents_Community":"Y","Military_Realtor_Community":"Y","Military_Relocate_Community":"N","Military_Spouse_Community":"N","Mortgage_Lender_Community":"Y","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"N","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"Y","Real_Estate_Journey_Community":"N","Real_Estate_Professionals":"Y","Real_Estate_Professionals_Community":"Y","Real_Estate_Professionals_Community___MustWants":"Y","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"N","Veteran_Military_Move_Community":"N","Veteran_Movers_Community":"N"},"geometry":{"x":-129.65711099999999,"y":42.082083000000068}},{"attributes":{"OBJECTID":18,"Community_Name":"Military Listings Community","id":18,"Link":"https://www.facebook.com/groups/militarylistings","State":"All States","Location":"33°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"33.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":33.082082999999997,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"N","Zapier_App_Added":"Y","Description":"Real Estate listings near military installations. Allowing agents to freely market homes near installations.","New_Member_Intro":"A supportive community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Powered by MustWants.com","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-129.65711099999999,"y":33.082083000000068}},{"attributes":{"OBJECTID":20,"Community_Name":"Military Loan Originators (VA Loan Experts) Community","id":20,"Link":"https://www.facebook.com/groups/loanexperts","State":"All States","Location":"41°52'53.0\"N 67°18'03.0\"W","Location_Decimal":"41.881389, -67.300833","Location_Decimal_X":-67.300832999999997,"Location_Decimal_Y":41.881388999999999,"Pin":null,"Professional_or_User_Customer":"Professional","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"N","Zapier_App_Added":"Y","Description":"Designed to inform and educate military and veteran homebuyers seeking to engage loan originators who are also former military. The MustWants app connects military home buyers with real estate and mortgage specialists, including military loan originators and VA loan experts. These specialists help military members and veterans navigate the home buying process and save money along the way.","New_Member_Intro":"Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"N","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"N","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"N","Mil_Move_PCS_Community":"N","Military_Affiliated_Real_Estate_Referral":"Y","Military_Listings_Community":"N","Military_Loan_Originators__VA_Loan_Experts__Community":"N","Military_Move_Community":"N","Military_Movers_Community":"N","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"N","Military_Real_Estate_Agents_Community":"Y","Military_Realtor_Community":"Y","Military_Relocate_Community":"N","Military_Spouse_Community":"N","Mortgage_Lender_Community":"Y","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"N","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"Y","Real_Estate_Journey_Community":"N","Real_Estate_Professionals":"Y","Real_Estate_Professionals_Community":"Y","Real_Estate_Professionals_Community___MustWants":"Y","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"N","Veteran_Military_Move_Community":"N","Veteran_Movers_Community":"N"},"geometry":{"x":-67.300832999999955,"y":41.88138900000007}},{"attributes":{"OBJECTID":21,"Community_Name":"Military Move Community","id":21,"Link":"https://www.facebook.com/groups/milmove","State":"All States","Location":"35°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"35.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":35.082082999999997,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":"N","Canva_Added":"Y","Zapier_App_Added":"Y","Description":"Welcome to Military Movers Community. A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the Military Movers! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-129.65711099999999,"y":35.082083000000068}},{"attributes":{"OBJECTID":22,"Community_Name":"Military Movers Community","id":22,"Link":"https://www.facebook.com/groups/militarymovers","State":"All States","Location":"38°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"38.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":38.082082999999997,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"N","Zapier_App_Added":"Y","Description":"A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the Military Movers! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us! \n- The admin team","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-129.65711099999999,"y":38.082083000000068}},{"attributes":{"OBJECTID":23,"Community_Name":"Military Movers Community","id":23,"Link":"https://www.facebook.com/groups/milmovers","State":"All States","Location":"36°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"36.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":36.082082999999997,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":"Y","Canva_Added":"Y","Zapier_App_Added":"Y","Description":"Welcome to Military Movers Community. A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the Military Movers! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-129.65711099999999,"y":36.082083000000068}},{"attributes":{"OBJECTID":77,"Community_Name":"Military PCS US Community","id":77,"Link":"https://www.facebook.com/groups/pcsmilitary","State":"All States","Location":"45°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"45.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":45.082082999999997,"Pin":null,"Professional_or_User_Customer":null,"Card_Logo":null,"Intro_Added":"Y","Rules_Added":"Y","Canva_Added":"Y","Zapier_App_Added":"Y","Description":"A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the PCS community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-129.65711099999999,"y":45.082083000000068}},{"attributes":{"OBJECTID":78,"Community_Name":"Military Real Estate Agents Community","id":78,"Link":"https://www.facebook.com/groups/militaryagents","State":"All States","Location":"44°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"44.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":44.082082999999997,"Pin":null,"Professional_or_User_Customer":"Professional","Card_Logo":null,"Intro_Added":"Y","Rules_Added":"Y","Canva_Added":"N","Zapier_App_Added":"Y","Description":"Real Estate Agents focused on taking care of Military Home Buyers as priority #1","New_Member_Intro":"Welcome to the Military Real Estate Agent Community! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"N","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"N","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"N","Mil_Move_PCS_Community":"N","Military_Affiliated_Real_Estate_Referral":"Y","Military_Listings_Community":"N","Military_Loan_Originators__VA_Loan_Experts__Community":"N","Military_Move_Community":"N","Military_Movers_Community":"N","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"N","Military_Real_Estate_Agents_Community":"Y","Military_Realtor_Community":"Y","Military_Relocate_Community":"N","Military_Spouse_Community":"N","Mortgage_Lender_Community":"Y","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"N","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"Y","Real_Estate_Journey_Community":"N","Real_Estate_Professionals":"Y","Real_Estate_Professionals_Community":"Y","Real_Estate_Professionals_Community___MustWants":"Y","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"N","Veteran_Military_Move_Community":"N","Veteran_Movers_Community":"N"},"geometry":{"x":-129.65711099999999,"y":44.082083000000068}},{"attributes":{"OBJECTID":79,"Community_Name":"Military Realtor Community","id":79,"Link":"https://www.facebook.com/groups/militaryrealtors/","State":"All States","Location":"40°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"40.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":40.082082999999997,"Pin":null,"Professional_or_User_Customer":"Professional","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"N","Zapier_App_Added":"Y","Description":"Real Estate Professionals who are affiliated with the US Military. veterans, or military spouses seeking to pass on referrals, educate, share information and educate.","New_Member_Intro":"A supportive PCS community for military families around the United States. Get exclusive listings, relocation advice, and VA loan tips. Powered by MustWants.com","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"N","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"N","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"N","Mil_Move_PCS_Community":"N","Military_Affiliated_Real_Estate_Referral":"Y","Military_Listings_Community":"N","Military_Loan_Originators__VA_Loan_Experts__Community":"N","Military_Move_Community":"N","Military_Movers_Community":"N","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"N","Military_Real_Estate_Agents_Community":"Y","Military_Realtor_Community":"Y","Military_Relocate_Community":"N","Military_Spouse_Community":"N","Mortgage_Lender_Community":"Y","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"N","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"Y","Real_Estate_Journey_Community":"N","Real_Estate_Professionals":"Y","Real_Estate_Professionals_Community":"Y","Real_Estate_Professionals_Community___MustWants":"Y","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"N","Veteran_Military_Move_Community":"N","Veteran_Movers_Community":"N"},"geometry":{"x":-129.65711099999999,"y":40.082083000000068}},{"attributes":{"OBJECTID":80,"Community_Name":"Military Relocate Community","id":80,"Link":"https://www.facebook.com/groups/pcsmoving","State":"All States","Location":"31°52'53.0\"N 67°18'03.0\"W","Location_Decimal":"31.881389, -67.300833","Location_Decimal_X":-67.300832999999997,"Location_Decimal_Y":31.881388999999999,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":null,"Rules_Added":null,"Canva_Added":null,"Zapier_App_Added":null,"Description":"A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-67.300832999999955,"y":31.88138900000007}},{"attributes":{"OBJECTID":81,"Community_Name":"Military Spouse Community","id":81,"Link":"https://www.facebook.com/groups/milspouses/","State":"All States","Location":"42°52'53.0\"N 67°18'03.0\"W","Location_Decimal":"42.881389, -67.300833","Location_Decimal_X":-67.300832999999997,"Location_Decimal_Y":42.881388999999999,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":"Y","Canva_Added":"N","Zapier_App_Added":"Y","Description":"Welcome Military Spouses! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome Military Spouses! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-67.300832999999955,"y":42.88138900000007}},{"attributes":{"OBJECTID":82,"Community_Name":"Mortgage Lender Community","id":82,"Link":"https://www.facebook.com/groups/mortgagelenders/","State":"All States","Location":"40°52'53.0\"N 67°18'03.0\"W","Location_Decimal":"40.881389, -67.300833","Location_Decimal_X":-67.300832999999997,"Location_Decimal_Y":40.881388999999999,"Pin":null,"Professional_or_User_Customer":"Professional","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"N","Zapier_App_Added":"Y","Description":"Welcome Mortgage Lenders and those seeking experts in the Loan Industry! This group is an open forum to assist military families seeking a new home to purchase. Whether you're a first-time buyer, a veteran exploring VA Loan options, or a family planning their next big move.","New_Member_Intro":"Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"N","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"N","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"N","Mil_Move_PCS_Community":"N","Military_Affiliated_Real_Estate_Referral":"Y","Military_Listings_Community":"N","Military_Loan_Originators__VA_Loan_Experts__Community":"N","Military_Move_Community":"N","Military_Movers_Community":"N","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"N","Military_Real_Estate_Agents_Community":"Y","Military_Realtor_Community":"Y","Military_Relocate_Community":"N","Military_Spouse_Community":"N","Mortgage_Lender_Community":"Y","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"N","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"Y","Real_Estate_Journey_Community":"N","Real_Estate_Professionals":"Y","Real_Estate_Professionals_Community":"Y","Real_Estate_Professionals_Community___MustWants":"Y","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"N","Veteran_Military_Move_Community":"N","Veteran_Movers_Community":"N"},"geometry":{"x":-67.300832999999955,"y":40.88138900000007}},{"attributes":{"OBJECTID":83,"Community_Name":"MustWants","id":83,"Link":"https://www.facebook.com/mustwants","State":"All States","Location":"48°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"48.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":48.082082999999997,"Pin":null,"Professional_or_User_Customer":"Both","Card_Logo":null,"Intro_Added":"Y","Rules_Added":"Y","Canva_Added":"Y","Zapier_App_Added":"Y","Description":"A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"N","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"N","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"Y","Military_Listings_Community":"N","Military_Loan_Originators__VA_Loan_Experts__Community":"N","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"Y","Military_Realtor_Community":"Y","Military_Relocate_Community":"Y","Military_Spouse_Community":"N","Mortgage_Lender_Community":"Y","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"N","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"N","Real_Estate_Professionals":"Y","Real_Estate_Professionals_Community":"Y","Real_Estate_Professionals_Community___MustWants":"Y","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"N","Veteran_Military_Move_Community":"N","Veteran_Movers_Community":"N"},"geometry":{"x":-129.65711099999999,"y":48.082083000000068}},{"attributes":{"OBJECTID":87,"Community_Name":"Real Estate Agents/Brokers/Lenders Community","id":87,"Link":"https://www.facebook.com/groups/agentsbrokers","State":"All States","Location":"46°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"46.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":46.082082999999997,"Pin":null,"Professional_or_User_Customer":"Professional","Card_Logo":null,"Intro_Added":"Y","Rules_Added":"Y","Canva_Added":"N","Zapier_App_Added":"Y","Description":"Community open to Agents / Brokers / Lenders / PropTech / Investors in the Residential Real Estate Eco-System who are affiliated with the US Military *(Active, Guard, Reserves, Veterans, Military Spouses).","New_Member_Intro":"Welcome to the Real Estate Professional Community! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"N","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"N","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"N","Mil_Move_PCS_Community":"N","Military_Affiliated_Real_Estate_Referral":"Y","Military_Listings_Community":"N","Military_Loan_Originators__VA_Loan_Experts__Community":"N","Military_Move_Community":"N","Military_Movers_Community":"N","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"N","Military_Real_Estate_Agents_Community":"Y","Military_Realtor_Community":"Y","Military_Relocate_Community":"N","Military_Spouse_Community":"N","Mortgage_Lender_Community":"Y","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"N","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"Y","Real_Estate_Journey_Community":"N","Real_Estate_Professionals":"Y","Real_Estate_Professionals_Community":"Y","Real_Estate_Professionals_Community___MustWants":"Y","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"N","Veteran_Military_Move_Community":"N","Veteran_Movers_Community":"N"},"geometry":{"x":-129.65711099999999,"y":46.082083000000068}},{"attributes":{"OBJECTID":88,"Community_Name":"Real Estate Journey Community","id":88,"Link":"https://www.facebook.com/groups/realestatejourney/","State":"All States","Location":"34°52'53.0\"N 67°18'03.0\"W","Location_Decimal":"34.881389, -67.300833","Location_Decimal_X":-67.300832999999997,"Location_Decimal_Y":34.881388999999999,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":null,"Zapier_App_Added":null,"Description":"A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-67.300832999999955,"y":34.88138900000007}},{"attributes":{"OBJECTID":89,"Community_Name":"Real Estate Professionals","id":89,"Link":"https://www.facebook.com/groups/realtorprofessionals/","State":"All States","Location":"39°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"39.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":39.082082999999997,"Pin":null,"Professional_or_User_Customer":"Professional","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"N","Zapier_App_Added":"Y","Description":"For Real Estate Professionals - Agents, Lenders, Home Insurance, Title Insurance, Home Inspectors, Movers, Investors…","New_Member_Intro":"Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"N","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"N","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"N","Mil_Move_PCS_Community":"N","Military_Affiliated_Real_Estate_Referral":"Y","Military_Listings_Community":"N","Military_Loan_Originators__VA_Loan_Experts__Community":"N","Military_Move_Community":"N","Military_Movers_Community":"N","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"N","Military_Real_Estate_Agents_Community":"Y","Military_Realtor_Community":"Y","Military_Relocate_Community":"N","Military_Spouse_Community":"N","Mortgage_Lender_Community":"Y","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"N","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"Y","Real_Estate_Journey_Community":"N","Real_Estate_Professionals":"Y","Real_Estate_Professionals_Community":"Y","Real_Estate_Professionals_Community___MustWants":"Y","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"N","Veteran_Military_Move_Community":"N","Veteran_Movers_Community":"N"},"geometry":{"x":-129.65711099999999,"y":39.082083000000068}},{"attributes":{"OBJECTID":90,"Community_Name":"Real Estate Professionals Community","id":90,"Link":"https://www.facebook.com/groups/realestateprocommunity","State":"All States","Location":"43°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"43.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":43.082082999999997,"Pin":null,"Professional_or_User_Customer":"Professional","Card_Logo":null,"Intro_Added":null,"Rules_Added":null,"Canva_Added":null,"Zapier_App_Added":null,"Description":"For Military Real Estate Professionals - Agents, Lenders, Home Insurance, Title Insurance, Home Inspectors, Movers, Investors…","New_Member_Intro":"Welcome to the Real Estate Pro Community! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"N","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"N","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"N","Mil_Move_PCS_Community":"N","Military_Affiliated_Real_Estate_Referral":"Y","Military_Listings_Community":"N","Military_Loan_Originators__VA_Loan_Experts__Community":"N","Military_Move_Community":"N","Military_Movers_Community":"N","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"N","Military_Real_Estate_Agents_Community":"Y","Military_Realtor_Community":"Y","Military_Relocate_Community":"N","Military_Spouse_Community":"N","Mortgage_Lender_Community":"Y","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"N","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"Y","Real_Estate_Journey_Community":"N","Real_Estate_Professionals":"Y","Real_Estate_Professionals_Community":"Y","Real_Estate_Professionals_Community___MustWants":"Y","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"N","Veteran_Military_Move_Community":"N","Veteran_Movers_Community":"N"},"geometry":{"x":-129.65711099999999,"y":43.082083000000068}},{"attributes":{"OBJECTID":91,"Community_Name":"Real Estate Professionals Community - MustWants","id":91,"Link":"https://www.facebook.com/groups/mustwants","State":"All States","Location":"47°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"47.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":47.082082999999997,"Pin":null,"Professional_or_User_Customer":"Professional","Card_Logo":null,"Intro_Added":"Y","Rules_Added":"Y","Canva_Added":"Y","Zapier_App_Added":"Y","Description":"Welcome to the MustWants community! As a distinguished group of real estate professionals, you're now part of a network committed to transforming the home buying experience for Military Families. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to a supportive Military Real Estate Professionals Community. Designed by and for those who understand the unique challenges of military relocations, our group brings together real estate professionals, military families, and industry experts in one dynamic forum. As seasoned military movers looking to better serve this community, MustWants is building the eco-system and tools to streamline the home search, moving process. Benefit from shared experiences, insights, and the collective wisdom of those who've been in their shoes. Join us to network and ensure your referrals make sense with experienced Military Real Estate Professionals. Powered by MustWants.com \n- The admin team","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"N","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"N","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"N","Mil_Move_PCS_Community":"N","Military_Affiliated_Real_Estate_Referral":"Y","Military_Listings_Community":"N","Military_Loan_Originators__VA_Loan_Experts__Community":"N","Military_Move_Community":"N","Military_Movers_Community":"N","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"N","Military_Real_Estate_Agents_Community":"Y","Military_Realtor_Community":"Y","Military_Relocate_Community":"N","Military_Spouse_Community":"N","Mortgage_Lender_Community":"Y","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"N","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"Y","Real_Estate_Journey_Community":"N","Real_Estate_Professionals":"Y","Real_Estate_Professionals_Community":"Y","Real_Estate_Professionals_Community___MustWants":"Y","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"N","Veteran_Military_Move_Community":"N","Veteran_Movers_Community":"N"},"geometry":{"x":-129.65711099999999,"y":47.082083000000068}},{"attributes":{"OBJECTID":92,"Community_Name":"Service Academy Real Estate Community","id":92,"Link":"https://www.facebook.com/groups/serviceacademyrealestate/","State":"All States","Location":"38°52'53.0\"N 67°18'03.0\"W","Location_Decimal":"38.881389, -67.300833","Location_Decimal_X":-67.300832999999997,"Location_Decimal_Y":38.881388999999999,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"N","Zapier_App_Added":"Y","Description":"A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"Y","All_Service_Academy_Real_Estate_Network":"Y","Home_Buying_Community":"N","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"N","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"N","Mil_Move_PCS_Community":"N","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"N","Military_Loan_Originators__VA_Loan_Experts__Community":"N","Military_Move_Community":"N","Military_Movers_Community":"N","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"N","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"N","Military_Spouse_Community":"N","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"N","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"N","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"Y","VA_Loan_Question_Community":"N","Veteran_Military_Move_Community":"N","Veteran_Movers_Community":"N"},"geometry":{"x":-67.300832999999955,"y":38.88138900000007}},{"attributes":{"OBJECTID":93,"Community_Name":"VA Loan Question Community","id":93,"Link":"https://www.facebook.com/groups/valoanquestions","State":"All States","Location":"39°52'53.0\"N 67°18'03.0\"W","Location_Decimal":"39.881389, -67.300833","Location_Decimal_X":-67.300832999999997,"Location_Decimal_Y":39.881388999999999,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"N","Zapier_App_Added":"Y","Description":"A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-67.300832999999955,"y":39.88138900000007}},{"attributes":{"OBJECTID":94,"Community_Name":"Veteran Military Move Community","id":94,"Link":"https://www.facebook.com/groups/veteranmovers","State":"All States","Location":"37°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"37.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":37.082082999999997,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"Y","Zapier_App_Added":"Y","Description":"A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-129.65711099999999,"y":37.082083000000068}},{"attributes":{"OBJECTID":95,"Community_Name":"Veteran Movers Community","id":95,"Link":"https://www.facebook.com/groups/vetmovers","State":"All States","Location":"34°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"34.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":34.082082999999997,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":"N","Canva_Added":"Y","Zapier_App_Added":"Y","Description":"Welcome to \"Veteran Movers Community\" Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the Veteran Movers! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us! \nMustWants","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-129.65711099999999,"y":34.082083000000068}},{"attributes":{"OBJECTID":96,"Community_Name":"Veteran Movers Community","id":96,"Link":"https://www.facebook.com/groups/militaryveteranmovers","State":"All States","Location":"32°04'55.5\"N 129°39'25.6\"W","Location_Decimal":"32.082083, -129.657111","Location_Decimal_X":-129.65711099999999,"Location_Decimal_Y":32.082082999999997,"Pin":null,"Professional_or_User_Customer":"User","Card_Logo":null,"Intro_Added":"Y","Rules_Added":null,"Canva_Added":"N","Zapier_App_Added":"Y","Description":"Welcome to \"Veteran Movers Community\" Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","New_Member_Intro":"Welcome to the Veteran Movers! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!","Home_Buying_Community__Alabama":"N","All_Academy_Real_Estate_Community":"N","All_Service_Academy_Real_Estate_Network":"N","Home_Buying_Community":"Y","Home_Buying_Community___Alaska":"N","Home_Buying_Community___Southern_California":"N","Home_Buying_Journey_Community":"Y","Home_Search_Community___Georgia":"N","Home_Search_Community___Illinois":"N","Home_Search_Community___Nebraska":"N","Home_Search_Community___Tennessee":"N","Home_Search_Community___Texas":"N","Home_Search_Community___Utah":"N","Home_Search_Community___Virginia":"N","Home_Selling_Journey":"Y","Mil_Move_PCS_Community":"Y","Military_Affiliated_Real_Estate_Referral":"N","Military_Listings_Community":"Y","Military_Loan_Originators__VA_Loan_Experts__Community":"Y","Military_Move_Community":"Y","Military_Movers_Community":"Y","Military_PCS_Community___Arizona":"N","Military_PCS_Community___Central_Texas":"N","Military_PCS_Community___Colorado":"N","Military_PCS_Community___Florida":"N","Military_PCS_Community___Ft_Carson__CO":"N","Military_PCS_Community___Ft_Cavazos__Ft_Hood_":"N","Military_PCS_Community___Ft_Knox":"N","Military_PCS_Community___Ft_Liberty__Bragg_":"N","Military_PCS_Community___Hawaii":"N","Military_PCS_Community___Idaho":"N","Military_PCS_Community___Iowa":"N","Military_PCS_Community___Kansas":"N","Military_PCS_Community___Kentucky":"N","Military_PCS_Community___Key_West__Florida":"N","Military_PCS_Community___Las_Vegas":"N","Military_PCS_Community___Louisiana":"N","Military_PCS_Community___Maryland":"N","Military_PCS_Community___Missouri":"N","Military_PCS_Community___Nevada":"N","Military_PCS_Community___New_Mexico":"N","Military_PCS_Community___New_York":"N","Military_PCS_Community___North_Carolina":"N","Military_PCS_Community___Oklahoma":"N","Military_PCS_Community___Oregon":"N","Military_PCS_Community___Orlando_Florida":"N","Military_PCS_Community___Pennsylvania":"N","Military_PCS_Community___Pentagon":"N","Military_PCS_Community___Randolph_AFB":"N","Military_PCS_Community___South_Carolina":"N","Military_PCS_Community___Tampa__Florida":"N","Military_PCS_Community___Washington":"N","Military_PCS_Community___Wichita_Falls__Texas":"N","Military_PCS_US_Community":"Y","Military_Real_Estate_Agents_Community":"N","Military_Realtor_Community":"N","Military_Relocate_Community":"Y","Military_Spouse_Community":"Y","Mortgage_Lender_Community":"N","MustWants":"Y","NOVA_DC_Military_Spouse_Community":"Y","PCS___National_Capital_Region__Meade__Belvoir__Quantico__Andrews":"N","PCS_Community___Tampa":"N","Real_Estate_Agents_Brokers_Lenders_Community":"N","Real_Estate_Journey_Community":"Y","Real_Estate_Professionals":"N","Real_Estate_Professionals_Community":"N","Real_Estate_Professionals_Community___MustWants":"N","Service_Academy_Real_Estate_Community":"N","VA_Loan_Question_Community":"Y","Veteran_Military_Move_Community":"Y","Veteran_Movers_Community":"Y"},"geometry":{"x":-129.65711099999999,"y":32.082083000000068}}]
-}
+  {
+    "Community_Name": "Home Buying Community",
+    "id": 3,
+    "Link": "https://www.facebook.com/groups/homebuy/",
+    "State": "All States",
+    "Location": "35°52'53.0N 67°18'03.0W",
+    "Location_Decimal": "35.881389, -67.300833",
+    "Location_Decimal_X": -67.300833,
+    "Location_Decimal_Y": 35.881389,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "[' Canva', 'Zapier', 'Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  },
+  {
+    "Community_Name": "Home Buying Journey Community",
+    "id": 7,
+    "Link": "https://www.facebook.com/groups/homebuyingjourney",
+    "State": "All States",
+    "Location": "36°52'53.0N 67°18'03.0W",
+    "Location_Decimal": "36.881389, -67.300833",
+    "Location_Decimal_X": -67.300833,
+    "Location_Decimal_Y": 36.881389,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "Welcome to Home Buying Journey: A MustWants Community! A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Powered by MustWants.com",
+    "New_Member_Intro": "Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "[' Canva', 'Zapier', 'Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  },
+  {
+    "Community_Name": "Home Selling Journey",
+    "id": 15,
+    "Link": "https://www.facebook.com/groups/homeselling",
+    "State": "All States",
+    "Location": "37°52'53.0N 67°18'03.0W",
+    "Location_Decimal": "37.881389, -67.300833",
+    "Location_Decimal_X": -67.300833,
+    "Location_Decimal_Y": 37.881389,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "['Zapier', 'Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  },
+  {
+    "Community_Name": "Mil Move PCS Community",
+    "id": 16,
+    "Link": "www.facebook.com/groups/mypcsmilitary/",
+    "State": "All States",
+    "Location": "41°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "41.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 41.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the PCS community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "[' Canva', 'Zapier', 'Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  },
+  {
+    "Community_Name": "Military Affiliated Real Estate Referral",
+    "id": 17,
+    "Link": "https://www.facebook.com/groups/militaryreferral",
+    "State": "All States",
+    "Location": "42°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "42.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 42.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "Professional",
+    "Card_Logo": "",
+    "Intro_Added": "",
+    "Rules_Added": "",
+    "Description": "Welcome to the Military Affiliated Real Estate Referral community. Assist in helping Military Families relocate with Military Real Estate Professionals who actually understand relocation. Visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the Military Affiliated Real Estate Referral community. This network is tailored for real estate agents, lenders dedicated to referring military members, veterans, to experienced Military Real Estate Professionals. Those who have actually relocated in the military.",
+    "Selected Communities": "['Real Estate Agents Brokers Lenders Community', 'Real Estate Professionals', 'Real Estate Professionals Community', 'Real Estate Professionals Community   MustWants']"
+  },
+  {
+    "Community_Name": "Military Listings Community",
+    "id": 18,
+    "Link": "https://www.facebook.com/groups/militarylistings",
+    "State": "All States",
+    "Location": "33°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "33.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 33.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "Real Estate listings near military installations. Allowing agents to freely market homes near installations.",
+    "New_Member_Intro": "A supportive community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Powered by MustWants.com",
+    "Selected Communities": "['Zapier', 'Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  },
+  {
+    "Community_Name": "Military Loan Originators (VA Loan Experts) Community",
+    "id": 20,
+    "Link": "https://www.facebook.com/groups/loanexperts",
+    "State": "All States",
+    "Location": "41°52'53.0N 67°18'03.0W",
+    "Location_Decimal": "41.881389, -67.300833",
+    "Location_Decimal_X": -67.300833,
+    "Location_Decimal_Y": 41.881389,
+    "Pin": "",
+    "Professional_or_User_Customer": "Professional",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "Designed to inform and educate military and veteran homebuyers seeking to engage loan originators who are also former military. The MustWants app connects military home buyers with real estate and mortgage specialists, including military loan originators and VA loan experts. These specialists help military members and veterans navigate the home buying process and save money along the way.",
+    "New_Member_Intro": "Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "['Zapier', 'Real Estate Agents Brokers Lenders Community', 'Real Estate Professionals', 'Real Estate Professionals Community', 'Real Estate Professionals Community   MustWants']"
+  },
+  {
+    "Community_Name": "Military Move Community",
+    "id": 21,
+    "Link": "https://www.facebook.com/groups/milmove",
+    "State": "All States",
+    "Location": "35°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "35.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 35.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "N",
+    "Description": "Welcome to Military Movers Community. A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the Military Movers! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "Selected Communities": "[' Canva', 'Zapier', 'Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  },
+  {
+    "Community_Name": "Military Movers Community",
+    "id": 22,
+    "Link": "https://www.facebook.com/groups/militarymovers",
+    "State": "All States",
+    "Location": "38°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "38.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 38.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the Military Movers! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us! \n- The admin team",
+    "Selected Communities": "['Zapier', 'Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  },
+  {
+    "Community_Name": "Military Movers Community",
+    "id": 23,
+    "Link": "https://www.facebook.com/groups/milmovers",
+    "State": "All States",
+    "Location": "36°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "36.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 36.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "Y",
+    "Description": "Welcome to Military Movers Community. A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the Military Movers! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "Selected Communities": "[' Canva', 'Zapier', 'Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  },
+  {
+    "Community_Name": "Military PCS US Community",
+    "id": 77,
+    "Link": "https://www.facebook.com/groups/pcsmilitary",
+    "State": "All States",
+    "Location": "45°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "45.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 45.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "Y",
+    "Description": "A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the PCS community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "[' Canva', 'Zapier', 'Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  },
+  {
+    "Community_Name": "Military Real Estate Agents Community",
+    "id": 78,
+    "Link": "https://www.facebook.com/groups/militaryagents",
+    "State": "All States",
+    "Location": "44°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "44.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 44.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "Professional",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "Y",
+    "Description": "Real Estate Agents focused on taking care of Military Home Buyers as priority #1",
+    "New_Member_Intro": "Welcome to the Military Real Estate Agent Community! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "Selected Communities": "['Zapier', 'Real Estate Agents Brokers Lenders Community', 'Real Estate Professionals', 'Real Estate Professionals Community', 'Real Estate Professionals Community   MustWants']"
+  },
+  {
+    "Community_Name": "Military Realtor Community",
+    "id": 79,
+    "Link": "https://www.facebook.com/groups/militaryrealtors/",
+    "State": "All States",
+    "Location": "40°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "40.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 40.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "Professional",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "Real Estate Professionals who are affiliated with the US Military. veterans, or military spouses seeking to pass on referrals, educate, share information and educate.",
+    "New_Member_Intro": "A supportive PCS community for military families around the United States. Get exclusive listings, relocation advice, and VA loan tips. Powered by MustWants.com",
+    "Selected Communities": "['Zapier', 'Real Estate Agents Brokers Lenders Community', 'Real Estate Professionals', 'Real Estate Professionals Community', 'Real Estate Professionals Community   MustWants']"
+  },
+  {
+    "Community_Name": "Military Relocate Community",
+    "id": 80,
+    "Link": "https://www.facebook.com/groups/pcsmoving",
+    "State": "All States",
+    "Location": "31°52'53.0N 67°18'03.0W",
+    "Location_Decimal": "31.881389, -67.300833",
+    "Location_Decimal_X": -67.300833,
+    "Location_Decimal_Y": 31.881389,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "",
+    "Rules_Added": "",
+    "Description": "A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "['Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  },
+  {
+    "Community_Name": "Military Spouse Community",
+    "id": 81,
+    "Link": "https://www.facebook.com/groups/milspouses/",
+    "State": "All States",
+    "Location": "42°52'53.0N 67°18'03.0W",
+    "Location_Decimal": "42.881389, -67.300833",
+    "Location_Decimal_X": -67.300833,
+    "Location_Decimal_Y": 42.881389,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "Y",
+    "Description": "Welcome Military Spouses! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome Military Spouses! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "Selected Communities": "['Zapier', 'Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  },
+  {
+    "Community_Name": "Mortgage Lender Community",
+    "id": 82,
+    "Link": "https://www.facebook.com/groups/mortgagelenders/",
+    "State": "All States",
+    "Location": "40°52'53.0N 67°18'03.0W",
+    "Location_Decimal": "40.881389, -67.300833",
+    "Location_Decimal_X": -67.300833,
+    "Location_Decimal_Y": 40.881389,
+    "Pin": "",
+    "Professional_or_User_Customer": "Professional",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "Welcome Mortgage Lenders and those seeking experts in the Loan Industry! This group is an open forum to assist military families seeking a new home to purchase. Whether you're a first-time buyer, a veteran exploring VA Loan options, or a family planning their next big move.",
+    "New_Member_Intro": "Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "['Zapier', 'Real Estate Agents Brokers Lenders Community', 'Real Estate Professionals', 'Real Estate Professionals Community', 'Real Estate Professionals Community   MustWants']"
+  },
+  {
+    "Community_Name": "MustWants",
+    "id": 83,
+    "Link": "https://www.facebook.com/mustwants",
+    "State": "All States",
+    "Location": "48°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "48.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 48.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "Both",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "Y",
+    "Description": "A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "[' Canva', 'Zapier', 'Real Estate Professionals', 'Real Estate Professionals Community', 'Real Estate Professionals Community   MustWants']"
+  },
+  {
+    "Community_Name": "Real Estate Agents/Brokers/Lenders Community",
+    "id": 87,
+    "Link": "https://www.facebook.com/groups/agentsbrokers",
+    "State": "All States",
+    "Location": "46°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "46.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 46.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "Professional",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "Y",
+    "Description": "Community open to Agents / Brokers / Lenders / PropTech / Investors in the Residential Real Estate Eco-System who are affiliated with the US Military *(Active, Guard, Reserves, Veterans, Military Spouses).",
+    "New_Member_Intro": "Welcome to the Real Estate Professional Community! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "Selected Communities": "['Zapier', 'Real Estate Agents Brokers Lenders Community', 'Real Estate Professionals', 'Real Estate Professionals Community', 'Real Estate Professionals Community   MustWants']"
+  },
+  {
+    "Community_Name": "Real Estate Journey Community",
+    "id": 88,
+    "Link": "https://www.facebook.com/groups/realestatejourney/",
+    "State": "All States",
+    "Location": "34°52'53.0N 67°18'03.0W",
+    "Location_Decimal": "34.881389, -67.300833",
+    "Location_Decimal_X": -67.300833,
+    "Location_Decimal_Y": 34.881389,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "['Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  },
+  {
+    "Community_Name": "Real Estate Professionals",
+    "id": 89,
+    "Link": "https://www.facebook.com/groups/realtorprofessionals/",
+    "State": "All States",
+    "Location": "39°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "39.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 39.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "Professional",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "For Real Estate Professionals - Agents, Lenders, Home Insurance, Title Insurance, Home Inspectors, Movers, Investors…",
+    "New_Member_Intro": "Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "['Zapier', 'Real Estate Agents Brokers Lenders Community', 'Real Estate Professionals', 'Real Estate Professionals Community', 'Real Estate Professionals Community   MustWants']"
+  },
+  {
+    "Community_Name": "Real Estate Professionals Community",
+    "id": 90,
+    "Link": "https://www.facebook.com/groups/realestateprocommunity",
+    "State": "All States",
+    "Location": "43°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "43.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 43.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "Professional",
+    "Card_Logo": "",
+    "Intro_Added": "",
+    "Rules_Added": "",
+    "Description": "For Military Real Estate Professionals - Agents, Lenders, Home Insurance, Title Insurance, Home Inspectors, Movers, Investors…",
+    "New_Member_Intro": "Welcome to the Real Estate Pro Community! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "Selected Communities": "['Real Estate Agents Brokers Lenders Community', 'Real Estate Professionals', 'Real Estate Professionals Community', 'Real Estate Professionals Community   MustWants']"
+  },
+  {
+    "Community_Name": "Real Estate Professionals Community - MustWants",
+    "id": 91,
+    "Link": "https://www.facebook.com/groups/mustwants",
+    "State": "All States",
+    "Location": "47°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "47.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 47.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "Professional",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "Y",
+    "Description": "Welcome to the MustWants community! As a distinguished group of real estate professionals, you're now part of a network committed to transforming the home buying experience for Military Families. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to a supportive Military Real Estate Professionals Community. Designed by and for those who understand the unique challenges of military relocations, our group brings together real estate professionals, military families, and industry experts in one dynamic forum. As seasoned military movers looking to better serve this community, MustWants is building the eco-system and tools to streamline the home search, moving process. Benefit from shared experiences, insights, and the collective wisdom of those who've been in their shoes. Join us to network and ensure your referrals make sense with experienced Military Real Estate Professionals. Powered by MustWants.com \n- The admin team",
+    "Selected Communities": "[' Canva', 'Zapier', 'Real Estate Agents Brokers Lenders Community', 'Real Estate Professionals', 'Real Estate Professionals Community', 'Real Estate Professionals Community   MustWants']"
+  },
+  {
+    "Community_Name": "Service Academy Real Estate Community",
+    "id": 92,
+    "Link": "https://www.facebook.com/groups/serviceacademyrealestate/",
+    "State": "All States",
+    "Location": "38°52'53.0N 67°18'03.0W",
+    "Location_Decimal": "38.881389, -67.300833",
+    "Location_Decimal_X": -67.300833,
+    "Location_Decimal_Y": 38.881389,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "['Zapier', 'Service Academy Real Estate Community']"
+  },
+  {
+    "Community_Name": "VA Loan Question Community",
+    "id": 93,
+    "Link": "https://www.facebook.com/groups/valoanquestions",
+    "State": "All States",
+    "Location": "39°52'53.0N 67°18'03.0W",
+    "Location_Decimal": "39.881389, -67.300833",
+    "Location_Decimal_X": -67.300833,
+    "Location_Decimal_Y": 39.881389,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "['Zapier', 'Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  },
+  {
+    "Community_Name": "Veteran Military Move Community",
+    "id": 94,
+    "Link": "https://www.facebook.com/groups/veteranmovers",
+    "State": "All States",
+    "Location": "37°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "37.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 37.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "A supportive PCS community for military families relocating. Get exclusive listings, relocation advice, and VA loan tips. Here, you can find resources, and tips, to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the community! Here, you can find resources, tips, and listings to make your next move easier. Ask questions, and invite your friends, create a new post, and visit MustWants.com to learn more about us and how MustWants can help!",
+    "Selected Communities": "[' Canva', 'Zapier', 'Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  },
+  {
+    "Community_Name": "Veteran Movers Community",
+    "id": 95,
+    "Link": "https://www.facebook.com/groups/vetmovers",
+    "State": "All States",
+    "Location": "34°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "34.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 34.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "N",
+    "Description": "Welcome to Veteran Movers Community Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the Veteran Movers! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us! \nMustWants",
+    "Selected Communities": "[' Canva', 'Zapier', 'Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  },
+  {
+    "Community_Name": "Veteran Movers Community",
+    "id": 96,
+    "Link": "https://www.facebook.com/groups/militaryveteranmovers",
+    "State": "All States",
+    "Location": "32°04'55.5N 129°39'25.6W",
+    "Location_Decimal": "32.082083, -129.657111",
+    "Location_Decimal_X": -129.657111,
+    "Location_Decimal_Y": 32.082083,
+    "Pin": "",
+    "Professional_or_User_Customer": "User",
+    "Card_Logo": "",
+    "Intro_Added": "Y",
+    "Rules_Added": "",
+    "Description": "Welcome to Veteran Movers Community Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "New_Member_Intro": "Welcome to the Veteran Movers! Here, you can find resources, tips, and listings to make your next move easier. Invite your friends, create a new post, and visit MustWants.com to learn more about us!",
+    "Selected Communities": "['Zapier', 'Real Estate Journey Community', 'VA Loan Question Community', 'Veteran Military Move Community', 'Veteran Movers Community']"
+  }
+]
