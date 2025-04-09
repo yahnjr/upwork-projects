@@ -14,14 +14,30 @@ body {
 #coverageBox {
     position: absolute;
     top: 10px;
-    left: 10px;
+    right: 100px;
     width: 20%;
     z-index: 10;
     min-width: 200px;
+    display: none;
+}
+
+#coverageInnerWrapper {
+    position: absolute;
+    width: 100%;
+    min-width: 200px;
+    z-index: 5;
+    padding: 0;
+}
+
+.coverageType {
+    width: 100%;
+    max-width: 200px;
+    transition: all 0.3s ease;
+    padding: 5px;
 }
 
 label {
-    font-size: 2rem;
+    font-size: 1rem;
     color: white;
     text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
@@ -34,21 +50,22 @@ input[type="checkbox"] {
 
 #selectionList {
     position: absolute;
-    bottom: 124px;
+    top: 20px;
+    max-height: 60vh;
     right: 10px;
     width: 25vw;
     min-width: 250px;
     z-index: 10;
     height: 0px;
-    display: none;
     overflow-y: auto;
+    display: none;
 }
 
 #selectionBox {
     position: absolute;
     bottom: 10px;
     right: 10px;
-    width: 15%;
+    width: 25%;
     min-width: 200px;
     z-index: 10;
     display: flex;
@@ -61,7 +78,7 @@ input[type="checkbox"] {
     align-items: center;
 }
 
-.fa {
+.fa, .fa-solid {
     color: white;
     font-size: 3rem;
 }
@@ -128,11 +145,6 @@ input[type="checkbox"] {
     position: absolute;
     bottom: 10px;
     right: 10px;
-}
-
-.coverageType {
-    width: 100%;
-    transition: all 0.3s ease;
 }
 
 .coverageHeader {

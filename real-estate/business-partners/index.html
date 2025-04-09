@@ -14,12 +14,12 @@
     
     <div id="map"></div>
     <div id="coverageBox">
-        <div id="nationalCoverage">
+        <div id="coverageInnerWrapper" class="controlBox">
             <div class="coverageType controlBox" id="nationalType">
                 <div class="coverageHeader">
                     <div class="coverageTitle">
                         <input type="checkbox" id="nationalCheckbox" name="nationalCheckbox" checked>
-                        <label for="nationalCheckbox">National</label>
+                        <label for="nationalCheckbox">National Partners</label>
                     </div>
                     <div class="toggleArrow" id="nationalToggle">▶</div>
                 </div>
@@ -29,7 +29,7 @@
                 <div class="coverageHeader">
                     <div class="coverageTitle">
                         <input type="checkbox" id="localCheckbox" name="localCheckbox" checked>
-                        <label for="localCheckbox">Local</label>
+                        <label for="localCheckbox">Local Partners</label>
                     </div>
                     <div class="toggleArrow" id="localToggle">▶</div>
                 </div>
@@ -45,6 +45,9 @@
         <div id="listedFeatures"></div>
     </div>
     <div id="selectionBox">
+        <div class="controlBox selectMode" id="viewList">
+            <i class="fa-solid fa-list"></i>
+        </div>
         <div class="controlBox selectMode" id="currentVisible">
             <i class="fa fa-eye" aria-hidden="true"></i>
         </div>

@@ -8,7 +8,7 @@ let showMode = true;
 
 let map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/mapbox/satellite-streets-v11',
+    style: 'mapbox://styles/mapbox/dark-v11',
     bounds: [
         [-128.272, 30.165],
         [-64.152, 48.046]
@@ -51,7 +51,11 @@ function loadSocialMedia() {
             source: 'nationalSocial',
             paint: {
                 'fill-color': '#33ff99',
-                'fill-opacity': 0.0
+                'fill-opacity': 0.0,
+                'fill-opacity-transition': {
+                    duration: 200,
+                    delay: 0
+                }
             }
         });
         
@@ -177,13 +181,28 @@ function populateAccountsList() {
 
     nationalAccountData.forEach(account => {
         console.log(account.Link);
-        listHTML += `<li class="national-list-item">
-            <a href="${account.Link}" target="_blank" style="text-decoration:none"><strong>${account.Community_Name}</strong></a><br>
+        listHTML += `<li class="national-list-item" data-community-name="${account.Community_Name || ''}">
+            <strong>${account.Community_Name}</strong><br>
+            </li>
             `
     });
 
     listHTML += '</ul>';
     accountsList.innerHTML = listHTML;
+
+    const accountMap = {};
+    nationalAccountData.forEach(account => {
+        accountMap[account.Community_Name] = account;
+    });
+
+    nationalListItems = document.querySelectorAll('.national-list-item');
+    nationalListItems.forEach((item) => {
+        item.addEventListener('click', () => {
+            const accountId = item.getAttribute('data-community-name');
+            accountData = accountMap[accountId];
+            createOrUpdatePopup(accountData);
+        });
+    });
 }
 
 function showPanel() {
@@ -238,9 +257,13 @@ function setupHoverListeners() {
 
             if (nationalFeatures.length > 0) {
                 isOverNationalLayer = true;
-                hoverTimer = setTimeout(showPanel, 200);
+                if (showMode === true) {
+                    map.setPaintProperty('national-social', 'fill-opacity', 0.1);
+                }
+                hoverTimer = setTimeout(showPanel, 100);
             } else {
                 isOverNationalLayer = false;
+                map.setPaintProperty('national-social', 'fill-opacity', 0);
                 hoverTimer = setTimeout(hidePanel, 200);
             }
         }
@@ -266,8 +289,10 @@ function createOrUpdatePopup(properties) {
 
     popup.innerHTML = `
         <div class="popup-header">
-            <a href="${properties.Link}" target="_blank" style="text-decoration:none"><img src="facebook-icon.png" style="width: 15px; height: 15px; object-fit: cover; display: inline">
-            <h3 class="popup-head-name">${properties.Community_Name || 'Unnamed Partner'}</h3></a>
+            <a href="${properties.Link}" target="_blank" style="text-decoration:none"><div class="popup-header-link">
+                <img src="facebook-icon.png" style="width: 25px; height: 25px; object-fit: cover; display: inline; margin-right: 5px;">
+                <h3 class="popup-head-name">${properties.Community_Name || 'Unnamed Partner'}</h3>
+            </div></a>
             <button class="close-button" id="close-popup">×</button>
         </div>
         <div class="popup-content">
@@ -335,6 +360,10 @@ document.getElementById('show-national-list').addEventListener('click', function
         panel.classList.add('visible');
     }
 });
+
+map.getCanvas().addEventListener('mouseleave', () => {
+    map.setPaintProperty('national-social', 'fill-opacity', 0);
+})
 
 map.on('load', function() {
     map.loadImage(

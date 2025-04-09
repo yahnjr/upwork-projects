@@ -101,8 +101,13 @@ i {
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px;
-    background-color: rgba(0, 124, 191, 0.7);
+    background-color: #2377ed;
     color: white;
+}
+
+.popup-header-link {
+    display: flex;
+    justify-content: flex-start;
 }
 
 .popup-header h3 {

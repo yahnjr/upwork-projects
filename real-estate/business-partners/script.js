@@ -3,6 +3,8 @@ let activeCompany = null;
 let partnerData, geographicData;
 let selectMode = null;
 let selectedPoint = null;
+let hoverPoint = null;
+let hoverTimeout = null;
 
 const map = new mapboxgl.Map({
     container: 'map',
@@ -340,9 +342,10 @@ function setupMapClickHandlers() {
 document.getElementById('currentVisible').addEventListener('click', function() {
     selectMode = 'visible';
     document.getElementById('selectionList').style.display = 'block';
-    document.getElementById('selectionList').style.height = '200px';
+    document.getElementById('selectionList').style.height = 'auto';
     document.getElementById('selectionLabel').innerHTML = '<b>Visible Partners</b>';
     document.getElementById('listedFeatures').innerHTML = '';
+    document.getElementById('coverageBox').style.display = 'none';
 
     readExtentFeatures();
 });
@@ -357,15 +360,25 @@ function readExtentFeatures() {
 document.getElementById('currentPoint').addEventListener('click', function() {
     selectMode = 'point';
     document.getElementById('selectionList').style.display = 'block';
-    document.getElementById('selectionList').style.height = '200px';
+    document.getElementById('selectionList').style.height = 'auto';
     document.getElementById('selectionLabel').innerHTML = '<b>Partners Covering Selected Area</b>';
     document.getElementById('listedFeatures').innerHTML = '';
     document.getElementById('map').style.cursor = "crosshair";
+    document.getElementById('coverageBox').style.display = 'none';
+
+    setupPointHoverListener();
+});
+
+document.getElementById('viewList').addEventListener('click', function() {
+    document.getElementById('coverageBox').style.display = 'block';
 });
 
 map.on('click', (e) => {
     if (selectMode != "point") return;
-    document.getElementById('listedFeatures').innerHTML = '';
+
+    map.off('mousemove', handlePointHover);
+
+    listContainer.innerHtml = '';
 
     if (selectedPoint) {
         selectedPoint.remove();
@@ -403,7 +416,7 @@ function updateSelectionList(features) {
         }
     });
 
-    const sortedBusinesses = Array.from(uniqueBusinesses).sort();
+    const sortedBusinesses = Array.from(uniqueBusinesses);
     let filteredBusinesses = [];
 
     sortedBusinesses.forEach(businessName => {
@@ -436,6 +449,7 @@ function updateSelectionList(features) {
         listItem.classList.add('selection-item');
         listContainer.appendChild(listItem);
         listItem.addEventListener('click', function() {
+            closeSelectionList();
             selectPartner(item);
         });
     });
@@ -461,10 +475,31 @@ function setupHoverEffects() {
     });
 }
 
-document.getElementById('close-list').addEventListener('click', function() {
+function setupPointHoverListener() {
+    map.off('mousemove', handlePointHover);
+
+    map.on('mousemove', handlePointHover);
+}
+
+function handlePointHover(e) {
+    if (selectMode !== 'point') return;
+    if (hoverTimeout) clearTimeout(hoverTimeout);
+
+    hoverTimeout = setTimeout(() => {
+        const features = map.queryRenderedFeatures(e.point, { layers: ['invisible-units'] });
+
+        updateSelectionList(features);
+    }, 100);
+}
+
+function closeSelectionList() {
     document.getElementById('selectionList').style.display = 'none';
     document.getElementById('listedFeatures').innerHTML = "";
     selectMode = null;
+}
+
+document.getElementById('close-list').addEventListener('click', function() {
+    closeSelectionList();
 });
 
 document.addEventListener('DOMContentLoaded', function() {
