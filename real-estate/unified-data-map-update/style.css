@@ -15,45 +15,7 @@ body {
     margin: 10px;
     border-radius: 4px;
     z-index: 1;
-    display: flex;
-    flex-direction: row;
 }
-
-#button-column {
-    padding: 20px;
-}
-
-.layer-button {
-    background: #4285f4;
-    color: white;
-    border: none;
-    padding: 4px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 0.8em;
-    margin: 5px;
-}
-
-.layer-button:hover {
-    background: #9eb9f4;
-}
-
-button[disabled] {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
-
-input[type="radio"] {
-    margin: 5px;
-    margin-bottom: 20px;
-}
-
-#layer-form {
-    display: flex;
-    flex-direction: column;
-}
-
 #menu div {
     margin-bottom: 5px;
 }
@@ -179,3 +141,81 @@ input[type="radio"] {
     z-index: 1;
 }
 
+#menu {
+    position: absolute;
+    background: #fff;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 4px;
+    z-index: 10;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    width: 250px;
+}
+
+#layer-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.layer-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.layer-buttons {
+    display: flex;
+    gap: 8px;
+    margin-left: 20px;
+}
+
+.filter-btn, .compare-btn {
+    background: #4285f4;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.8em;
+}
+
+.filter-btn:hover, .compare-btn:hover {
+    background: #3367d6;
+}
+
+button[disabled] {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.filter-slider {
+    margin-left: 20px;
+    padding: 10px;
+    background: #f8f8f8;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.slider {
+    width: 100%;
+}
+
+.reset-filter {
+    align-self: flex-end;
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 3px 6px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.7em;
+    margin-top: 5px;
+}
+
+.hidden {
+    display: none;
+}

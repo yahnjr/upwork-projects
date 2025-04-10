@@ -85,9 +85,9 @@ map.on('load', function () {
                     'interpolate',
                     ['linear'],
                     ['get', 'Walkability'],
-                    0, '#0c2c84',
+                    0, '#ffffcc',
                     5, '#41b6c4',
-                    10, '#dcf7f7'
+                    10, '#0c2c84'
                 ],
                 'fill-opacity': 0.4
             },
@@ -105,9 +105,9 @@ map.on('load', function () {
                     'interpolate',
                     ['linear'],
                     ['get', 'Air_Quality'],
-                    0, '#e34a33',
-                    5, '#ffb757',
-                    10, '#f7deb5'
+                    0, '#fef0d9',
+                    5, '#fdcc8a',
+                    10, '#e34a33'
                 ],
                 'fill-opacity': 0.4
             },
@@ -127,9 +127,9 @@ map.on('load', function () {
                     'interpolate',
                     ['linear'],
                     ['get', 'Crime'],
-                    0, '#28ac21',
-                    5, '#62de74',
-                    10, '#e0f8ec'
+                    0, '#e0f3f8',
+                    5, '#abd9e9',
+                    10, '#2166ac'
                 ],
                 'fill-opacity': 0.4
             },
@@ -146,7 +146,7 @@ map.on('load', function () {
             source: 'properties',
             paint: {
                 'circle-radius': 6,
-                'circle-color': '#f5d442',
+                'circle-color': '#429ef5',
                 'circle-opacity': 0.95
             },
             minzoom: 8
@@ -249,6 +249,8 @@ map.on('load', function () {
             }
 
             updateLegend(chosenLayer);
+
+            setupLayerControls();
         });
     })
     .catch(error => {
@@ -327,6 +329,87 @@ map.on('load', function () {
         queryCensus();
     });
 });
+
+let activeFilterLayer = null;
+let filterValues = {
+    'Walkability': 1,
+    'Crime': 1,
+    'Air Quality': 1
+};
+
+// Set up event listeners for the filter and compare buttons
+function setupLayerControls() {
+    // Filter button click events
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const layer = this.getAttribute('data-layer');
+            const sliderId = `${layer}-slider`;
+            
+            // If clicking on the same layer that's already active, just toggle visibility
+            if (activeFilterLayer === sliderId) {
+                toggleFilterSlider(sliderId);
+                return;
+            }
+            
+            // Hide any currently visible slider
+            if (activeFilterLayer) {
+                document.getElementById(activeFilterLayer).classList.add('hidden');
+            }
+            
+            // Show the current layer's slider
+            document.getElementById(sliderId).classList.remove('hidden');
+            activeFilterLayer = sliderId;
+        });
+    });
+    
+    // Slider input events
+    document.querySelectorAll('.slider').forEach(slider => {
+        slider.addEventListener('input', function() {
+            const layer = this.id.split('-')[0];
+            const value = this.value;
+            
+            // Update the display value
+            this.parentElement.querySelector('.slider-value').textContent = value;
+            
+            // Store the filter value
+            filterValues[layer] = parseInt(value);
+            
+            // Apply the filter
+            applyLayerFilter(layer, value);
+        });
+    });
+    
+    // Reset filter buttons
+    document.querySelectorAll('.reset-filter').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const layer = this.parentElement.id.split('-')[0];
+            
+            // Reset slider to 1
+            document.getElementById(`${layer}-range`).value = 1;
+            this.parentElement.querySelector('.slider-value').textContent = 1;
+            
+            // Reset stored value
+            filterValues[layer] = 1;
+            
+            // Clear filter
+            clearLayerFilter(layer);
+            
+            // Hide the slider
+            this.parentElement.classList.add('hidden');
+            activeFilterLayer = null;
+        });
+    });
+    
+    // Compare button click events
+    document.querySelectorAll('.compare-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (this.disabled) return;
+            
+            const layerToCompare = this.getAttribute('data-layer');
+            enableComparisonMode(layerToCompare);
+        });
+    });
+}
 
 function updatePropertyList() {
     const listContainer = document.getElementById('property-list');
@@ -643,8 +726,8 @@ function updateLegend() {
                 <button id="reset-comparison" style="margin-left: 10px; cursor: pointer; background: #f44336; color: white; border: none; border-radius: 3px; padding: 2px 5px;">Reset</button>
             </div>
             <div style="position: relative; height: 200px; width: 200px; margin: 0 auto;">
-                <div style="position: absolute; top: 0; right: 0; color: white;">More ${primaryLayer}</div>
-                <div style="position: absolute; bottom: 0; right: 0; color: white;">Less ${primaryLayer}</div>
+                <div style="position: absolute; top: 0; right: 0;">More ${primaryLayer}</div>
+                <div style="position: absolute; bottom: 0; right: 0;">Less ${primaryLayer}</div>
                 <div style="position: absolute; top: 0; left: -30px; transform: rotate(-90deg); transform-origin: bottom left;">More ${comparisonLayer}</div>
                 <div style="position: absolute; top: 200px; left: -30px; transform: rotate(-90deg); transform-origin: bottom left;">Less ${comparisonLayer}</div>
                 <div style="height: 200px; width: 200px; background: linear-gradient(to bottom, ${gradientX.colors[0]}, ${gradientX.colors[1]}, ${gradientX.colors[2]}), linear-gradient(to right, ${gradientY.colors[0]}, ${gradientY.colors[1]}, ${gradientY.colors[2]}); background-blend-mode: multiply;"></div>
@@ -667,6 +750,33 @@ function updateLegend() {
                 <span>Less ${primaryLayer}</span>
             </div>
         `;
+        
+        const otherLayers = ["Walkability", "Air Quality", "Crime"].filter(layer => layer !== primaryLayer);
+        
+        const compareContainer = document.createElement('div');
+        compareContainer.style.marginTop = '15px';
+        compareContainer.style.textAlign = 'center';
+        
+        otherLayers.forEach(layer => {
+            const compareButton = document.createElement('button');
+            compareButton.textContent = `Compare with ${layer}`;
+            compareButton.style.display = 'block';
+            compareButton.style.margin = '5px auto';
+            compareButton.style.padding = '5px';
+            compareButton.style.cursor = 'pointer';
+            compareButton.style.backgroundColor = '#4CAF50';
+            compareButton.style.color = 'white';
+            compareButton.style.border = 'none';
+            compareButton.style.borderRadius = '3px';
+            
+            compareButton.addEventListener('click', () => {
+                enableComparisonMode(layer);
+            });
+            
+            compareContainer.appendChild(compareButton);
+        });
+        
+        legendContainer.appendChild(compareContainer);
     }
     
     document.body.appendChild(legendContainer);
@@ -699,6 +809,7 @@ function getGradientForLayer(layerName) {
     }
 }
 
+// Update the enableComparisonMode function to handle the button states
 function enableComparisonMode(secondaryLayer) {
     comparisonLayer = secondaryLayer;
     
@@ -708,6 +819,7 @@ function enableComparisonMode(secondaryLayer) {
     updateLegend();
 }
 
+// Update the disableComparisonMode function to handle the button states
 function disableComparisonMode() {
     setLayerVisibility(primaryLayer, 'visible', 0.4);
     if (comparisonLayer) {
@@ -716,6 +828,40 @@ function disableComparisonMode() {
     
     comparisonLayer = null;
     updateLegend();
+    
+    // Re-enable all compare buttons except for the primary layer
+    document.querySelectorAll('.compare-btn').forEach(btn => {
+        const btnLayer = btn.getAttribute('data-layer');
+        btn.disabled = btnLayer === primaryLayer;
+    });
+}
+
+// Helper function to toggle filter slider visibility
+function toggleFilterSlider(sliderId) {
+    const slider = document.getElementById(sliderId);
+    if (slider.classList.contains('hidden')) {
+        slider.classList.remove('hidden');
+    } else {
+        slider.classList.add('hidden');
+        activeFilterLayer = null;
+    }
+}
+
+// Apply a filter to a layer based on the slider value
+function applyLayerFilter(layer, value) {
+    const layerId = layer.toLowerCase().replace(' ', '-') + '-layer';
+    
+    // Set the filter using a comparison to the layer's data property
+    // This assumes your data has values from 0-10
+    const filterThreshold = parseInt(value);
+    
+    map.setFilter(layerId, ['>=', ['get', layer.replace(' ', '_')], filterThreshold]);
+}
+
+// Clear a layer filter
+function clearLayerFilter(layer) {
+    const layerId = layer.toLowerCase().replace(' ', '-') + '-layer';
+    map.setFilter(layerId, null);
 }
 
 function setLayerVisibility(layerName, visibility, opacity) {
@@ -731,67 +877,34 @@ document.getElementById('layer-form').addEventListener('change', function(e) {
         primaryLayer = e.target.value;
         console.log("Layer selected:", primaryLayer);
         
+        // Reset comparison mode
         comparisonLayer = null;
         
+        // Hide all layers
         setLayerVisibility('Walkability', 'none');
         setLayerVisibility('Air Quality', 'none');
         setLayerVisibility('Crime', 'none');
         
+        // Show the selected layer
         setLayerVisibility(primaryLayer, 'visible');
-
-        const layerCompareBtnName = primaryLayer.toLowerCase().replace(' ', '-') + '-compare';
         
-        document.getElementById('walkability-compare').disabled = false;
-        document.getElementById('crime-compare').disabled = false;
-        document.getElementById('air-quality-compare').disabled = false;
-
-        document.getElementById(layerCompareBtnName).disabled = true;
-        
+        // Update legend
         updateLegend();
+        
+        // Update button states - enable all compare buttons except for the selected layer
+        document.querySelectorAll('.compare-btn').forEach(btn => {
+            const btnLayer = btn.getAttribute('data-layer');
+            if (btnLayer === primaryLayer) {
+                btn.disabled = true;
+            } else {
+                btn.disabled = false;
+            }
+        });
+        
+        // Hide any open filter slider
+        if (activeFilterLayer) {
+            document.getElementById(activeFilterLayer).classList.add('hidden');
+            activeFilterLayer = null;
+        }
     }
-});
-
-document.getElementById('walkability-filter').addEventListener('click', () => {
-    document.getElementById('walkability-range').style.display = 'block';
-    document.getElementById('walkability-range-value').style.display = 'block';
-});
-
-document.getElementById('crime-filter').addEventListener('click', () => {
-    document.getElementById('crime-range').style.display = 'block';
-    document.getElementById('crime-range-value').style.display = 'block';
-});
-
-document.getElementById('air-quality-filter').addEventListener('click', () => {
-    document.getElementById('air-quality-range').style.display = 'block';
-    document.getElementById('air-quality-range-value').style.display = 'block';
-});
-
-document.getElementById('walkability-compare').addEventListener('click', () => {
-    enableComparisonMode("Walkability");
-});
-
-document.getElementById('crime-compare').addEventListener('click', () => {
-    enableComparisonMode("Crime");
-});
-
-document.getElementById('air-quality-compare').addEventListener('click', () => {
-    enableComparisonMode("Air Quality");
-});
-
-document.getElementById('walkability-range').addEventListener('change', () => {
-    const value = Number(document.getElementById('walkability-range').value)
-    document.getElementById('walkability-range-value').textContent = document.getElementById('walkability-range').value;
-    map.setFilter('walkability-layer', ['>=', ['to-number', ['get', 'Walkability']], value]);
-});
-
-document.getElementById('crime-range').addEventListener('change', () => {
-    const value = Number(document.getElementById('crime-range').value)
-    document.getElementById('crime-range-value').textContent = document.getElementById('crime-range').value;
-    map.setFilter('crime-layer', ['>=', ['to-number', ['get', 'Crime']], value]);
-});
-
-document.getElementById('air-quality-range').addEventListener('change', () => {
-    const value = Number(document.getElementById('air-quality-range').value)
-    document.getElementById('air-quality-range-value').textContent = document.getElementById('air-quality-range').value;
-    map.setFilter('air-quality-layer', ['>=', ['to-number', ['get', 'Air_Quality']], value]);
 });
