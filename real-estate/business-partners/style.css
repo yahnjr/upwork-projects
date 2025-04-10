@@ -15,7 +15,7 @@ body {
     position: absolute;
     top: 10px;
     right: 100px;
-    width: 20%;
+    width: 30%;
     z-index: 10;
     min-width: 200px;
     display: none;
@@ -31,7 +31,8 @@ body {
 
 .coverageType {
     width: 100%;
-    max-width: 200px;
+    min-width: 200px;
+    max-width: 350px;
     transition: all 0.3s ease;
     padding: 5px;
 }
@@ -83,10 +84,10 @@ input[type="checkbox"] {
     font-size: 3rem;
 }
 
-.controlBox, .selection-item {
+.controlBox {
     margin: 20px;
     padding: 20px;
-    background-color: rgba(240,240,240,0.4);
+    background-color: rgba(240,240,240,0.7);
     border-radius: 10px;
     border: 2px solid beige;
     position: relative;
@@ -311,4 +312,119 @@ label {
 
 .popup-link:hover {
     text-decoration: underline;
+}
+
+.selection-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.selection-item:hover {
+    background-color: #f5f5f5;
+}
+
+.selection-item .list-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    margin-right: 10px;
+}
+
+.selection-item .partnerDetails {
+    flex: 1;
+}
+
+.selection-item .list-name-hq {
+    display: flex;
+    flex-direction: column;
+}
+
+.selection-item .partnerName {
+    font-weight: bold;
+}
+
+.selection-item .partnerHQ {
+    font-size: 0.8em;
+    color: #666;
+}
+
+@media screen and (max-width: 768px) {
+    #coverageBox {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: auto;
+        width: 80%;
+        height: 40vh;
+        overflow-y: auto;
+        z-index: 20;
+    }
+    
+    .coverageDropdown.expanded {
+        max-height: 150px;
+    }
+    
+    .partnerItem {
+        padding: 5px;
+    }
+    
+    .list-logo {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .docked-popup {
+        bottom: 10px;
+        left: 10px;
+        width: 85%;
+        max-width: 48vw;
+        max-height: 50vh; 
+        overflow-y: auto; 
+    }
+    
+    .popup-logo {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .popup-header h3 {
+        font-size: 14px;
+    }
+    
+    .popup-content {
+        padding: 10px;
+        font-size: 0.9em;
+    }
+    
+    .popup-detail {
+        margin-bottom: 5px;
+    }
+    
+    #selectionList {
+        width: 85%;
+        max-height: 40vh;
+        right: 10px;
+    }
+    
+    .selection-item .list-logo {
+        width: 30px;
+        height: 30px;
+    }
+    
+    #selectionBox {
+        bottom: 5px;
+        right: 5px;
+        width: auto;
+    }
+    
+    .selectMode {
+        margin: 10px;
+    }
+    
+    .fa, .fa-solid {
+        font-size: 2rem;
+    }
 }

@@ -5,6 +5,7 @@ let selectMode = null;
 let selectedPoint = null;
 let hoverPoint = null;
 let hoverTimeout = null;
+let localChecked, nationalChecked = true;
 
 const map = new mapboxgl.Map({
     container: 'map',
@@ -60,7 +61,6 @@ function processPartnerData(geojsonData) {
                         <div class="partnerName">${busName}</div>
                         <div class="partnerHQ">HQ: ${headquarters}</div>
                     </div>
-                    <a href="${webLink}" target="_blank" class="partnerWebsite">Website</a>
                 </div>
             `;
 
@@ -371,10 +371,13 @@ document.getElementById('currentPoint').addEventListener('click', function() {
 
 document.getElementById('viewList').addEventListener('click', function() {
     document.getElementById('coverageBox').style.display = 'block';
+    closeSelectionList();
 });
 
 map.on('click', (e) => {
     if (selectMode != "point") return;
+
+    const listContainer = document.getElementById('listedFeatures');
 
     map.off('mousemove', handlePointHover);
 
@@ -393,7 +396,7 @@ map.on('click', (e) => {
 
 function updateSelectionList(features) {
     const listContainer = document.getElementById('listedFeatures');
-    listContainer.innerHtml = '';
+    listContainer.innerHTML = '';
     
     if (features.length === 0) {
         listContainer.innerHTML = '<p>No matching features found.</p>'
@@ -428,7 +431,7 @@ function updateSelectionList(features) {
             const coverage = matchingFeature.properties.Coverage;
             if ((nationalChecked && coverage === 'Nationwide') ||
                 (localChecked && coverage === 'Local')) {
-                    filteredBusinesses.push(businessName)
+                    filteredBusinesses.push(matchingFeature)
                 }
             }
     });
@@ -438,19 +441,35 @@ function updateSelectionList(features) {
     }
 
     if (filteredBusinesses.length === 0) {
-        listContainer.innerHTML = '<p id="no-partners-notice">No partners match the current filters</p>'
+        listContainer.innerHTML = '<p id="no-partners-notice">No partners in the selected area</p>'
         return;
     }
 
-    filteredBusinesses.forEach(item => {
-        console.log(item);
+    filteredBusinesses.forEach(feature => {
+        const properties = feature.properties;
+        const logo = properties.logo || '';
+        const busName = properties.busName || 'Unnamed';
+        const headquarters = properties.Headquarters || 'N/A';
+        const coverage = properties.Coverage || 'N/A';
+        
         const listItem = document.createElement("div");
-        listItem.innerText = `${item}`;
         listItem.classList.add('selection-item');
+        
+        listItem.innerHTML = `
+            <img class="list-logo" src="logos/${logo}.png">
+            <div class="partnerDetails">
+                <div class="list-name-hq">
+                    <div class="partnerName">${busName}</div>
+                    <div class="partnerHQ">HQ: ${headquarters} (Coverage: ${coverage})</div>
+                </div>
+            </div>
+        `;
+        
         listContainer.appendChild(listItem);
+        
         listItem.addEventListener('click', function() {
             closeSelectionList();
-            selectPartner(item);
+            selectPartner(feature);
         });
     });
 }
