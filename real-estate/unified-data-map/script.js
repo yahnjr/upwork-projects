@@ -86,7 +86,7 @@ map.on('load', function () {
                     ['linear'],
                     ['get', 'Walkability'],
                     0, '#0c2c84',
-                    5, '#41b6c4',
+                    5,  '#41b6c4',
                     10, '#dcf7f7'
                 ],
                 'fill-opacity': 0.4
@@ -105,9 +105,9 @@ map.on('load', function () {
                     'interpolate',
                     ['linear'],
                     ['get', 'Air_Quality'],
-                    0, '#e34a33',
-                    5, '#ffb757',
-                    10, '#f7deb5'
+                    0, '#28ac21',
+                    5, '#62de74',
+                    10, '#e0f8ec'
                 ],
                 'fill-opacity': 0.4
             },
@@ -127,9 +127,9 @@ map.on('load', function () {
                     'interpolate',
                     ['linear'],
                     ['get', 'Crime'],
-                    0, '#28ac21',
-                    5, '#62de74',
-                    10, '#e0f8ec'
+                    0, '#e34a33',
+                    5, '#ffb757',
+                    10, '#f7deb5'
                 ],
                 'fill-opacity': 0.4
             },
@@ -621,36 +621,35 @@ function updateLegend() {
     
     const legendContainer = document.createElement('div');
     legendContainer.id = 'legend';
-    legendContainer.style.position = 'absolute';
-    legendContainer.style.right = '10px';
-    legendContainer.style.top = '50%';
-    legendContainer.style.transform = 'translateY(-50%)';
-    legendContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
-    legendContainer.style.padding = '10px';
-    legendContainer.style.borderRadius = '4px';
-    legendContainer.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
-    legendContainer.style.zIndex = '1';
     
     if (comparisonLayer) {
         legendContainer.style.width = '250px';
         
-        const gradientX = getGradientForLayer(primaryLayer);
-        const gradientY = getGradientForLayer(comparisonLayer);
+        const primaryGradient = getGradientForLayer(primaryLayer);
+        const comparisonGradient = getGradientForLayer(comparisonLayer);
         
+        // Create a 2D gradient with four distinct corners
         legendContainer.innerHTML = `
             <div style="text-align: center; font-weight: bold; margin-bottom: 10px;">
                 <span>${primaryLayer} × ${comparisonLayer}</span>
                 <button id="reset-comparison" style="margin-left: 10px; cursor: pointer; background: #f44336; color: white; border: none; border-radius: 3px; padding: 2px 5px;">Reset</button>
             </div>
-            <div style="position: relative; height: 200px; width: 200px; margin: 0 auto;">
-                <div style="position: absolute; top: 0; right: 0; color: white;">More ${primaryLayer}</div>
-                <div style="position: absolute; bottom: 0; right: 0; color: white;">Less ${primaryLayer}</div>
-                <div style="position: absolute; top: 0; left: -30px; transform: rotate(-90deg); transform-origin: bottom left;">More ${comparisonLayer}</div>
-                <div style="position: absolute; top: 200px; left: -30px; transform: rotate(-90deg); transform-origin: bottom left;">Less ${comparisonLayer}</div>
-                <div style="height: 200px; width: 200px; background: linear-gradient(to bottom, ${gradientX.colors[0]}, ${gradientX.colors[1]}, ${gradientX.colors[2]}), linear-gradient(to right, ${gradientY.colors[0]}, ${gradientY.colors[1]}, ${gradientY.colors[2]}); background-blend-mode: multiply;"></div>
+            <div style="position: relative; height: 200px; width: 200px; margin: 0 auto; padding: 10px 20px 10px 30px;">
+                <div style="height: 200px; width: 200px; background: 
+                    radial-gradient(circle at top right, ${primaryGradient.colors[0]}, transparent 70%),
+                    radial-gradient(circle at top left, ${comparisonGradient.colors[0]}, transparent 70%),
+                    radial-gradient(circle at bottom right, ${primaryGradient.colors[2]}, transparent 70%),
+                    radial-gradient(circle at bottom left, ${comparisonGradient.colors[2]}, transparent 70%);">
+                </div>
+                
+                <div class="compare-legend-label" style="top: 5px; right: 5px; font-size: 10px;">High ${primaryLayer}/<br>${comparisonLayer}</div>
+                <div class="compare-legend-label" style="top: 5px; left: 5px; font-size: 10px;">High ${comparisonLayer}/<br>Low ${primaryLayer}</div>
+                <div class="compare-legend-label" style="bottom: 5px; right: 5px; font-size: 10px;">High ${primaryLayer}/<br>Low${comparisonLayer}</div>
+                <div class="compare-legend-label" style="bottom: 5px; left: 5px; font-size: 10px;">Low ${primaryLayer}/<br>${comparisonLayer}</div>
             </div>
         `;
     } else {
+        // Your existing single-layer legend code
         legendContainer.style.width = '120px';
         
         const gradient = getGradientForLayer(primaryLayer);
@@ -659,12 +658,14 @@ function updateLegend() {
             <div style="text-align: center; font-weight: bold; margin-bottom: 5px;">
                 <span>${primaryLayer}</span>
             </div>
-            <div style="height: 200px; width: 30px; margin: 0 auto; background: linear-gradient(to bottom, ${gradient.colors[0]}, ${gradient.colors[1]}, ${gradient.colors[2]});"></div>
-            <div style="text-align: center; font-weight: bold; margin-top: 5px;">
-                <span>More ${primaryLayer}</span>
-            </div>
-            <div style="text-align: center; font-weight: bold; margin-top: 5px;">
-                <span>Less ${primaryLayer}</span>
+            <div style="position: relative; height: 200px; margin: 0 auto; text-align: center;">
+                <div style="height: 200px; width: 30px; margin: 0 auto; background: linear-gradient(to bottom, ${gradient.colors[0]}, ${gradient.colors[1]}, ${gradient.colors[2]});"></div>
+                <div class="legend-label" style="top: 0; right: 0; margin-top: 5px;">
+                    More ${primaryLayer}
+                </div>
+                <div class="legend-label" style="bottom: 0; right: 0; margin-bottom: 5px;">
+                    Less ${primaryLayer}
+                </div>
             </div>
         `;
     }
@@ -686,11 +687,11 @@ function getGradientForLayer(layerName) {
             };
         case 'Air Quality':
             return {
-                colors: ['#e34a33', '#ffb757', '#f7deb5']
+                colors: ['#28ac21', '#62de74', '#e0f8ec']
             };
         case 'Crime':
             return {
-                colors: ['#28ac21', '#62de74', '#e0f8ec']
+                colors: ['#e34a33', '#ffb757', '#f7deb5']
             };
         default:
             return {

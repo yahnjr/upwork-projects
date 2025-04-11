@@ -11,33 +11,43 @@
 <body>
     <div id="menu">
             <form id="layer-form">
-                <input id="walkability-toggle" type="radio" class="radio-option" name="layer-control" value="Walkability" checked>
-                <label for="walkability-toggle">Walkability</label>
-                <input id="crime-toggle" type="radio" class="radio-option" name="layer-control" value="Crime">
-                <label for="crime-toggle">Crime</label>
-                <input id="air-quality-toggle" type="radio" class="radio-option" name="layer-control" value="Air Quality">
-                <label for="air-quality-toggle">Air Quality</label>
+                <div class="form-column">
+                    <input id="walkability-toggle" type="radio" class="radio-option" name="layer-control" value="Walkability" checked>
+                    <label for="walkability-toggle">Walkability</label>
+                </div>
+                <div class="form-column">
+                    <div class="layer-button-box" id="walkability-buttons">
+                        <button type="button" class="layer-button" id="walkability-filter">Filter</button>
+                        <button type="button" class="layer-button" id="walkability-compare" disabled>Compare</button>
+                        <input type="range" min="1" max="10" value="1" class="slider" style="display:none" id="walkability-range">
+                        <span class="slider-value" id="walkability-range-value" style="display:none">10</span>
+                    </div>
+                </div>
+                <div class="form-column">
+                    <input id="crime-toggle" type="radio" class="radio-option" name="layer-control" value="Crime">
+                    <label for="crime-toggle">Crime</label>
+                </div>    
+                <div class="form-column">
+                    <div class="layer-button-box" id="crime-buttons">
+                        <button type="button" class="layer-button" id="crime-filter">Filter</button>
+                        <button type="button" class="layer-button" id="crime-compare">Compare</button>
+                        <input type="range" min="1" max="10" value="1" class="slider" style="display:none" id="crime-range">
+                        <span class="slider-value" id="crime-range-value" style="display:none">10</span>
+                    </div>
+                </div>
+                <div class="form-column">
+                    <input id="air-quality-toggle" type="radio" class="radio-option" name="layer-control" value="Air Quality">
+                    <label for="air-quality-toggle">Air Quality</label>
+                </div>
+                <div class="form-column">
+                    <div class="layer-button-box" id="air-quality-buttons">
+                        <button type="button" class="layer-button" id="air-quality-filter">Filter</button>
+                        <button type="button" class="layer-button" id="air-quality-compare">Compare</button>
+                        <input type="range" min="1" max="10" value="1" class="slider" style="display:none" id="air-quality-range">
+                        <span class="slider-value" id="air-quality-range-value" style="display:none">10</span>
+                    </div>
+                </div>
             </form>
-            <div id="button-column">
-                <div class="layer-button-box" id="walkability-buttons">
-                    <button class="layer-button" id="walkability-filter">Filter</button>
-                    <button class="layer-button" id="walkability-compare" disabled>Compare</button>
-                    <input type="range" min="1" max="10" value="1" class="slider" style="display:none" id="walkability-range">
-                    <span class="slider-value" id="walkability-range-value" style="display:none">10</span>
-                </div>
-                <div class="layer-button-box" id="crime-buttons">
-                    <button class="layer-button" id="crime-filter">Filter</button>
-                    <button class="layer-button" id="crime-compare">Compare</button>
-                    <input type="range" min="1" max="10" value="1" class="slider" style="display:none" id="crime-range">
-                    <span class="slider-value" id="crime-range-value" style="display:none">10</span>
-                </div>
-                <div class="layer-button-box" id="air-quality-buttons">
-                    <button class="layer-button" id="air-quality-filter">Filter</button>
-                    <button class="layer-button" id="air-quality-compare">Compare</button>
-                    <input type="range" min="1" max="10" value="1" class="slider" style="display:none" id="air-quality-range">
-                    <span class="slider-value" id="air-quality-range-value" style="display:none">10</span>
-                </div>
-            </div>
     </div>
 
     <div id="property-list-container">
