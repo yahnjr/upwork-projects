@@ -410,13 +410,34 @@ function setupAnnotationLayer() {
     svgLayer.style.height = mapRect.height + 'px';
     svgLayer.style.left = mapRect.left + 'px';
     svgLayer.style.top = mapRect.top + 'px';
+
+    updateAnnotationInteractivity();
 }
 
 function setMode(m) {
+    debugLog(`Setting mode from '${mode}' to '${m}'`);
     mode = m;
     if (mode !== 'draw') {
+
         drawing = false;
         currentPolygon = null;
+    } else {
+         debugLog('Entering draw mode.');
+    }
+
+    updateAnnotationInteractivity();
+}
+
+function updateAnnotationInteractivity() {
+    const annotationLayer = document.getElementById('annotation-layer');
+    const svgLayer = document.getElementById('svg-layer');
+
+    if (mode === 'draw' || mode === 'write') {
+        annotationLayer.style.pointerEvents = 'auto';
+        svgLayer.style.pointerEvents = 'auto';
+    } else {
+        annotationLayer.style.pointerEvents = 'none';
+        svgLayer.style.pointerEvents = 'none';
     }
 }
 
@@ -428,7 +449,7 @@ document.getElementById('annotation-layer').addEventListener('click', function(e
     if (mode === 'draw') {
         handleDraw(x, y);
     } else if (mode === 'write') {
-        createTextBox(e.clientX, e.clientY);
+        createTextBox(x, y);
     }
 });
 
@@ -442,6 +463,11 @@ document.getElementById('writeButton').addEventListener('click', function() {
     highlightActiveButton(this);
 });
 
+document.getElementById('clearButton').addEventListener('click', function() {
+    setMode(null);
+    highlightActiveButton(this);
+});
+
 function highlightActiveButton(activeButton) {
     const buttons = document.querySelectorAll('.toolbar button');
     buttons.forEach(button => {
@@ -451,9 +477,15 @@ function highlightActiveButton(activeButton) {
 }
 
 function handleDraw(x, y) {
+    debugLog(`handleDraw called with x=${x}, y=${y}. Current drawing state: ${drawing}`);
     const svg = document.getElementById('svg-layer');
-    
+     if (!svg) {
+         debugLog('Error in handleDraw: svg-layer not found.');
+         return;
+     }
+
     if (!drawing) {
+        debugLog('Starting a new polygon.');
         currentPolygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
         currentPolygon.setAttribute("points", `${x},${y}`);
         currentPolygon.setAttribute("fill", "rgba(255,0,0,0.3)");
@@ -461,11 +493,20 @@ function handleDraw(x, y) {
         currentPolygon.setAttribute("stroke-width", "2");
         svg.appendChild(currentPolygon);
         drawing = true;
+        debugLog('New polygon created and added to SVG.');
     } else {
+        if (!currentPolygon) {
+            debugLog('Error in handleDraw: drawing is true, but currentPolygon is null.');
+            drawing = false;
+            return;
+        }
         let points = currentPolygon.getAttribute("points");
-        currentPolygon.setAttribute("points", points + ` ${x},${y}`);
+        const newPoints = points + ` ${x},${y}`;
+        currentPolygon.setAttribute("points", newPoints);
+        debugLog(`Added point to polygon. New points: ${newPoints}`);
     }
 }
+
 
 document.getElementById('annotation-layer').addEventListener('dblclick', function() {
     drawing = false;
@@ -527,28 +568,34 @@ function createTextBox(x, y) {
 
 function download() {
     document.querySelector('.toolbar').style.display = 'none';
-    
-    const mapRenderedPromise = new Promise(resolve => {
-        map.once('render', () => {
-            setTimeout(resolve, 100);
-        });
-        map.triggerRepaint();
-    });
-    
-    mapRenderedPromise.then(() => {
-        html2canvas(document.body, {
-            useCORS: true,
-            allowTaint: true,
-            foreignObjectRendering: true
-        }).then(canvas => {
-            const link = document.createElement('a');
-            link.download = 'annotated.png';
-            link.href = canvas.toDataURL();
-            link.click();
-            
-            document.querySelector('.toolbar').style.display = 'flex';
-        });
-    });
+
+    const mapCanvas = map.getCanvas();
+    const mapDataURL = mapCanvas.toDataURL('image/png');
+
+    // Create a temporary image element for the map
+    const mapImage = new Image();
+    mapImage.onload = () => {
+        // Create a new canvas to combine map and other elements (if needed)
+        const combinedCanvas = document.createElement('canvas');
+        combinedCanvas.width = document.body.offsetWidth; // Adjust as needed
+        combinedCanvas.height = document.body.offsetHeight; // Adjust as needed
+        const ctx = combinedCanvas.getContext('2d');
+
+        // Draw the map image onto the combined canvas
+        ctx.drawImage(mapImage, 0, 0);
+
+        // Optionally, draw your annotations here if they are on a separate canvas or DOM elements
+        // You might need to capture annotation layers separately using html2canvas
+        // and then draw them onto the combinedCanvas.
+
+        const link = document.createElement('a');
+        link.download = 'annotated_map.png';
+        link.href = combinedCanvas.toDataURL();
+        link.click();
+
+        document.querySelector('.toolbar').style.display = 'flex';
+    };
+    mapImage.src = mapDataURL;
 }
 
 map.on('load', () => {
