@@ -241,33 +241,33 @@ function setupHoverListeners() {
         console.log("Establishing event listeners with data: ", nationalAccountData);
 
         map.on('mousemove', (e) => {
-        if (hoverTimer) clearTimeout(hoverTimer);
+            if (hoverTimer) clearTimeout(hoverTimer);
 
-        const localFeatures = map.queryRenderedFeatures(e.point, {
-            layers: ['unclustered-point', 'clusters']
-        });
-
-        if (localFeatures.length > 0) {
-            isOverNationalLayer = false;
-            hoverTimer = setTimeout(hidePanel, 200);
-        } else {
-            const nationalFeatures = map.queryRenderedFeatures(e.point, {
-                layers: ['national-social']
+            const localFeatures = map.queryRenderedFeatures(e.point, {
+                layers: ['unclustered-point', 'clusters']
             });
 
-            if (nationalFeatures.length > 0) {
-                isOverNationalLayer = true;
-                if (showMode === true) {
-                    map.setPaintProperty('national-social', 'fill-opacity', 0.1);
-                }
-                hoverTimer = setTimeout(showPanel, 100);
-            } else {
+            if (localFeatures.length > 0) {
                 isOverNationalLayer = false;
-                map.setPaintProperty('national-social', 'fill-opacity', 0);
                 hoverTimer = setTimeout(hidePanel, 200);
+            } else {
+                const nationalFeatures = map.queryRenderedFeatures(e.point, {
+                    layers: ['national-social']
+                });
+
+                if (nationalFeatures.length > 0) {
+                    isOverNationalLayer = true;
+                    if (showMode === true) {
+                        map.setPaintProperty('national-social', 'fill-opacity', 0.1);
+                    }
+                    hoverTimer = setTimeout(showPanel, 100);
+                } else {
+                    isOverNationalLayer = false;
+                    map.setPaintProperty('national-social', 'fill-opacity', 0);
+                    hoverTimer = setTimeout(hidePanel, 200);
+                }
             }
-        }
-    });
+        });
 }
 
 function createOrUpdatePopup(properties) {

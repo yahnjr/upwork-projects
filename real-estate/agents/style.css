@@ -3,8 +3,35 @@ body {
     height: 100vh;
     width: 100vw;
     display: flex;
-    height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#sidebar {
+    height: 100vh;
+    width: 400px;
+    flex-shrink: 0;
+    background-color: rgb(240, 240, 240);
+}
+
+#select-mode-box {
+    height: 10%;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+}
+
+.select-mode-btn {
+    height: 40px;
+    width: 100px;
+    border: 1px solid #ccc;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.selected {
+    background-color: #8bc5ea;
+    color: white;
 }
 
 #map {
@@ -13,15 +40,17 @@ body {
 }
 
 #popup-container {
-    background-color: rgb(240, 240, 240);
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     text-align: center;
-    min-width: 400px;
+    width: 100%;
     padding: 20px;
     overflow-y: auto;
+    height: 100%;
+    gap: 20px;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
 }
 
 #no-point-header {
@@ -55,7 +84,22 @@ body {
     border: 1px solid #dcb444;
     background-color: #fff;
     border-radius: 8px;
-    width: 400px;
+    width: 380px;
+    margin: 0 0 20px 0;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.agent-card:hover {
+    box-shadow: 0 0 15px rgba(0, 0, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.active-agent-card {
+    box-shadow: 0 0 20px rgba(255, 51, 0, 0.5) !important;
+    border-left: 4px solid #ff3300 !important;
+    transform: translateY(-2px);
 }
 
 .agent-header {
@@ -147,6 +191,10 @@ body {
     border-bottom: 1px solid #f0f0f0;
 }
 
+.social-icon a {
+    pointer-events: auto;
+}
+
 .social-icon {
     width: 30px;
     height: 30px;
@@ -173,6 +221,12 @@ body {
 
 .linkedin {
     background-color: #0077B5;
+}
+
+.social-icon.disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.5;
 }
 
 .agent-professional {
@@ -251,4 +305,17 @@ body {
     border-bottom: 2px solid #4287f5;
     transform: rotate(-45deg);
     margin-left: 5px;
+}
+
+#state-agents-header {
+    width: 100%;
+    padding: 10px 0;
+    margin: 0 0 10px 0;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #333;
+    position: sticky;
+    top: 0;
+    background-color: rgb(240, 240, 240);
+    z-index: 10;
 }
