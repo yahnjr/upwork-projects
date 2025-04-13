@@ -87,7 +87,7 @@
 }
 .custom-video-controls {
     position: absolute;
-    bottom: 0;
+    bottom: 100px;
     left: 0;
     width: 100%;
     background-color: rgba(30, 30, 30, 0.8);
