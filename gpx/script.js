@@ -569,34 +569,24 @@ function createTextBox(x, y) {
 function download() {
     document.querySelector('.toolbar').style.display = 'none';
 
-    const mapCanvas = map.getCanvas();
-    const mapDataURL = mapCanvas.toDataURL('image/png');
+    const container = document.getElementById('app-wrap');
 
-    // Create a temporary image element for the map
-    const mapImage = new Image();
-    mapImage.onload = () => {
-        // Create a new canvas to combine map and other elements (if needed)
-        const combinedCanvas = document.createElement('canvas');
-        combinedCanvas.width = document.body.offsetWidth; // Adjust as needed
-        combinedCanvas.height = document.body.offsetHeight; // Adjust as needed
-        const ctx = combinedCanvas.getContext('2d');
-
-        // Draw the map image onto the combined canvas
-        ctx.drawImage(mapImage, 0, 0);
-
-        // Optionally, draw your annotations here if they are on a separate canvas or DOM elements
-        // You might need to capture annotation layers separately using html2canvas
-        // and then draw them onto the combinedCanvas.
-
+    html2canvas(container, {
+        backgroundColor: null,
+        useCORS: true
+    }).then(canvas => {
         const link = document.createElement('a');
         link.download = 'annotated_map.png';
-        link.href = combinedCanvas.toDataURL();
+        link.href = canvas.toDataURL('image/png');
         link.click();
 
         document.querySelector('.toolbar').style.display = 'flex';
-    };
-    mapImage.src = mapDataURL;
+    }).catch(error => {
+        console.error("Error during download:", error);
+        document.querySelector('.toolbar').style.display = 'flex';
+    });
 }
+
 
 map.on('load', () => {
     debugLog('Map loaded');
