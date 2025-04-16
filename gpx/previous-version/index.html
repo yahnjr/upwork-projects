@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPX Inspection</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-wrap" id="app-wrap">
+        <div id="outside-map">
+            <div id="annotation-layer"></div>
+            <svg id="svg-layer"></svg>
+        </div>
+
+        <div class="container">
+            <div id="map" class="map-container"></div>
+            
+            <div class="video-container">
+                <video id="videoPlayer" muted>
+                    <source src="street-walk.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+        
+        <div class="toolbar">
+            <button id="clearButton" class="active">Map Select Mode</button>
+            <button id="drawButton">Draw</button>
+            <button id="writeButton">Write</button>
+            <button onclick="download()">Download</button>
+        </div>        
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

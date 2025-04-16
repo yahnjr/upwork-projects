@@ -6,24 +6,94 @@ let playerMarker;
 let previewMarker;
 let isUserSeeking = false;
 let debugMode = true;
-let mode = null;
-let drawing = false;
-let currentPolygon = null;
+let firstTimestamp = 0;
+let isDrawing = false;
+let annotationMode = false;
+let startPoint = null;
+let currentShape = null;
+let currentAnnotationType = null;
+let fabricCanvas;
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
 map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/satellite-streets-v11',
-    bounds: [
-        [-122.8035, 45.4692],
-        [-122.802, 45.4701]
-    ],
-    zoom: 4
+    center: [-98.5795, 39.8283],
+    zoom: 2 
 });
 
-function setupVideoPlayer() {
-    videoPlayer = document.getElementById('videoPlayer');
+function promptForVideoFile() {
+    const videoInput = document.createElement('input');
+    videoInput.type = 'file';
+    videoInput.accept = 'video/*';
+    videoInput.style.display = 'none';
+    document.body.appendChild(videoInput);
     
+    videoInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            debugLog(`Video file selected: ${file.name}`);
+            loadVideo(file);
+            
+            const loadControls = document.getElementById('load-controls');
+            if (loadControls) {
+                loadControls.remove();
+            }
+            
+            const baseFileName = file.name.substring(0, file.name.lastIndexOf('.'));
+            showGpxLoadButton(baseFileName);
+        }
+    });
+    
+    videoInput.click();
+}
+
+function showGpxLoadButton(baseFileName) {
+    debugLog(`Showing GPX load button for ${baseFileName}`);
+}
+
+function promptForGpxFile() {
+    const gpxInput = document.createElement('input');
+    gpxInput.type = 'file';
+    gpxInput.accept = '.gpx';
+    gpxInput.style.display = 'none';
+    document.body.appendChild(gpxInput);
+    
+    gpxInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            debugLog(`GPX file selected: ${file.name}`);
+            processGpxFile(file);
+        }
+    });
+    
+    gpxInput.click();
+}
+
+function loadVideo(file) {
+    const videoUrl = URL.createObjectURL(file);
+    
+    videoPlayer = document.getElementById('videoPlayer');
+    if (!videoPlayer) {
+        videoPlayer = document.createElement('video');
+        videoPlayer.id = 'videoPlayer';
+        videoPlayer.className = 'video-player';
+        
+        const videoContainer = document.createElement('div');
+        videoContainer.className = 'video-container';
+        videoContainer.appendChild(videoPlayer);
+        
+        document.getElementById('app-wrap').appendChild(videoContainer);
+    }
+    
+    videoPlayer.src = videoUrl;
+    videoPlayer.muted = true;
+    videoPlayer.load();
+    
+    setupVideoPlayer();
+}
+
+function setupVideoPlayer() {
     if (!videoPlayer) {
         console.error('Video player element not found!');
         return;
@@ -48,26 +118,11 @@ function setupVideoPlayer() {
         updateMarkerPosition(currentVideoTime);
         updateProgressBar();
     });
-    
 }
 
 function createCustomControls() {
     const controlsContainer = document.createElement('div');
-    controlsContainer.className = 'custom-video-controls';
-    
-    const playButton = document.createElement('button');
-    playButton.className = 'play-pause-button';
-    playButton.innerHTML = '▶'; 
-    
-    playButton.addEventListener('click', function() {
-        if (videoPlayer.paused) {
-            videoPlayer.play();
-            playButton.innerHTML = '❚❚';
-        } else {
-            videoPlayer.pause();
-            playButton.innerHTML = '▶';
-        }
-    });
+    controlsContainer.id = 'controls';
     
     const timelineContainer = document.createElement('div');
     timelineContainer.className = 'timeline-container';
@@ -80,8 +135,76 @@ function createCustomControls() {
     
     timelineContainer.appendChild(progressBar);
     timelineContainer.appendChild(progressHandle);
-    controlsContainer.appendChild(playButton);
+    
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.className = 'control-buttons';
+    
+    const playButton = createButton('play-pause-button', 'fa-play', 'Play/Pause');
+    playButton.addEventListener('click', function() {
+        if (videoPlayer.paused) {
+            videoPlayer.play();
+            playButton.querySelector('i').className = 'fas fa-pause';
+        } else {
+            videoPlayer.pause();
+            playButton.querySelector('i').className = 'fas fa-play';
+        }
+    });
+    
+    const loadVideoButton = createButton('load-video-button', 'fa-file-video', 'Load Video');
+    loadVideoButton.addEventListener('click', promptForVideoFile);
+    
+    const loadGpxButton = createButton('load-gpx-button', 'fa-map-marker-alt', 'Load GPX');
+    loadGpxButton.addEventListener('click', promptForGpxFile);
+    
+    const drawButton = createButton('draw-button', 'fa-pencil-alt', 'Draw');
+    drawButton.id = 'rectangleButton';
+    drawButton.addEventListener('click', function() {
+        // Toggle active state
+        const isActive = this.classList.toggle('active');
+        
+        if (isActive) {
+            annotationMode = true;
+            currentAnnotationType = 'rectangle';
+            document.querySelector('.annotation-canvas-container').style.pointerEvents = 'auto';
+            annotateButton.classList.remove('active');
+            debugLog('Rectangle drawing mode activated');
+        } else {
+            annotationMode = false;
+            document.querySelector('.annotation-canvas-container').style.pointerEvents = 'none';
+            debugLog('Drawing mode deactivated');
+        }
+    });
+    
+    const annotateButton = createButton('annotate-button', 'fa-font', 'Annotate');
+    annotateButton.id = 'textButton';
+    annotateButton.addEventListener('click', function() {
+        const isActive = this.classList.toggle('active');
+        
+        if (isActive) {
+            annotationMode = true;
+            currentAnnotationType = 'text';
+            document.querySelector('.annotation-canvas-container').style.pointerEvents = 'auto';
+            drawButton.classList.remove('active');
+            debugLog('Text annotation mode activated');
+        } else {
+            annotationMode = false;
+            document.querySelector('.annotation-canvas-container').style.pointerEvents = 'none';
+            debugLog('Annotation mode deactivated');
+        }
+    });
+    
+    const downloadButton = createButton('download-button', 'fa-download', 'Download Screenshot');
+    downloadButton.addEventListener('click', takeScreenshot);
+    
+    buttonsContainer.appendChild(playButton);
+    buttonsContainer.appendChild(loadVideoButton);
+    buttonsContainer.appendChild(loadGpxButton);
+    buttonsContainer.appendChild(drawButton);
+    buttonsContainer.appendChild(annotateButton);
+    buttonsContainer.appendChild(downloadButton);
+    
     controlsContainer.appendChild(timelineContainer);
+    controlsContainer.appendChild(buttonsContainer);
     
     let videoContainer = videoPlayer.parentElement;
     if (!videoContainer) {
@@ -93,14 +216,6 @@ function createCustomControls() {
     }
     
     videoContainer.appendChild(controlsContainer);
-    
-    videoPlayer.addEventListener('play', function() {
-        playButton.innerHTML = '❚❚';
-    });
-    
-    videoPlayer.addEventListener('pause', function() {
-        playButton.innerHTML = '▶'; 
-    });
     
     timelineContainer.addEventListener('click', function(event) {
         const rect = timelineContainer.getBoundingClientRect();
@@ -134,7 +249,7 @@ function createCustomControls() {
     
     videoContainer.addEventListener('mouseleave', function() {
         if (!videoPlayer.paused) {
-            controlsContainer.style.opacity = '0.3';
+            controlsContainer.style.opacity = '0.5';
         }
     });
     
@@ -144,143 +259,185 @@ function createCustomControls() {
         playButton: playButton
     };
     
-    debugLog('Custom controls created');
+    debugLog('Custom controls created with new layout');
 }
 
-function updateProgressBar() {
-    if (!window.customControls || !videoPlayer) return;
+function createButton(className, iconClass, tooltip) {
+    const button = document.createElement('button');
+    button.className = `control-button ${className}`;
     
-    if (isNaN(videoPlayer.duration) || videoPlayer.duration === 0) {
-        debugLog('Video duration not available yet, cannot update progress bar');
-        return;
-    }
+    const icon = document.createElement('i');
+    icon.className = `fas ${iconClass}`;
+    button.appendChild(icon);
     
-    const percentage = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+    const tooltipElement = document.createElement('span');
+    tooltipElement.className = 'tooltip';
+    tooltipElement.textContent = tooltip;
+    button.appendChild(tooltipElement);
     
-    if (!isNaN(percentage)) {
-        window.customControls.progressBar.style.width = percentage + '%';
-        window.customControls.progressHandle.style.left = percentage + '%';
-        debugLog('Progress updated to', percentage.toFixed(2) + '%');
-    }
+    return button;
 }
 
-function loadGSXData() {
-    debugLog('Starting to load data...');
-   
-    Promise.all([
-        fetch('streetWalkLine.geojson').then(response => {
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            return response.json();
-        }),
-        fetch('streetWalkPoints.geojson').then(response => {
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            return response.json();
-        }),
-        fetch('streetWalkLots.geojson').then(response => {
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            return response.json();
-        })
-    ])
-    .then(([lineData, pointsData, lotsData]) => {
-        streetWalkLine = lineData;
-        streetWalkPoints = pointsData;
-        streetWalkLots = lotsData;
+function processGpxFile(file) {
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        const gpxContent = e.target.result;
         
-        debugLog('Data loaded successfully');
+        const parser = new DOMParser();
+        const gpxDoc = parser.parseFromString(gpxContent, "text/xml");
         
-        processPointsWithTimestamps(pointsData);
+        const trackPoints = gpxDoc.querySelectorAll('trkpt');
+        debugLog(`Found ${trackPoints.length} track points in GPX file`);
         
+        if (trackPoints.length === 0) {
+            alert('No track points found in the GPX file');
+            return;
+        }
+        
+        processGpxPoints(trackPoints);
         addMapSources();
-        
         createPlayerMarker();
         createPreviewMarker();
-        
         makePointsClickable();
-    })
-    .catch(error => {
-        console.error('Error loading data:', error);
-    });
+    };
+    
+    reader.readAsText(file);
 }
 
-function processPointsWithTimestamps(pointsData) {
+function processGpxPoints(trackPoints) {
     pointsWithTimestamps = [];
+    let coordinates = [];
     
-    if (pointsData.features.length > 0 && debugMode) {
-        debugLog('First point properties:', JSON.stringify(pointsData.features[0].properties));
+    const firstPoint = trackPoints[0];
+    const firstTime = firstPoint.querySelector('time');
+    
+    if (firstTime) {
+        firstTimestamp = new Date(firstTime.textContent).getTime() / 1000;
     }
     
-    pointsData.features.forEach(feature => {
-        const coords = feature.geometry.coordinates;
-        const timestamp = feature.properties.timeSeconds || 0;
+    trackPoints.forEach((point, index) => {
+        const lat = parseFloat(point.getAttribute('lat'));
+        const lon = parseFloat(point.getAttribute('lon'));
+        
+        const timeElement = point.querySelector('time');
+        let timestamp = 0;
+        
+        if (timeElement) {
+            const time = new Date(timeElement.textContent).getTime() / 1000;
+            timestamp = time - firstTimestamp;
+        } else {
+            timestamp = index * 1;
+        }
         
         pointsWithTimestamps.push({
-            coordinates: coords,
+            coordinates: [lon, lat],
             timestamp: timestamp
         });
+        
+        coordinates.push([lon, lat]);
     });
     
     pointsWithTimestamps.sort((a, b) => a.timestamp - b.timestamp);
     
-    debugLog('Processed points with timestamps:', pointsWithTimestamps.length);
+    if (pointsWithTimestamps.length > 0) {
+        const firstCoordinates = pointsWithTimestamps[0].coordinates;
+        map.flyTo({
+            center: firstCoordinates,
+            zoom: 17,
+            essential: false
+        });
+        debugLog(`Setting map center to: ${firstCoordinates}`);
+    }
+    
+    createGeoJsonFromPoints(coordinates);
+    
+    debugLog(`Processed ${pointsWithTimestamps.length} points with timestamps`);
+}
+
+function createGeoJsonFromPoints(coordinates) {
+    const pointsGeoJson = {
+        type: 'FeatureCollection',
+        features: pointsWithTimestamps.map((point, index) => {
+            return {
+                type: 'Feature',
+                properties: {
+                    id: index,
+                    timeSeconds: point.timestamp
+                },
+                geometry: {
+                    type: 'Point',
+                    coordinates: point.coordinates
+                }
+            };
+        })
+    };
+    
+    const lineGeoJson = {
+        type: 'FeatureCollection',
+        features: [{
+            type: 'Feature',
+            properties: {},
+            geometry: {
+                type: 'LineString',
+                coordinates: coordinates
+            }
+        }]
+    };
+    
+    window.streetWalkPoints = pointsGeoJson;
+    window.streetWalkLine = lineGeoJson;
 }
 
 function addMapSources() {
-    map.addSource('streetWalkLine', {
-        type: 'geojson',
-        data: streetWalkLine
-    });
-   
-    map.addLayer({
-        id: 'line-layer',
-        type: 'line',
-        source: 'streetWalkLine',
-        layout: {
-            'line-join': 'round',
-            'line-cap': 'round'
-        },
-        paint: {
-            'line-color': '#42f5f5',
-            'line-width': 3
-        }
-    });
-   
-    map.addSource('streetWalkPoints', {
-        type: 'geojson',
-        data: streetWalkPoints
-    });
-           
-    map.addLayer({
-        id: 'streetWalkPoints',
-        type: 'circle',
-        source: 'streetWalkPoints',
-        paint: {
-            'circle-radius': 6,
-            'circle-color': '#ebe77a',
-        }
-    });
+    if (!map.getSource('streetWalkLine')) {
+        map.addSource('streetWalkLine', {
+            type: 'geojson',
+            data: window.streetWalkLine
+        });
+        
+        map.addLayer({
+            id: 'line-layer',
+            type: 'line',
+            source: 'streetWalkLine',
+            layout: {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            paint: {
+                'line-color': '#42f5f5',
+                'line-width': 3
+            }
+        });
+    } else {
+        map.getSource('streetWalkLine').setData(window.streetWalkLine);
+    }
     
-    map.addSource('streetWalkLots', {
-        type: 'geojson',
-        data: streetWalkLots
-    });
-   
-    map.addLayer({
-        id: 'lots-layer',
-        type: 'fill',
-        source: 'streetWalkLots',
-        paint: {
-            'fill-color': ['match', ['get', 'PassFail'],
-                          'Passing', 'green',
-                          'Failing', 'red',
-                          'gray'],
-            'fill-opacity': 0.4,
-        }
-    });
-    
-    debugLog('Map sources and layers added');
+    if (!map.getSource('streetWalkPoints')) {
+        map.addSource('streetWalkPoints', {
+            type: 'geojson',
+            data: window.streetWalkPoints
+        });
+        
+        map.addLayer({
+            id: 'streetWalkPoints',
+            type: 'circle',
+            source: 'streetWalkPoints',
+            paint: {
+                'circle-radius': 6,
+                'circle-color': '#ebe77a',
+            }
+        });
+    } else {
+        map.getSource('streetWalkPoints').setData(window.streetWalkPoints);
+    }
 }
 
 function createPlayerMarker() {
+    if (playerMarker) {
+        playerMarker.remove();
+    }
+    
     const markerElement = document.createElement('div');
     markerElement.className = 'player-marker';
     
@@ -296,6 +453,10 @@ function createPlayerMarker() {
 }
 
 function createPreviewMarker() {
+    if (previewMarker) {
+        previewMarker.remove();
+    }
+    
     const markerElement = document.createElement('div');
     markerElement.className = 'preview-marker';
     markerElement.style.display = 'none';
@@ -340,6 +501,22 @@ function makePointsClickable() {
     debugLog('Points made clickable');
 }
 
+function updateProgressBar() {
+    if (!window.customControls || !videoPlayer) return;
+    
+    if (isNaN(videoPlayer.duration) || videoPlayer.duration === 0) {
+        debugLog('Video duration not available yet, cannot update progress bar');
+        return;
+    }
+    
+    const percentage = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+    
+    if (!isNaN(percentage)) {
+        window.customControls.progressBar.style.width = percentage + '%';
+        window.customControls.progressHandle.style.left = percentage + '%';
+    }
+}
+
 function updateMarkerPosition(currentTime) {
     if (!playerMarker || pointsWithTimestamps.length === 0) return;
     
@@ -357,6 +534,10 @@ function updatePreviewMarkerPosition(previewTime) {
 }
 
 function getPositionAtTime(time) {
+    if (pointsWithTimestamps.length === 0) {
+        return [-122.8028, 45.4696];
+    }
+    
     if (time <= pointsWithTimestamps[0].timestamp) {
         return pointsWithTimestamps[0].coordinates;
     }
@@ -390,209 +571,171 @@ function getPositionAtTime(time) {
 
 function debugLog(...args) {
     if (debugMode) {
-        console.log('[MapVideo]', ...args);
+        console.log('[GpxVideo]', ...args);
     }
 }
 
-function setupAnnotationLayer() {
-    const mapContainer = document.getElementById('map');
-    const annotationLayer = document.getElementById('annotation-layer');
-    const svgLayer = document.getElementById('svg-layer');
+function setupFabricEvents() {
+    if (!fabricCanvas) return;
     
-    const mapRect = mapContainer.getBoundingClientRect();
-    
-    annotationLayer.style.width = mapRect.width + 'px';
-    annotationLayer.style.height = mapRect.height + 'px';
-    annotationLayer.style.left = mapRect.left + 'px';
-    annotationLayer.style.top = mapRect.top + 'px';
-    
-    svgLayer.style.width = mapRect.width + 'px';
-    svgLayer.style.height = mapRect.height + 'px';
-    svgLayer.style.left = mapRect.left + 'px';
-    svgLayer.style.top = mapRect.top + 'px';
-
-    updateAnnotationInteractivity();
-}
-
-function setMode(m) {
-    debugLog(`Setting mode from '${mode}' to '${m}'`);
-    mode = m;
-    if (mode !== 'draw') {
-
-        drawing = false;
-        currentPolygon = null;
-    } else {
-         debugLog('Entering draw mode.');
-    }
-
-    updateAnnotationInteractivity();
-}
-
-function updateAnnotationInteractivity() {
-    const annotationLayer = document.getElementById('annotation-layer');
-    const svgLayer = document.getElementById('svg-layer');
-
-    if (mode === 'draw' || mode === 'write') {
-        annotationLayer.style.pointerEvents = 'auto';
-        svgLayer.style.pointerEvents = 'auto';
-    } else {
-        annotationLayer.style.pointerEvents = 'none';
-        svgLayer.style.pointerEvents = 'none';
-    }
-}
-
-document.getElementById('annotation-layer').addEventListener('click', function(e) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    if (mode === 'draw') {
-        handleDraw(x, y);
-    } else if (mode === 'write') {
-        createTextBox(x, y);
-    }
-});
-
-document.getElementById('drawButton').addEventListener('click', function() {
-    setMode('draw');
-    highlightActiveButton(this);
-});
-
-document.getElementById('writeButton').addEventListener('click', function() {
-    setMode('write');
-    highlightActiveButton(this);
-});
-
-document.getElementById('clearButton').addEventListener('click', function() {
-    setMode(null);
-    highlightActiveButton(this);
-});
-
-function highlightActiveButton(activeButton) {
-    const buttons = document.querySelectorAll('.toolbar button');
-    buttons.forEach(button => {
-        button.classList.remove('active');
-    });
-    activeButton.classList.add('active');
-}
-
-function handleDraw(x, y) {
-    debugLog(`handleDraw called with x=${x}, y=${y}. Current drawing state: ${drawing}`);
-    const svg = document.getElementById('svg-layer');
-     if (!svg) {
-         debugLog('Error in handleDraw: svg-layer not found.');
-         return;
-     }
-
-    if (!drawing) {
-        debugLog('Starting a new polygon.');
-        currentPolygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-        currentPolygon.setAttribute("points", `${x},${y}`);
-        currentPolygon.setAttribute("fill", "rgba(255,0,0,0.3)");
-        currentPolygon.setAttribute("stroke", "red");
-        currentPolygon.setAttribute("stroke-width", "2");
-        svg.appendChild(currentPolygon);
-        drawing = true;
-        debugLog('New polygon created and added to SVG.');
-    } else {
-        if (!currentPolygon) {
-            debugLog('Error in handleDraw: drawing is true, but currentPolygon is null.');
-            drawing = false;
-            return;
-        }
-        let points = currentPolygon.getAttribute("points");
-        const newPoints = points + ` ${x},${y}`;
-        currentPolygon.setAttribute("points", newPoints);
-        debugLog(`Added point to polygon. New points: ${newPoints}`);
-    }
-}
-
-
-document.getElementById('annotation-layer').addEventListener('dblclick', function() {
-    drawing = false;
-    currentPolygon = null;
-});
-
-function createTextBox(x, y) {
-    const textBox = document.createElement('div');
-    textBox.className = 'text-annotation';
-    textBox.contentEditable = true;
-    textBox.style.left = `${x}px`;
-    textBox.style.top = `${y}px`;
-    
-    let firstClick = true;
-    textBox.innerText = 'Click to edit text...';
-    
-    textBox.addEventListener('click', function(e) {
-        if (firstClick) {
-            textBox.innerText = '';
-            firstClick = false;
-        }
-        e.stopPropagation(); 
-    });
-    
-    document.getElementById('annotation-layer').appendChild(textBox);
-    
-    setTimeout(() => {
-        textBox.focus();
-    }, 10);
-    
-    textBox.addEventListener('mousedown', function(e) {
-        if (e.target === textBox) {
-            e.preventDefault();
-            
-            const isEditing = document.activeElement === textBox;
-            if (isEditing) return;
-            
-            textBox.style.cursor = 'move';
-            
-            let offsetX = e.clientX - textBox.offsetLeft;
-            let offsetY = e.clientY - textBox.offsetTop;
-            
-            function mouseMoveHandler(e) {
-                textBox.style.left = `${e.clientX - offsetX}px`;
-                textBox.style.top = `${e.clientY - offsetY}px`;
-            }
-            
-            function mouseUpHandler() {
-                document.removeEventListener('mousemove', mouseMoveHandler);
-                document.removeEventListener('mouseup', mouseUpHandler);
-                textBox.style.cursor = 'text';
-            }
-            
-            document.addEventListener('mousemove', mouseMoveHandler);
-            document.addEventListener('mouseup', mouseUpHandler);
+    fabricCanvas.on('mouse:down', function(options) {
+        if (!annotationMode) return;
+        
+        debugLog('Canvas mouse down', currentAnnotationType);
+        if (currentAnnotationType === 'rectangle') {
+            isDrawing = true;
+            const pointer = fabricCanvas.getPointer(options.e);
+            startPoint = { x: pointer.x, y: pointer.y };
+            currentShape = new fabric.Rect({
+                left: startPoint.x,
+                top: startPoint.y,
+                width: 0,
+                height: 0,
+                fill: 'rgba(255, 0, 0, 0.2)',
+                stroke: 'red',
+                strokeWidth: 2
+            });
+            fabricCanvas.add(currentShape);
         }
     });
+    
+    fabricCanvas.on('mouse:move', function(options) {
+        if (!annotationMode || !isDrawing || currentAnnotationType !== 'rectangle' || !currentShape) return;
+        
+        const pointer = fabricCanvas.getPointer(options.e);
+        if (startPoint && pointer) {
+            currentShape.set({
+                width: Math.abs(pointer.x - startPoint.x),
+                height: Math.abs(pointer.y - startPoint.y),
+                left: Math.min(startPoint.x, pointer.x),
+                top: Math.min(startPoint.y, pointer.y)
+            });
+            fabricCanvas.renderAll();
+        }
+    });
+    
+    fabricCanvas.on('mouse:up', function(options) {
+        if (!annotationMode) return;
+        
+        if (currentAnnotationType === 'rectangle' && isDrawing) {
+            isDrawing = false;
+            currentShape = null;
+        } else if (currentAnnotationType === 'text') {
+            const pointer = fabricCanvas.getPointer(options.e);
+            const textBox = new fabric.IText('Edit text', { 
+                left: pointer.x,
+                top: pointer.y,
+                fontSize: 20,
+                fill: 'red',
+                hasControls: true,
+                hasRotatingPoint: true,
+                editable: true,
+                cursorWidth: 1,
+                cursorColor: 'black',
+                borderColor: 'red',
+                cornerColor: 'red',
+                padding: 5
+            });
+            
+            fabricCanvas.add(textBox);
+            fabricCanvas.setActiveObject(textBox);
+            
+            textBox.enterEditing();
+            textBox.selectAll();
+            
+            fabricCanvas.renderAll();
+        }
+    });
+    
+    debugLog('Fabric canvas events set up');
 }
 
-function download() {
-    document.querySelector('.toolbar').style.display = 'none';
+window.addEventListener('resize', () => {
+    if (fabricCanvas) {
+        fabricCanvas.setWidth(window.innerWidth);
+        fabricCanvas.setHeight(window.innerHeight);
+        fabricCanvas.renderAll();
+    }
+});
 
-    const container = document.getElementById('app-wrap');
-
-    html2canvas(container, {
-        backgroundColor: null,
-        useCORS: true
-    }).then(canvas => {
+function takeScreenshot() {
+    debugLog('Taking screenshot...');
+    
+    const screenshotCanvas = document.createElement('canvas');
+    const context = screenshotCanvas.getContext('2d');
+    
+    screenshotCanvas.width = window.innerWidth;
+    screenshotCanvas.height = window.innerHeight;
+    
+    const mapCanvas = map.getCanvas();
+    context.drawImage(mapCanvas, 0, 0, mapCanvas.width, mapCanvas.height);
+    
+    if (videoPlayer && videoPlayer.videoWidth && videoPlayer.videoHeight) {
+        const videoRect = videoPlayer.getBoundingClientRect();
+        context.drawImage(
+            videoPlayer, 
+            videoRect.left, videoRect.top, 
+            videoRect.width, videoRect.height
+        );
+    }
+    
+    if (fabricCanvas) {
+        const fabricImage = fabricCanvas.toDataURL({
+            format: 'png',
+            quality: 1
+        });
+        
+        const tempImage = new Image();
+        tempImage.onload = function() {
+            context.drawImage(tempImage, 0, 0);
+            
+            const dataUrl = screenshotCanvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = `gpx-video-screenshot-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.png`;
+            link.href = dataUrl;
+            link.click();
+            
+            debugLog('Screenshot downloaded');
+        };
+        tempImage.src = fabricImage;
+    } else {
+        const dataUrl = screenshotCanvas.toDataURL('image/png');
         const link = document.createElement('a');
-        link.download = 'annotated_map.png';
-        link.href = canvas.toDataURL('image/png');
+        link.download = `gpx-video-screenshot-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.png`;
+        link.href = dataUrl;
         link.click();
-
-        document.querySelector('.toolbar').style.display = 'flex';
-    }).catch(error => {
-        console.error("Error during download:", error);
-        document.querySelector('.toolbar').style.display = 'flex';
-    });
+        
+        debugLog('Screenshot downloaded (no annotations)');
+    }
 }
-
 
 map.on('load', () => {
     debugLog('Map loaded');
-    loadGSXData();
-    setupVideoPlayer();
-    setupAnnotationLayer();
 
-    map.on('resize', setupAnnotationLayer);
+    const canvasContainer = document.createElement('div');
+    canvasContainer.className = 'annotation-canvas-container';
+
+    const canvas = document.createElement('canvas');
+    canvas.id = 'annotation-canvas';
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight - 160;
+    canvasContainer.appendChild(canvas);
+
+    document.getElementById('app-wrap').appendChild(canvasContainer);
+
+    fabricCanvas = new fabric.Canvas('annotation-canvas');
+    fabricCanvas.selection = false;
+
+    const loadControls = document.createElement('div');
+    loadControls.id = 'load-controls';
+    
+    const loadButton = document.createElement('button');
+    loadButton.className = 'load-video-button';
+    loadButton.innerHTML = 'Load Video';
+    loadButton.addEventListener('click', promptForVideoFile);
+    
+    loadControls.appendChild(loadButton);
+    document.getElementById('app-wrap').appendChild(loadControls);
+
+    setupFabricEvents();
 });

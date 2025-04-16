@@ -1,137 +1,218 @@
-.container {
-    display: flex;
-    height: 100vh;
-}
-.map-container {
-    flex: 3;
-    min-height: 60%;
-}
-.video-container {
-    position: relative;
-    flex: 1;
+body, html {
+    margin: 0;
+    padding: 0;
     height: 100%;
-    padding: 10px;
+    font-family: Arial, sans-serif;
+    background-color: #555555;
 }
+
+#app-wrap {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30vw;
+    height: 30vh;
+    z-index: 15;
+    border: 2px solid #333;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    z-index: 11;
+    max-width: 100vw;
+    max-height: 100vh;
+}
+
 #videoPlayer {
     width: 100%;
-    height: 90%;
-    max-height: 100%;
+    height: 100%;
     object-fit: contain;
 }
-.player-marker {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: #ff4400;
-    border: 2px solid white;
-    z-index: 10;
-}
-.preview-marker {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: rgba(255, 68, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    z-index: 9;
-}
-.custom-progress-container {
-    background-color: rgba(0, 0, 0, 0.1);
-    transition: background-color 0.2s;
-}
-.custom-progress-container:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-}
-#annotation-layer {
-    position: absolute;
-    top: 0; 
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 5;
-}
-#svg-layer {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 4;
-}
-.toolbar {
+
+#controls {
     position: absolute;
     bottom: 50px;
-    left: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 16;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    z-index: 10;
+    width: 80vw;
+    background-color: rgba(0,0,0,0.7);
+    padding: 10px;
+    border-radius: 5px;
+    transition: opacity 0.3s ease;
 }
-.toolbar button {
-    padding: 8px 12px;
-    font-size: 16px;
-    cursor: pointer;
-}
-.toolbar button.active {
-    background-color: #007bff;
-    color: white;
-}
-.text-annotation {
-    position: absolute;
-    background-color: rgba(255, 255, 255, 0.8);
-    border: 1px solid black;
-    padding: 5px;
-    min-width: 100px;
-    min-height: 30px;
-    z-index: 10;
-    cursor: text;
-}
-.custom-video-controls {
-    position: absolute;
-    bottom: 100px;
-    left: 0;
-    width: 100%;
-    background-color: rgba(30, 30, 30, 0.8);
-    padding: 8px 0;
-    display: flex;
-    align-items: center;
-    transition: opacity 0.3s;
-    z-index: 10;
-}
-.play-pause-button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    width: 40px;
-    margin-left: 10px;
-}
+
 .timeline-container {
-    flex: 1;
-    height: 8px;
     position: relative;
-    background-color: black;
-    border-radius: 4px;
-    margin: 0 15px;
+    height: 10px;
+    background-color: #555;
+    width: 100%;
+    border-radius: 5px;
     cursor: pointer;
+    margin-bottom: 15px;
 }
+
 .progress-bar {
-    width: 0%;
     height: 100%;
-    background-color: white;
-    border-radius: 4px;
-    position: absolute;
-    left: 0;
-    top: 0;
+    background-color: #4CAF50;
+    width: 0%;
+    border-radius: 5px;
+    position: relative;
 }
+
 .progress-handle {
-    width: 12px;
-    height: 12px;
+    position: absolute;
+    width: 20px;
+    height: 20px;
     background-color: white;
     border-radius: 50%;
-    position: absolute;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
     left: 0%;
-    margin-left: -6px;
+}
+
+.control-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+}
+
+.control-button {
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+    position: relative;
+}
+
+.control-button:hover {
+    background-color: #5fb8d9;
+}
+
+.control-button i {
+    font-size: 18px;
+}
+
+.tooltip {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.control-button:hover .tooltip {
+    opacity: 1;
+}
+
+.play-pause-button {
+    background-color: #4CAF50;
+}
+
+.load-video-button, .load-gpx-button {
+    background-color: #2196F3;
+}
+
+.draw-button {
+    background-color: #9C27B0;
+}
+
+.annotate-button {
+    background-color: #FF9800;
+}
+
+.download-button {
+    background-color: #E91E63;
+}
+
+.active {
+    border-radius: 2px;
+    background-color: #5fb8d9;
+}
+
+#load-controls {
+    position: absolute;
+    bottom: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 16;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(0,0,0,0.5);
+    padding: 10px;
+    border-radius: 5px;
+    transition: opacity 0.3s ease;
+}
+
+.load-video-button, .load-gpx-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    text-align: center;
+    font-size: 16px;
+    margin: 4px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.player-marker {
+    width: 15px;
+    height: 15px;
+    background-color: red;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.preview-marker {
+    width: 12px;
+    height: 12px;
+    background-color: blue;
+    border-radius: 50%;
+    border: 2px solid white;
+    opacity: 0.7;
+}
+
+.annotation-canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0; 
+    width: 100%;
+    height: calc(100% - 160px);
+    pointer-events: none;
+    z-index: 30;
 }

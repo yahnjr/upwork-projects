@@ -1,0 +1,137 @@
+.container {
+    display: flex;
+    height: 100vh;
+}
+.map-container {
+    flex: 3;
+    min-height: 60%;
+}
+.video-container {
+    position: relative;
+    flex: 1;
+    height: 100%;
+    padding: 10px;
+}
+#videoPlayer {
+    width: 100%;
+    height: 90%;
+    max-height: 100%;
+    object-fit: contain;
+}
+.player-marker {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #ff4400;
+    border: 2px solid white;
+    z-index: 10;
+}
+.preview-marker {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 68, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    z-index: 9;
+}
+.custom-progress-container {
+    background-color: rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s;
+}
+.custom-progress-container:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+#annotation-layer {
+    position: absolute;
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+}
+#svg-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 4;
+}
+.toolbar {
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 10;
+}
+.toolbar button {
+    padding: 8px 12px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.toolbar button.active {
+    background-color: #007bff;
+    color: white;
+}
+.text-annotation {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid black;
+    padding: 5px;
+    min-width: 100px;
+    min-height: 30px;
+    z-index: 10;
+    cursor: text;
+}
+.custom-video-controls {
+    position: absolute;
+    bottom: 100px;
+    left: 0;
+    width: 100%;
+    background-color: rgba(30, 30, 30, 0.8);
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    transition: opacity 0.3s;
+    z-index: 10;
+}
+.play-pause-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    width: 40px;
+    margin-left: 10px;
+}
+.timeline-container {
+    flex: 1;
+    height: 8px;
+    position: relative;
+    background-color: black;
+    border-radius: 4px;
+    margin: 0 15px;
+    cursor: pointer;
+}
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: white;
+    border-radius: 4px;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.progress-handle {
+    width: 12px;
+    height: 12px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0%;
+    margin-left: -6px;
+}

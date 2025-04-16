@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/@esotericsoftware/spine-player@4.2.*/dist/iife/spine-player.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@esotericsoftware/spine-player@4.2.*/dist/spine-player.min.css"
+    />
+  </head>
+  <body>
+    <div id="player-container" style="width: 640px; height: 480px"></div>
+
+    <script>
+      const player = new spine.SpinePlayer("player-container", {
+      skeleton: "assets/updated_cat.json",
+      atlas: "assets/cat.atlas",
+      animation: "new_animation",
+      imagesPath: "assets/cat.png",
+    });
+    </script>
+  </body>
+</html>
