@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Application</title>
+    <link href='style.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="tab-navigator">
+        <button class="navigation-button" id="agents-tab">View Real Estate Agents</button>
+        <button class="navigation-button" id="partners-tab">View Partner Businesses</button>
+        <button class="navigation-button" id="social-media-tab">View Social Media Profiles</button>
+        <button class="navigation-button" id="data-map-tab">View Properties and Data</button>
+    </div>
+    <div id ="app-wrapper-wrapper">
+        <div class="app-wrapper active-app" id="agents-wrapper">
+            <div id="sidebar">
+                <div id="select-mode-box">
+                    <button class="select-mode-btn selected" id="click-mode">Click to View</button>
+                    <button class="select-mode-btn" id="view-mode">Zoom to View</button>
+                    <button class="select-mode-btn" id="polygon-mode">Select a State</button>
+                </div>
+                <div id="popup-container">
+                    <i class="fa-solid fa-location-dot" id="big-marker"></i>
+                    <h3 id="no-point-header">Click a marker on the map to view real estate professional details</h3>
+                    <p id="no-point-p">124 military-friendly real estate professionals found</p>
+                </div>
+            </div>
+            <div id="agents-map"></div>
+        </div>
+
+        <div class="app-wrapper" id="social-media-wrapper">
+            <div id="national-accounts-panel" class="side-panel hidden">
+                <div id="national-list-header">
+                    <h3>National Accounts</h3>
+                    <i id="hide-national-list" class="fa-solid fa-eye-slash"></i>
+                    <i id="show-national-list" class="fa-solid fa-eye" style="display: none"></i>
+                </div>
+                <div id="accounts-list"></div>
+            </div>
+        
+            <div id="social-media-map"></div>
+        </div>
+
+        <div class="app-wrapper" id="partners-wrapper">
+            <div id="partners-map"></div>
+            <div id="coverageBox">
+                <div id="coverageInnerWrapper" class="controlBox">
+                    <div class="coverageType controlBox" id="nationalType">
+                        <div class="coverageHeader">
+                            <div class="coverageTitle">
+                                <input type="checkbox" id="nationalCheckbox" name="nationalCheckbox" checked>
+                                <label for="nationalCheckbox">National Partners</label>
+                            </div>
+                            <div class="toggleArrow" id="nationalToggle">▶</div>
+                        </div>
+                        <div class="coverageDropdown" id="nationalDropdown"></div>
+                    </div>
+                    <div class="coverageType controlBox" id="localType">  
+                        <div class="coverageHeader">
+                            <div class="coverageTitle">
+                                <input type="checkbox" id="localCheckbox" name="localCheckbox" checked>
+                                <label for="localCheckbox">Local Partners</label>
+                            </div>
+                            <div class="toggleArrow" id="localToggle">▶</div>
+                        </div>
+                        <div class="coverageDropdown" id="localDropdown"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="controlBox" id="selectionList">
+                <div id="selectionListHeader"> 
+                    <p id="selectionLabel"></p>
+                    <button class="close-button" id="close-list">×</button>
+                </div>
+                <div id="listedFeatures"></div>
+            </div>
+            <div id="selectionBox">
+                <div class="controlBox selectMode" id="viewList">
+                    <i class="fa-solid fa-list"></i>
+                </div>
+                <div class="controlBox selectMode" id="currentVisible">
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                </div>
+                <div class="controlBox selectMode" id="currentPoint">
+                    <i class="fa fa-map-marker" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="app-wrapper" id="data-map-wrapper">
+            <div id="menu">
+                <form id="layer-form">
+                    <div class="form-column">
+                        <input id="walkability-toggle" type="radio" class="radio-option" name="layer-control" value="Walkability" checked>
+                        <label for="walkability-toggle">Walkability</label>
+                    </div>
+                    <div class="form-column">
+                        <div class="layer-button-box" id="walkability-buttons">
+                            <button type="button" class="layer-button" id="walkability-filter">Filter</button>
+                            <button type="button" class="layer-button" id="walkability-compare" disabled>Compare</button>
+                            <input type="range" min="1" max="10" value="1" class="slider" style="display:none" id="walkability-range">
+                            <span class="slider-value" id="walkability-range-value" style="display:none">10</span>
+                        </div>
+                    </div>
+                    <div class="form-column">
+                        <input id="crime-toggle" type="radio" class="radio-option" name="layer-control" value="Crime">
+                        <label for="crime-toggle">Crime</label>
+                    </div>    
+                    <div class="form-column">
+                        <div class="layer-button-box" id="crime-buttons">
+                            <button type="button" class="layer-button" id="crime-filter">Filter</button>
+                            <button type="button" class="layer-button" id="crime-compare">Compare</button>
+                            <input type="range" min="1" max="10" value="1" class="slider" style="display:none" id="crime-range">
+                            <span class="slider-value" id="crime-range-value" style="display:none">10</span>
+                        </div>
+                    </div>
+                    <div class="form-column">
+                        <input id="air-quality-toggle" type="radio" class="radio-option" name="layer-control" value="Air Quality">
+                        <label for="air-quality-toggle">Air Quality</label>
+                    </div>
+                    <div class="form-column">
+                        <div class="layer-button-box" id="air-quality-buttons">
+                            <button type="button" class="layer-button" id="air-quality-filter">Filter</button>
+                            <button type="button" class="layer-button" id="air-quality-compare">Compare</button>
+                            <input type="range" min="1" max="10" value="1" class="slider" style="display:none" id="air-quality-range">
+                            <span class="slider-value" id="air-quality-range-value" style="display:none">10</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div id="property-list-container">
+                <div id="property-list-title">
+                    Selected Properties <span id="selected-count">(0/5)</span>
+                    <button id="finished-btn" class="action-btn">Finished</button>
+                </div>
+                <div id="property-list"></div>
+            </div>
+
+            <div id="property-details">
+                <h3 id="property-address">Property Details</h3>
+                <div class="metric-container">
+                    <div class="metric-value">
+                        <span>Walkability:</span>
+                        <span id="walkability-value">--</span>
+                    </div>
+                    <div id="walkability-bar" class="metric-bar" style="background: #41b6c4; width: 0%"></div>
+                </div>
+                <div class="metric-container">
+                    <div class="metric-value">
+                        <span>Air Quality:</span>
+                        <span id="air-quality-value">--</span>
+                    </div>
+                    <div id="air-quality-bar" class="metric-bar" style="background: #fdcc8a; width: 0%"></div>
+                </div>
+                <div class="metric-container">
+                    <div class="metric-value">
+                        <span>Crime:</span>
+                        <span id="crime-value">--</span>
+                    </div>
+                    <div id="crime-bar" class="metric-bar" style="background: #abd9e9; width: 0%"></div>
+                </div>
+            </div>
+
+            <div id="data-map"></div>
+        </div>
+    </div>
+
+   
+    <script src="app-manager.js"></script>
+    <script src="agents.js"></script>
+    <script src="partners.js"></script>
+    <script src="social-media.js"></script>
+    <script src="data-map.js"></script>
+</body>
+</html>

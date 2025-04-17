@@ -22,6 +22,26 @@ body, html {
     z-index: 15;
     border: 2px solid #333;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    transition: ease 0.3s;
+}
+
+#map.expanded {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 60vw;
+    height: 60vh;
+    z-index: 1000;
+}
+
+#expand-map {
+    position: absolute;
+    bottom: 10px;
+    right: 50%;
+    transform: translateX(50%);
+    z-index: 20;
+    color: white;
+    font-size: 2rem;
 }
 
 .video-container {
@@ -215,4 +235,39 @@ body, html {
     height: calc(100% - 160px);
     pointer-events: none;
     z-index: 30;
+}
+
+.draw-dropdown, .text-color-dropdown {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+    padding: 5px 0;
+    min-width: 150px;
+    top: -100px;
+}
+
+.dropdown-item {
+    padding: 8px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+.color-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+}
+
+.control-button {
+    position: relative;
 }
