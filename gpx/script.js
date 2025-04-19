@@ -196,13 +196,22 @@ function createCustomControls() {
     
     const downloadButton = createButton('download-button', 'fa-download', 'Download Screenshot');
     downloadButton.addEventListener('click', takeScreenshot);
-    
+
+    const clearButton = createButton('clear-button', 'fa-trash-alt', 'Clear Annotations');
+    clearButton.addEventListener('click', function() {
+        if (fabricCanvas) {
+            fabricCanvas.clear();
+            debugLog('All annotations cleared');
+        }
+    });
+
     buttonsContainer.appendChild(playButton);
     buttonsContainer.appendChild(loadVideoButton);
     buttonsContainer.appendChild(loadGpxButton);
     buttonsContainer.appendChild(drawButton);
     buttonsContainer.appendChild(annotateButton);
     buttonsContainer.appendChild(downloadButton);
+    buttonsContainer.appendChild(clearButton);
     
     controlsContainer.appendChild(timelineContainer);
     controlsContainer.appendChild(buttonsContainer);
@@ -316,12 +325,13 @@ function createDrawDropdown() {
             drawButton.querySelector('.tooltip').textContent = `Draw: ${option.name}`;
             dropdown.style.display = 'none';
             
-            if (drawButton.classList.contains('active')) {
-                annotationMode = true;
-                document.querySelector('.annotation-canvas-container').style.pointerEvents = 'auto';
-            }
+            annotationMode = true;
+            document.querySelector('.annotation-canvas-container').style.pointerEvents = 'auto';
+            drawButton.classList.add('active');
             
-            debugLog(`Drawing mode changed to: ${option.value}`);
+            document.getElementById('textButton').classList.remove('active');
+            
+            debugLog(`Drawing mode activated and changed to: ${option.value}`);
         });
         
         dropdown.appendChild(item);
@@ -376,13 +386,14 @@ function createTextColorDropdown() {
             textButton.querySelector('.tooltip').textContent = `Text: ${color.name}`;
             dropdown.style.display = 'none';
             
-            if (textButton.classList.contains('active')) {
-                annotationMode = true;
-                currentAnnotationType = 'text';
-                document.querySelector('.annotation-canvas-container').style.pointerEvents = 'auto';
-            }
+            annotationMode = true;
+            currentAnnotationType = 'text';
+            document.querySelector('.annotation-canvas-container').style.pointerEvents = 'auto';
+            textButton.classList.add('active');
             
-            debugLog(`Text color changed to: ${color.value}`);
+            document.getElementById('rectangleButton').classList.remove('active');
+            
+            debugLog(`Text annotation mode activated with color: ${color.value}`);
         });
         
         dropdown.appendChild(item);
@@ -470,11 +481,8 @@ function processGpxPoints(trackPoints) {
     
     if (pointsWithTimestamps.length > 0) {
         const firstCoordinates = pointsWithTimestamps[0].coordinates;
-        map.flyTo({
-            center: firstCoordinates,
-            zoom: 17,
-            essential: false
-        });
+        map.setCenter(firstCoordinates);
+        map.setZoom(17);
         debugLog(`Setting map center to: ${firstCoordinates}`);
     }
     
@@ -650,6 +658,11 @@ function updateMarkerPosition(currentTime) {
     
     const position = getPositionAtTime(currentTime);
     playerMarker.setLngLat(position);
+
+    map.easeTo({
+        center: position,
+        duration: 300
+    });
 }
 
 function updatePreviewMarkerPosition(previewTime) {
@@ -997,3 +1010,12 @@ function debugLog(...args) {
         console.log('[GpxVideo]', ...args);
     }
 }
+
+// Road map:
+// 1. Link to video hosting and air table
+// 2. Add points on map
+// 3. Stream map location to map center
+// 4. Clearing/deleting/moving annotations
+// 5. Saving annotation screenshots to folder tagged on airtable?
+// 6. Recoverable annotaitons?
+// 7. Fix free draw polygons
