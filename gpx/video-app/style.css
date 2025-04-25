@@ -1,0 +1,329 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #555555;
+}
+
+#app-wrap {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30vw;
+    height: 30vh;
+    z-index: 15;
+    border: 2px solid #333;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    transition: ease 0.3s;
+}
+
+#map.expanded {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 60vw;
+    height: 60vh;
+    z-index: 1000;
+}
+
+#expand-map {
+    position: absolute;
+    bottom: 10px;
+    right: 50%;
+    transform: translateX(50%);
+    z-index: 20;
+    color: white;
+    font-size: 2rem;
+}
+
+.video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    z-index: 11;
+    max-width: 100vw;
+    max-height: 100vh;
+}
+
+#videoPlayer {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#controls {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 16;
+    display: flex;
+    flex-direction: column;
+    width: 80vw;
+    background-color: rgba(0,0,0,0.7);
+    padding: 10px;
+    border-radius: 5px;
+    transition: opacity 0.3s ease;
+}
+
+.timeline-container {
+    position: relative;
+    height: 10px;
+    background-color: #555;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #4CAF50;
+    width: 0%;
+    border-radius: 5px;
+    position: relative;
+}
+
+.progress-handle {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    left: 0%;
+}
+
+.control-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+}
+
+.control-button {
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+    position: relative;
+}
+
+.control-button:hover {
+    background-color: #5fb8d9;
+}
+
+.control-button i {
+    font-size: 18px;
+}
+
+.tooltip {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.control-button:hover .tooltip {
+    opacity: 1;
+}
+
+.play-pause-button {
+    background-color: #4CAF50;
+}
+
+.load-video-button, .load-gpx-button {
+    background-color: #2196F3;
+}
+
+.draw-button {
+    background-color: #9C27B0;
+}
+
+.annotate-button {
+    background-color: #FF9800;
+}
+
+.download-button {
+    background-color: #E91E63;
+}
+
+.active {
+    border-radius: 2px;
+    background-color: #5fb8d9;
+}
+
+#load-controls {
+    position: absolute;
+    bottom: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 16;
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(0,0,0,0.5);
+    padding: 10px;
+    border-radius: 5px;
+    transition: opacity 0.3s ease;
+}
+
+.load-video-button, .load-gpx-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    text-align: center;
+    font-size: 16px;
+    margin: 4px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.player-marker {
+    width: 15px;
+    height: 15px;
+    background-color: red;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.preview-marker {
+    width: 12px;
+    height: 12px;
+    background-color: blue;
+    border-radius: 50%;
+    border: 2px solid white;
+    opacity: 0.7;
+}
+
+.annotation-canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0; 
+    width: 100%;
+    height: calc(100% - 160px);
+    pointer-events: none;
+    z-index: 30;
+}
+
+.draw-dropdown, .text-color-dropdown {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+    padding: 5px 0;
+    min-width: 150px;
+    top: -100px;
+}
+
+.dropdown-item {
+    padding: 8px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+.color-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+}
+
+.control-button {
+    position: relative;
+}
+
+.video360-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #000;
+}
+
+.toggle-view-button i {
+    color: #fff;
+}
+
+.toggle-view-button.active i {
+    color: #42f5f5;
+}
+
+#timestamp-link-container {
+    position: absolute;
+    top: 60px;
+    left: 20px;
+    z-index: 100;
+    background-color: #333;
+    border: 1px solid #aaa;
+    padding: 10px;
+    border-radius: 5px;
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.timestamp-link {
+    background-color: #444;
+    color: white;
+    border: 1px solid #888;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.timestamp-link:hover {
+    background-color: #5fb8d9;
+    color: #000;
+}
+
+.timestamp-link.selected {
+    background-color: #5fb8d9;
+}
+
+.fa-clock {
+    color: white;
+    font-size: 2rem;
+}

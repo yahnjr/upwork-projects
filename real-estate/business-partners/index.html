@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Partners Map</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href='style.css' rel='stylesheet'>
+
+</head>
+<body>
+    
+    <div id="map"></div>
+    <div id="coverageBox">
+        <div id="coverageInnerWrapper" class="controlBox">
+            <div class="coverageType controlBox" id="nationalType">
+                <div class="coverageHeader">
+                    <div class="coverageTitle">
+                        <input type="checkbox" id="nationalCheckbox" name="nationalCheckbox" checked>
+                        <label for="nationalCheckbox">National Partners</label>
+                    </div>
+                    <div class="toggleArrow" id="nationalToggle">▶</div>
+                </div>
+                <div class="coverageDropdown" id="nationalDropdown"></div>
+            </div>
+            <div class="coverageType controlBox" id="localType">  
+                <div class="coverageHeader">
+                    <div class="coverageTitle">
+                        <input type="checkbox" id="localCheckbox" name="localCheckbox" checked>
+                        <label for="localCheckbox">Local Partners</label>
+                    </div>
+                    <div class="toggleArrow" id="localToggle">▶</div>
+                </div>
+                <div class="coverageDropdown" id="localDropdown"></div>
+            </div>
+        </div>
+    </div>
+    <div class="controlBox" id="selectionList">
+        <div id="selectionListHeader"> 
+            <p id="selectionLabel"></p>
+            <button class="close-button" id="close-list">×</button>
+        </div>
+        <div id="listedFeatures"></div>
+    </div>
+    <div id="selectionBox">
+        <div class="controlBox selectMode" id="viewList">
+            <i class="fa-solid fa-list"></i>
+        </div>
+        <div class="controlBox selectMode" id="currentVisible">
+            <i class="fa fa-eye" aria-hidden="true"></i>
+        </div>
+        <div class="controlBox selectMode" id="currentPoint">
+            <i class="fa fa-map-marker" aria-hidden="true"></i>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

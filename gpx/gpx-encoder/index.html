@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encode GPX</title>
+</head>
+<body>
+    <h1>GPX Encoder</h1>
+    <form id="gpx-form">
+        <label for="gpx-data">GPX Data:</label><br>
+        <textarea id="gpx-data" rows="10" cols="50"></textarea><br><br>
+        <button type="submit">Encode GPX</button>
+    </form>
+    <div id="encoded-gpx" style="margin-top: 20px;"></div>
+
+    <script>
+        let gpxString = null;
+
+        function gpxToJson(gpxString) {
+            const parser = new DOMParser();
+            const gpxDoc = parser.parseFromString(gpxString, "text/xml");
+            
+            const points = [];
+            const trackPoints = gpxDoc.querySelectorAll('trkpt');
+            
+            trackPoints.forEach(point => {
+                const lat = parseFloat(point.getAttribute('lat'));
+                const lon = parseFloat(point.getAttribute('lon'));
+                const ele = point.querySelector('ele') ? 
+                    parseFloat(point.querySelector('ele').textContent) : null;
+                const time = point.querySelector('time') ? 
+                    point.querySelector('time').textContent : null;
+                
+                points.push({ lat, lon, ele, time });
+            });
+            
+            return JSON.stringify(points);
+        }
+
+        document.getElementById('gpx-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            gpxString = document.getElementById('gpx-data').value;
+            const gpxJson = gpxToJson(gpxString);
+            if (gpxJson) {
+                document.getElementById('encoded-gpx').innerText = `${gpxJson}`;
+            } else {
+                document.getElementById('encoded-gpx').innerText = 'Error encoding GPX data.';
+            }
+        });
+
+    </script>
+    
+</body>
+</html>

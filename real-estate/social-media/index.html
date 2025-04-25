@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Map</title>
+    <link href='style.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="national-accounts-panel" class="side-panel hidden">
+        <div id="national-list-header">
+            <h3>National Accounts</h3>
+            <i id="hide-national-list" class="fa-solid fa-eye-slash"></i>
+            <i id="show-national-list" class="fa-solid fa-eye" style="display: none"></i>
+        </div>
+        <div id="accounts-list"></div>
+    </div>
+
+    <div id="map"></div>
+   
+    <script src="script.js"></script>
+</body>
+</html>

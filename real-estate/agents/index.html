@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Agents</title>
+    <link href='style.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="sidebar">
+        <div id="select-mode-box">
+            <button class="select-mode-btn selected" id="click-mode">Click to View</button>
+            <button class="select-mode-btn" id="view-mode">Zoom to View</button>
+            <button class="select-mode-btn" id="polygon-mode">Select a State</button>
+        </div>
+        <div id="popup-container">
+            <i class="fa-solid fa-location-dot" id="big-marker"></i>
+            <h3 id="no-point-header">Click a marker on the map to view real estate professional details</h3>
+            <p id="no-point-p">124 military-friendly real estate professionals found</p>
+        </div>
+    </div>
+
+    <div id="map"></div>
+   
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+{
+  "type" : "FeatureCollection",
+  "features" : [{"type":"Feature","id":1,"geometry":{"type":"Point","coordinates":[-106.38238149321084,39.632982730503784]},"properties":{"OBJECTID":1,"name":"Tommy"}},{"type":"Feature","id":2,"geometry":{"type":"Point","coordinates":[-106.38348556940741,39.625368259547372]},"properties":{"OBJECTID":2,"name":"Billy"}},{"type":"Feature","id":3,"geometry":{"type":"Point","coordinates":[-106.36998572594523,39.627030372624951]},"properties":{"OBJECTID":3,"name":"Sarah"}},{"type":"Feature","id":4,"geometry":{"type":"Point","coordinates":[-106.37362415886577,39.631262783305125]},"properties":{"OBJECTID":4,"name":"Suzy"}}]
+}

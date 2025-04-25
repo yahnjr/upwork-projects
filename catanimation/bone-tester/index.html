@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spine Bones Viewer (Zoomable)</title>
+  <style>
+    canvas {
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+      cursor: grab;
+    }
+    canvas:active {
+      cursor: grabbing;
+    }
+  </style>
+</head>
+<body>
+  <h2>Spine Bones Viewer (Zoom & Pan)</h2>
+  <canvas id="spineCanvas" width="800" height="1000"></canvas>
+
+  <script>
+    const canvas = document.getElementById('spineCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const state = {
+      zoom: 1,
+      offsetX: canvas.width / 2,
+      offsetY: canvas.height * 0.75,
+      dragging: false,
+      dragStart: null,
+      bones: [],
+      boneMap: {}
+    };
+
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = 1.1;
+      const oldZoom = state.zoom;
+      state.zoom *= e.deltaY < 0 ? zoomFactor : 1 / zoomFactor;
+
+      // Zoom to mouse position
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+
+      const dx = mx - state.offsetX;
+      const dy = my - state.offsetY;
+      state.offsetX -= dx * (state.zoom / oldZoom - 1);
+      state.offsetY -= dy * (state.zoom / oldZoom - 1);
+
+      draw();
+    });
+
+    canvas.addEventListener('mousedown', (e) => {
+      state.dragging = true;
+      state.dragStart = { x: e.offsetX, y: e.offsetY };
+    });
+
+    canvas.addEventListener('mouseup', () => {
+      state.dragging = false;
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      state.dragging = false;
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (!state.dragging) return;
+      const dx = e.offsetX - state.dragStart.x;
+      const dy = e.offsetY - state.dragStart.y;
+      state.offsetX += dx;
+      state.offsetY += dy;
+      state.dragStart = { x: e.offsetX, y: e.offsetY };
+      draw();
+    });
+
+    async function loadBones() {
+      const response = await fetch('assets/cat.json');
+      const json = await response.json();
+      state.bones = json.bones;
+      state.boneMap = {};
+      state.bones.forEach(b => {
+        state.boneMap[b.name] = b;
+      });
+      draw();
+    }
+
+    function getWorldPosition(bone) {
+      if (!bone.parent) return { x: 0, y: 0 };
+
+      const parent = state.boneMap[bone.parent];
+      const parentPos = getWorldPosition(parent);
+      const angle = (parent.rotation || 0) * (Math.PI / 180);
+      const dx = bone.x || 0;
+      const dy = bone.y || 0;
+
+      const x = parentPos.x + dx * Math.cos(angle) - dy * Math.sin(angle);
+      const y = parentPos.y + dx * Math.sin(angle) + dy * Math.cos(angle);
+      return { x, y };
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.translate(state.offsetX, state.offsetY);
+      ctx.scale(state.zoom, -state.zoom); // Flip Y to match typical animation layout
+
+      state.bones.forEach(bone => {
+        const pos = getWorldPosition(bone);
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 4 / state.zoom, 0, Math.PI * 2);
+        ctx.fillStyle = 'blue';
+        ctx.fill();
+
+        if (bone.parent) {
+          const parentPos = getWorldPosition(state.boneMap[bone.parent]);
+          ctx.beginPath();
+          ctx.moveTo(parentPos.x, parentPos.y);
+          ctx.lineTo(pos.x, pos.y);
+          ctx.strokeStyle = 'gray';
+          ctx.lineWidth = 1 / state.zoom;
+          ctx.stroke();
+        }
+
+        // Label
+        ctx.save();
+        ctx.scale(1 / state.zoom, -1 / state.zoom);
+        ctx.fillStyle = 'black';
+        ctx.font = `${12}px sans-serif`;
+        ctx.fillText(bone.name, pos.x * state.zoom + 6, -pos.y * state.zoom - 6);
+        ctx.restore();
+      });
+
+      ctx.restore();
+    }
+
+    loadBones();
+  </script>
+</body>
+</html>

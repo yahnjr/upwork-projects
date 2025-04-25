@@ -1,0 +1,430 @@
+body {
+    margin: 0;
+    display: flex;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+#map {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#coverageBox {
+    position: absolute;
+    top: 10px;
+    right: 100px;
+    width: 30%;
+    z-index: 10;
+    min-width: 200px;
+    display: none;
+}
+
+#coverageInnerWrapper {
+    position: absolute;
+    width: 100%;
+    min-width: 200px;
+    z-index: 5;
+    padding: 0;
+}
+
+.coverageType {
+    width: 100%;
+    min-width: 200px;
+    max-width: 350px;
+    transition: all 0.3s ease;
+    padding: 5px;
+}
+
+label {
+    font-size: 1rem;
+    color: white;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+input[type="checkbox"] {
+    transform: scale(2);
+    accent-color: #a4ccf1;
+    margin-right: 20px;
+}
+
+#selectionList {
+    position: absolute;
+    top: 20px;
+    max-height: 60vh;
+    right: 10px;
+    width: 25vw;
+    min-width: 250px;
+    z-index: 10;
+    height: 0px;
+    overflow-y: auto;
+    display: none;
+}
+
+#selectionBox {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 25%;
+    min-width: 200px;
+    z-index: 10;
+    display: flex;
+}
+
+.selectMode {
+    margin: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fa, .fa-solid {
+    color: white;
+    font-size: 3rem;
+}
+
+.controlBox {
+    margin: 20px;
+    padding: 20px;
+    background-color: rgba(240,240,240,0.7);
+    border-radius: 10px;
+    border: 2px solid beige;
+    position: relative;
+}
+
+#nationalType:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Flag_of_the_United_States_%28Pantone%29.svg/255px-Flag_of_the_United_States_%28Pantone%29.svg.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: -1;
+}
+
+#localType:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/City_Skyline_from_Above_%28Unsplash%29.jpg/640px-City_Skyline_from_Above_%28Unsplash%29.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.selectMode {
+    width: 30px;
+    height: 30px;
+}
+
+#selectionListHeader {
+    display: flex;
+    justify-content: space-between;
+}
+
+.list-logo, .popup-logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    margin-right: 10px;
+}
+
+.popup-logo {
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.coverageHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: default;
+}
+
+.coverageTitle {
+    display: flex;
+    align-items: center;
+}
+
+.toggleArrow {
+    cursor: pointer;
+    font-size: 12px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    transition: background-color 0.2s;
+}
+
+.toggleArrow:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.coverageDropdown {
+    max-height: 0;
+    overflow-y: hidden;
+    border: 0;
+    padding: 0;
+    margin-top: 0;
+    background-color: rgba(249, 249, 249, 0.8);
+    border-radius: 4px;
+    transition: all 0.3s ease; 
+}
+
+.coverageDropdown.expanded {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 8px;
+    margin-top: 10px;
+}
+
+.partnerItem {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    flex: 2;
+}
+
+.partnerItem:last-child {
+    border-bottom: none;
+}
+
+.partnerName {
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.partnerDetails {
+    font-size: 0.9em;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+label {
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+.noPartners {
+    color: #777;
+    font-style: italic;
+}
+
+.partnerItem {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.partnerItem:hover {
+    background-color: rgba(0, 124, 191, 0.1);
+}
+
+.partnerItem.selected {
+    background-color: rgba(0, 124, 191, 0.2);
+}
+
+.docked-popup {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 24%;
+    min-width: 350px;
+    background-color: rgba(240, 240, 240, 0.9);
+    border-radius: 10px;
+    border: 2px solid beige;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    padding: 0;
+    overflow: hidden;
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: rgba(0, 124, 191, 0.7);
+    color: white;
+}
+
+.popup-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.close-button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.popup-content {
+    padding: 15px;
+}
+
+.popup-detail {
+    margin-bottom: 8px;
+}
+
+.popup-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #007cbf;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.popup-link:hover {
+    text-decoration: underline;
+}
+
+.selection-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.selection-item:hover {
+    background-color: #f5f5f5;
+}
+
+.selection-item .list-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    margin-right: 10px;
+}
+
+.selection-item .partnerDetails {
+    flex: 1;
+}
+
+.selection-item .list-name-hq {
+    display: flex;
+    flex-direction: column;
+}
+
+.selection-item .partnerName {
+    font-weight: bold;
+}
+
+.selection-item .partnerHQ {
+    font-size: 0.8em;
+    color: #666;
+}
+
+@media screen and (max-width: 768px) {
+    #coverageBox {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: auto;
+        width: 80%;
+        height: 40vh;
+        overflow-y: auto;
+        z-index: 20;
+    }
+    
+    .coverageDropdown.expanded {
+        max-height: 150px;
+    }
+    
+    .partnerItem {
+        padding: 5px;
+    }
+    
+    .list-logo {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .docked-popup {
+        bottom: 10px;
+        left: 10px;
+        width: 85%;
+        max-width: 48vw;
+        max-height: 50vh; 
+        overflow-y: auto; 
+    }
+    
+    .popup-logo {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .popup-header h3 {
+        font-size: 14px;
+    }
+    
+    .popup-content {
+        padding: 10px;
+        font-size: 0.9em;
+    }
+    
+    .popup-detail {
+        margin-bottom: 5px;
+    }
+    
+    #selectionList {
+        width: 85%;
+        max-height: 40vh;
+        right: 10px;
+    }
+    
+    .selection-item .list-logo {
+        width: 30px;
+        height: 30px;
+    }
+    
+    #selectionBox {
+        bottom: 5px;
+        right: 5px;
+        width: auto;
+    }
+    
+    .selectMode {
+        margin: 10px;
+    }
+    
+    .fa, .fa-solid {
+        font-size: 2rem;
+    }
+}

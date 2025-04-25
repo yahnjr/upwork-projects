@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Partners Map</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { 
+            margin: 0; 
+            display: flex; 
+            height: 100vh; 
+            font-family: Arial, sans-serif; 
+        }
+        #sidebar { 
+            width: 30vw;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: #f5f5f5;
+        }
+        #map { 
+            width: 70%; 
+            height: 100vh; 
+        }
+        .company-item { 
+            padding: 10px;
+            margin-bottom: 8px;
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            border-left: 4px solid #3498db;
+            transition: all 0.2s ease;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .company-item:hover { 
+            background-color: #e9f7fe;
+            transform: translateX(5px); 
+        }
+        .company-item.active {
+            background-color: #e9f7fe;
+            border-left-color: #2ecc71;
+            transform: translateX(5px);
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                display: flex;
+                flex-direction: column-reverse;
+            }
+
+            #map {
+                width: 100vw;
+                height: 60vh;
+            }
+
+            #sidebar {
+                width: 100vw;
+                height: 40vh;
+                font-size: 0.8rem;
+            }
+            
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <h2>Our Partners:</h2>
+    </div>
+    <div id="map"></div>
+    
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
+        let activeCompany = null;
+        let map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/satellite-streets-v11',
+                bounds: [
+                    [-128.272, 30.165],
+                    [-64.152, 48.046]
+                ]
+            });
+
+        fetch('BusinessPartners.geojson')
+            .then(response => response.json())
+            .then(data => {
+                map.on('load', () => {
+                    map.addSource('businesses', {
+                        type: 'geojson',
+                        data: data
+                    });
+
+                    map.addLayer({
+                        id: 'business-points',
+                        type: 'circle',
+                        source: 'businesses',
+                        paint: {
+                            'circle-radius': 4,
+                            'circle-color': '#007cbf',
+                            'circle-opacity': 0.8
+                        }
+                    });
+
+                    const sidebar = document.getElementById('sidebar');
+                    const items = {};
+
+                    data.features.forEach(feature => {
+                        const { CompanyName, Description } = feature.properties;
+                        const item = document.createElement('div');
+                        item.className = 'company-item';
+                        item.innerHTML = `<h3>${CompanyName}:</h3><p> ${Description}</p>`;
+                        sidebar.appendChild(item);
+                        
+                        items[CompanyName] = item;
+
+                        item.addEventListener('mouseover', () => {
+                            if (activeCompany !== CompanyName) {
+                                highlightCompany(CompanyName);
+                            }
+                        });
+
+                        item.addEventListener('mouseleave', () => {
+                            if (activeCompany !== CompanyName) {
+                                resetHighlight();
+                            }
+                        });
+
+                        item.addEventListener('click', () => {
+                            if (activeCompany === CompanyName) {
+                                activeCompany = null;
+                                item.classList.remove('active');
+                                resetHighlight();
+                            } else {
+                                activeCompany = CompanyName;
+                                document.querySelectorAll('.company-item').forEach(el => el.classList.remove('active'));
+                                item.classList.add('active');
+
+                                highlightCompany(CompanyName);
+                                
+                                const feature = data.features.find(f => f.properties.CompanyName === CompanyName);
+                            }
+                        });
+                    });
+
+                    map.on('mousemove', 'business-points', (e) => {
+                        if (e.features.length > 0) {
+                            const hoveredCompany = e.features[0].properties.CompanyName;
+                            highlightCompany(hoveredCompany);
+
+                            document.querySelectorAll('.company-item').forEach(el => el.classList.remove('hovered'));
+
+                            if (items[hoveredCompany]) {
+                                items[hoveredCompany].classList.add('hovered');
+                            }
+                        }
+                    });
+
+                    map.on('mouseleave', 'business-points', () => {
+                        document.querySelectorAll('.company-item').forEach(el => el.classList.remove('hovered'));
+                        resetHighlight();
+                    });
+
+                    map.on('click', 'business-points', (e) => {
+                        if (e.features.length > 0) {
+                            const clickedCompany = e.features[0].properties.CompanyName;
+                            
+                            if (activeCompany === clickedCompany) {
+                                activeCompany = null;
+                                if (items[clickedCompany]) {
+                                    items[clickedCompany].classList.remove('active');
+                                }
+                                resetHighlight();
+                            } else {
+                                activeCompany = clickedCompany;
+                                Object.values(items).forEach(item => item.classList.remove('active'));
+                                if (items[clickedCompany]) {
+                                    items[clickedCompany].classList.add('active');
+                                    items[clickedCompany].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }
+                                highlightCompany(clickedCompany);
+                            }
+                        }
+                    });
+
+                    function highlightCompany(companyName) {
+                        map.setPaintProperty('business-points', 'circle-radius', [
+                            'case', ['==', ['get', 'CompanyName'], companyName], 10, 6
+                        ]);
+                        map.setPaintProperty('business-points', 'circle-color', [
+                            'case', ['==', ['get', 'CompanyName'], companyName], '#f9fc30', '#007cbf'
+                        ]);
+                    }
+
+                    function resetHighlight() {
+                        map.setPaintProperty('business-points', 'circle-radius', 6);
+                        map.setPaintProperty('business-points', 'circle-color', '#007cbf');
+                    }
+                });
+            });
+    </script>
+</body>
+</html>

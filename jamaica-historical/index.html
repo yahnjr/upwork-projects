@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historical Maps and Places</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body {
+            margin: 0;
+        }
+        #map {
+            width: 100vw;
+            height: 100vh;
+        }
+        #map-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
+            padding: 10px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #filter-box {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 2;
+            background: rgba(255,255,255, 0.6);
+            border-radius: 4px;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                display: flex;
+                flex-direction: column-reverse;
+            }
+
+            #map {
+                width: 100vw;
+                height: 70vh;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <button id="map-toggle">Hide Map</button>
+    <div id="filter-box">
+        <h1>Filter by year:</h1>
+        <label for="low-year">Beginning in:</label>
+        <input type="number" name="low-year" id="low-year" class="number-input" value="1895">
+        <label for="low-year">Ending in:</label>
+        <input type="number" name="high-year" id="high-year" class="number-input" value="1922">
+    </div>
+
+    <script>
+        let map;
+        let historical;
+        let historicalVisible = true;
+        let lowYear = 1895;
+        let highYear = 1922;
+        let markers = []; 
+        const lowYearInput = document.getElementById('low-year');
+        const highYearInput = document.getElementById('high-year');
+
+        function initializeMap() {
+            mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/satellite-streets-v11',
+                bounds: [
+                    [-78.5747197, 17.5122335],
+                    [-75.9698770, 18.6359325]
+                ]
+            });
+
+            map.on('load', function() {
+                addHistPOI();
+                addHistMap();
+                setupToggleButton();
+            });
+        }
+
+        function addHistPOI() {
+            fetch('historical_poi.geojson')
+                .then(response => response.json())
+                .then(data => {
+                    historical = data;
+                    historical.features.forEach(function(feature) {
+                        const coordinates = feature.geometry.coordinates;
+                        const properties = feature.properties;
+                        const year = parseInt(properties.year) || 0;
+                        
+                        const marker = new mapboxgl.Marker()
+                            .setLngLat(coordinates)
+                            .addTo(map);
+                        
+                        const popup = new mapboxgl.Popup({ offset: 25 })
+                            .setHTML(`
+                                <h3>Location ${properties.OBJECTID}</h3>
+                                <p>Year: ${properties.year || 'Unknown'}</p>
+                                ${properties.description ? `<p>${properties.description}</p>` : ''}
+                            `);
+
+                        marker.setPopup(popup);
+                        
+                        markers.push({
+                            marker: marker,
+                            year: year
+                        });
+                    });
+                    filterMarkers();
+                })
+                .catch(error => console.error('Error loading historical data:', error));
+        }
+
+        function filterMarkers() {
+            markers.forEach(({marker, year}) => {
+                if (year >= lowYear && year <= highYear) {
+                    marker.getElement().style.display = '';
+                } else {
+                    marker.getElement().style.display = 'none';
+                }
+            });
+        }
+
+        function addHistMap() {
+            map.addSource('jamaicahistorical', {
+                'type': 'image',
+                'url': 'jamaicahistorical.png',
+                'coordinates': [
+                    [-78.62, 18.7],
+                    [-75.9, 18.6359325],
+                    [-75.9, 17.5],
+                    [-78.62, 17.3]
+                ]
+            });
+
+            map.addLayer({
+                'id': 'jamaicahistorical',
+                'type': 'raster',
+                'source': 'jamaicahistorical',
+                'paint': {
+                    'raster-opacity': 0.7
+                }
+            });
+        }
+
+        function setupToggleButton() {
+            const toggleButton = document.getElementById('map-toggle');
+            toggleButton.addEventListener('click', () => {
+                historicalVisible = !historicalVisible;
+                map.setPaintProperty(
+                    'jamaicahistorical',
+                    'raster-opacity',
+                    historicalVisible ? 0.7 : 0
+                );
+                toggleButton.textContent = historicalVisible ? 
+                    'Hide Historical Map' : 'Show Historical Map';
+            });
+        }
+
+        lowYearInput.addEventListener('input', function() {
+            lowYear = parseInt(lowYearInput.value) || 1895;
+            filterMarkers();
+        });
+
+        highYearInput.addEventListener('input', function() {
+            highYear = parseInt(highYearInput.value) || 1922;
+            filterMarkers();
+        });
+
+        window.onload = initializeMap;
+    </script>
+</body>
+</html>

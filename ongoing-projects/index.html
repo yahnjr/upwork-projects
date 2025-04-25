@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ongoing Projects</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { 
+            margin: 0; 
+            display: flex; 
+            height: 100vh; 
+            font-family: Arial, sans-serif; 
+        }
+        #map { 
+            width: 100%; 
+            height: 100%; 
+        }
+        #icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background-color: rgba(255,255,255,0.4);
+            border-radius: 10%;
+        }
+        #controls {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            z-index: 1000;
+            max-width: 500px;
+            background-color: rgba(255,255,255,0.7);
+            border-radius: 5px;
+            padding: 10px;
+            color: black;
+            transition: transform 0.3s ease;
+        }
+        #toggle-controls {
+            position: absolute;
+            bottom: 50%;
+            left: 0px;
+            z-index: 1000;
+            background-color: rgba(255,255,255,0.7);
+            border: none;
+            border-radius: 0 5px 5px 0;
+            padding: 10px 5px;
+            cursor: pointer;
+            transition: left 0.3s ease, transform 0.3s ease;
+        }
+        .controls-collapsed #toggle-controls {
+            transform: rotate(180deg);
+        }
+        .controls-collapsed #controls {
+            transform: translateX(-110%);
+        }
+        .fa-solid {
+            color: white;
+        }
+        #division-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .selector-box label {
+            display: inline-block;
+            width: 120px;
+            padding: 10px;
+            text-align: center;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            background-color: darkgray;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #division-selector label {
+            width: 150px;
+        }
+
+        #filter-reset {
+            width: 120px;
+            background-color: darkgrey;
+            border-radius: 5%;
+            border-color: white;
+            height: 40px;
+        }
+
+        .selector-box label:hover {
+            border-color: blueviolet;
+            background: lightgreen;
+        }
+
+        input[type="checkbox"], input[type="radio"] {
+            display:none;
+        }
+        label:has(input[type="checkbox"]:checked) {
+            border: 2px solid #1592b5;
+            border-radius: 5px;
+        }
+
+        .selector-box label {
+            width: 120px;
+            padding: 10px;
+            text-align: center;
+            border-color: black;
+            background-color: darkgrey;
+            border-radius: 5%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <button id="toggle-controls">
+        <i class="fa-solid fa-chevron-left"></i>
+    </button>
+
+    <div id="controls">
+        <h2>View Projects By:</h2>
+        <div id="status-selector" class="selector-box">
+            <h3>Project Status:</h3>
+            <label><input type="radio" name="status" value="" checked> All Projects</label>
+            <label><input type="radio" name="status" value="Ongoing" checked> Ongoing</label>
+            <label><input type="radio" name="status" value="Completed" checked> Completed</label>
+        </div>
+        <div id="division-selector" class="selector-box multiselect">
+            <h3>Division: </h3>
+            <button id="filter-reset">Clear</button>
+            <label title="Vertical">
+                <input type="checkbox" name="division" value="Vertical">
+                <i class="fa-solid fa-building"></i>
+                Vertical
+            </label>
+            <label title="Homes">
+                <input type="checkbox" name="division" value="Homes">
+                <i class="fa-solid fa-house"></i>
+                Homes
+            </label>
+            <label title="Studio">
+                <input type="checkbox" name="division" value="Studio">
+                <i class="fa-solid fa-palette"></i>
+                Studio
+            </label>
+            <label title="Transportation">
+                <input type="checkbox" name="division" value="Transportation">
+                <i class="fa-solid fa-bus"></i>
+                Transportation
+            </label>
+        </div>
+
+    </div>
+    <a href="https://connorgaskins.com/" target="_blank"> <img src="Frame-37.svg" id="icon"> </a>
+    
+    <script>
+        let activeCompany = null;
+        const divisionColors = {
+            'Vertical': '#FF5733',
+            'Homes': '#33A8FF',
+            'Studio': '#33FF57',
+            'Transportation': '#F033FF',
+            'default': '#dc9c3c'
+        };
+
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
+        let map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/dark-v11',
+                bounds: [
+                    [-128.272, 30.165],
+                    [-64.152, 48.046]
+                ]
+            });
+
+        const toggleButton = document.getElementById('toggle-controls');
+        toggleButton.addEventListener('click', () => {
+            document.body.classList.toggle('controls-collapsed');
+        });
+
+        map.on('load', function() {
+            fetch('ongoingProjects.geojson')
+                .then(response => response.json())
+                .then(data => {
+                    projects = data;
+
+                    map.addSource('projects', {
+                        type: 'geojson',
+                        data: projects
+                    });
+
+                    map.addLayer({
+                        id: 'projects-glow',
+                        type: 'circle',
+                        source: 'projects',
+                        paint: {
+                            'circle-radius': 12,
+                            'circle-color': ['case',
+                                ['==', ['get', 'division'], 'Vertical'], divisionColors['Vertical'],
+                                ['==', ['get', 'division'], 'Homes'], divisionColors['Homes'],
+                                ['==', ['get', 'division'], 'Studio'], divisionColors['Studio'],
+                                ['==', ['get', 'division'], 'Transportation'], divisionColors['Transportation'],
+                                divisionColors['default']
+                            ],
+                            'circle-opacity': 0.4,
+                            'circle-blur': 1
+                        }
+                    });
+
+                    map.addLayer({
+                        id: 'projects',
+                        type: 'circle',
+                        source: 'projects',
+                        paint: {
+                            'circle-radius': 6,
+                            'circle-color': ['case',
+                                ['==', ['get', 'division'], 'Vertical'], divisionColors['Vertical'],
+                                ['==', ['get', 'division'], 'Homes'], divisionColors['Homes'],
+                                ['==', ['get', 'division'], 'Studio'], divisionColors['Studio'],
+                                ['==', ['get', 'division'], 'Transportation'], divisionColors['Transportation'],
+                                divisionColors['default']
+                            ],
+                            'circle-opacity': 0.8,
+                            'circle-stroke-width': 0
+                        }
+                    });
+
+                    const popup = new mapboxgl.Popup({
+                        closeButton: false,
+                        closeOnClick: false
+                    });
+
+                    map.on('mouseenter', 'projects', (e) => {
+                        map.getCanvas().style.cursor = 'pointer';
+                        
+                        const coordinates = e.features[0].geometry.coordinates.slice();
+                        const properties = e.features[0].properties;
+                        
+                        const popupContent = `
+                            <div class="popup-title">Project ${properties.OBJECTID || 'Project'}</div>
+                            <div class="popup-info"><strong>Division:</strong> ${properties.division || 'N/A'}</div>
+                            <div class="popup-info"><strong>Status:</strong> ${properties.status || 'N/A'}</div>
+                        `;
+                        
+                        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                        }
+                        
+                        popup.setLngLat(coordinates)
+                            .setHTML(popupContent)
+                            .addTo(map);
+                    });
+
+                    map.on('mouseleave', 'projects', () => {
+                        map.getCanvas().style.cursor = '';
+                        popup.remove();
+                    });
+                })
+                .catch(error => console.error('Error loading project data: ', error));
+        });
+
+        map.on('click', 'projects', (e) => {
+            const coordinates = e.features[0].geometry.coordinates.slice();
+
+            map.flyTo({
+                center: coordinates,
+                zoom: 12,
+                speed: 1
+            })
+        })
+
+        document.querySelectorAll('#division-selector input[name="division"]').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                applyFilters();
+            });
+        });
+
+        document.querySelectorAll('input[name="status"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                applyFilters();
+            });
+        });
+
+        function applyFilters() {
+            const selectedDivisions = Array.from(
+                document.querySelectorAll('#division-selector input[type="checkbox"]:checked')
+            ).map(cb => cb.value);
+
+            const selectedStatus = document.querySelector('input[name="status"]:checked').value;
+            
+            let filter = ['all'];
+            
+            if (selectedDivisions.length > 0) {
+                filter.push(['any', ...selectedDivisions.map(div => ['==', ['get', 'division'], div])]);
+            }
+            
+            if (selectedStatus !== '') {
+                filter.push(['==', ['get', 'status'], selectedStatus]);
+            }
+            
+            if (filter.length === 1) {
+                filter = null;
+            }
+            
+            map.setFilter('projects', filter);
+            map.setFilter('projects-glow', filter);
+        }
+
+        document.getElementById("filter-reset").addEventListener("click", function() {
+            document.querySelectorAll('#division-selector input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            map.setFilter('projects', null);
+            map.setFilter('projects-glow', null);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Navigator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f7;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1d1d1f;
+        }
+        .location-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .location-header {
+            background-color: #0071e3;
+            color: white;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .date-buttons {
+            padding: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .date-button {
+            background-color: #f2f2f2;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        .date-button:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+        }
+        .date-button .name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .date-button .date {
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Video Recordings by Location</h1>
+    <div id="locations-container"></div>
+
+    <script>
+        const jsonData = [
+  {
+    "id": "rec7Hri0oJXhhGamc",
+    "createdTime": "2025-04-21T03:45:16.000Z",
+    "fields": {
+      "Name": "Hillview1",
+      "CaptureDate": "2025-04-22",
+      "GPX": "[{\"lat\":27.316426,\"lon\":-82.523703,\"ele\":3.7,\"time\":\"2025-04-22T13:32:39Z\"},{\"lat\":27.316431,\"lon\":-82.52344,\"ele\":3,\"time\":\"2025-04-22T13:32:44Z\"},{\"lat\":27.316411,\"lon\":-82.522707,\"ele\":4.3,\"time\":\"2025-04-22T13:32:55Z\"},{\"lat\":27.316413,\"lon\":-82.522108,\"ele\":5,\"time\":\"2025-04-22T13:33:04Z\"},{\"lat\":27.316424,\"lon\":-82.521935,\"ele\":4.2,\"time\":\"2025-04-22T13:33:13Z\"}]",
+      "Location": "Hillview"
+    }
+  },
+  {
+    "id": "recJcO5O4z80KP1tB",
+    "createdTime": "2025-04-21T03:45:16.000Z",
+    "fields": {
+      "Name": "Arlington1",
+      "Attachments": [
+        {
+          "id": "attHScPwT2CLcQR5V",
+          "url": "https://v5.airtableusercontent.com/v3/u/40/40/1745568000000/QncmVcS43Gq6l8cBbqAR1A/0Eg6jfiAnWaNxc69pm3-92mEiYI-mzBEGULAA9azZ89J7nfdL2eVOtTpQh11FV5aLPvtwQaN5q2Onwb3pnysbhVBmUYEf7qE87xA7bwcYANP2kEkyopDtNnBXaSto42riDQvVP-NL76T2ANBmhN6APmdhFh8VQQMHjx-5QmrshI/stBxJc_RmWJaUb9JHF_zub3moO8sOyBm05VXLnUmWHQ",
+          "filename": "Arlington_1.gpx",
+          "size": 1320,
+          "type": "application/octet-stream"
+        }
+      ],
+      "CaptureDate": "2025-04-09",
+      "GPX": "[{\"lat\":27.315498,\"lon\":-82.527766,\"ele\":3.7,\"time\":\"2025-04-09T12:39:52Z\"},{\"lat\":27.3155,\"lon\":-82.527782,\"ele\":3.8,\"time\":\"2025-04-09T12:39:54Z\"},{\"lat\":27.315516,\"lon\":-82.527644,\"ele\":3.9,\"time\":\"2025-04-09T12:39:57Z\"},{\"lat\":27.315512,\"lon\":-82.527427,\"ele\":3.9,\"time\":\"2025-04-09T12:40:01Z\"},{\"lat\":27.315534,\"lon\":-82.527231,\"ele\":3.5,\"time\":\"2025-04-09T12:40:04Z\"},{\"lat\":27.31548,\"lon\":-82.527164,\"ele\":3.4,\"time\":\"2025-04-09T12:40:05Z\"},{\"lat\":27.315487,\"lon\":-82.525511,\"ele\":4.5,\"time\":\"2025-04-09T12:40:32Z\"}]",
+      "Location": "Arlington",
+      "VideoLink": "https://www.youtube.com/watch?v=nV_hd6bLXmw"
+    }
+  },
+  {
+    "id": "recw0dNPmlB8WJMRV",
+    "createdTime": "2025-04-21T03:45:16.000Z",
+    "fields": {
+      "Name": "Hillview2",
+      "CaptureDate": "2025-04-23",
+      "GPX": "[{\"lat\":27.316424,\"lon\":-82.52177,\"ele\":3.2,\"time\":\"2025-04-22T13:33:19Z\"},{\"lat\":27.316436,\"lon\":-82.521537,\"ele\":2.9,\"time\":\"2025-04-22T13:33:26Z\"},{\"lat\":27.316423,\"lon\":-82.521483,\"ele\":2.9,\"time\":\"2025-04-22T13:33:27Z\"},{\"lat\":27.316424,\"lon\":-82.521314,\"ele\":2.6,\"time\":\"2025-04-22T13:33:30Z\"},{\"lat\":27.31644,\"lon\":-82.52125,\"ele\":2.3,\"time\":\"2025-04-22T13:33:31Z\"},{\"lat\":27.316437,\"lon\":-82.521116,\"ele\":2.1,\"time\":\"2025-04-22T13:33:33Z\"},{\"lat\":27.316426,\"lon\":-82.521057,\"ele\":1.4,\"time\":\"2025-04-22T13:33:34Z\"},{\"lat\":27.316439,\"lon\":-82.520983,\"ele\":2,\"time\":\"2025-04-22T13:33:35Z\"},{\"lat\":27.316441,\"lon\":-82.520842,\"ele\":2.8,\"time\":\"2025-04-22T13:33:37Z\"},{\"lat\":27.316421,\"lon\":-82.520204,\"ele\":2.5,\"time\":\"2025-04-22T13:33:46Z\"},{\"lat\":27.316431,\"lon\":-82.520011,\"ele\":3.8,\"time\":\"2025-04-22T13:33:53Z\"}]",
+      "Location": "Hillview"
+    }
+  }
+];
+
+        // Extract unique locations
+        const uniqueLocations = [...new Set(jsonData.map(item => item.fields.Location))];
+        
+        // Group data by location
+        const dataByLocation = {};
+        uniqueLocations.forEach(location => {
+            dataByLocation[location] = jsonData.filter(item => item.fields.Location === location);
+        });
+
+        // Function to format a date nicely
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+
+        // Generate location containers and date buttons
+        const locationsContainer = document.getElementById('locations-container');
+        
+        // For each location
+        uniqueLocations.forEach(location => {
+            // Create location container
+            const locationDiv = document.createElement('div');
+            locationDiv.className = 'location-container';
+            
+            // Create location header
+            const locationHeader = document.createElement('div');
+            locationHeader.className = 'location-header';
+            locationHeader.textContent = location;
+            locationDiv.appendChild(locationHeader);
+            
+            // Create container for date buttons
+            const dateButtonsDiv = document.createElement('div');
+            dateButtonsDiv.className = 'date-buttons';
+            
+            // Add buttons for each date in this location
+            dataByLocation[location].forEach(item => {
+                const button = document.createElement('button');
+                button.className = 'date-button';
+                button.onclick = function() {
+                    window.location.href = `video-app/?location=${encodeURIComponent(location)}&date=${encodeURIComponent(item.fields.CaptureDate)}`;
+                };
+                
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'date';
+                dateDiv.textContent = formatDate(item.fields.CaptureDate);
+                
+                button.appendChild(dateDiv);
+                dateButtonsDiv.appendChild(button);
+            });
+            
+            locationDiv.appendChild(dateButtonsDiv);
+            locationsContainer.appendChild(locationDiv);
+        });
+    </script>
+</body>
+</html>

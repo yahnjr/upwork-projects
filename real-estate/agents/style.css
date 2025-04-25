@@ -1,0 +1,321 @@
+body {
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#sidebar {
+    height: 100vh;
+    width: 400px;
+    flex-shrink: 0;
+    background-color: rgb(240, 240, 240);
+}
+
+#select-mode-box {
+    height: 10%;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+}
+
+.select-mode-btn {
+    height: 40px;
+    width: 100px;
+    border: 1px solid #ccc;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.selected {
+    background-color: #8bc5ea;
+    color: white;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+#popup-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding: 20px;
+    overflow-y: auto;
+    height: 100%;
+    gap: 20px;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+#no-point-header {
+    color: rgb(50, 50, 50);
+}
+
+#no-point-p {
+    color: rgb(150, 150, 150);
+}
+
+.fa-location-dot {
+    color: rgb(50, 50, 50);
+}
+
+#big-marker {
+    font-size: 3rem;
+}
+
+.agent-popup .mapboxgl-popup-content {
+    padding: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 320px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.agent-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #dcb444;
+    background-color: #fff;
+    border-radius: 8px;
+    width: 380px;
+    margin: 0 0 20px 0;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.agent-card:hover {
+    box-shadow: 0 0 15px rgba(0, 0, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.active-agent-card {
+    box-shadow: 0 0 20px rgba(255, 51, 0, 0.5) !important;
+    border-left: 4px solid #ff3300 !important;
+    transform: translateY(-2px);
+}
+
+.agent-header {
+    display: flex;
+    padding: 15px;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.agent-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #c7ac67;
+    margin-right: 12px;
+}
+
+.agent-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.agent-badges {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.agent-name-title {
+    display: flex;
+    flex-direction: column;
+}
+
+.agent-name-title h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.agent-title {
+    background-color: #e6f0ff;
+    color: #4287f5;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.badge-container {
+    display: flex;
+}
+
+.badge-container img {
+    width: 30px;
+    height: 30px;
+}
+
+.agent-contact {
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.contact-item i {
+    width: 18px;
+    color: #666;
+    margin-right: 10px;
+}
+
+.contact-item a {
+    color: #4287f5;
+    text-decoration: none;
+}
+
+.agent-social {
+    display: flex;
+    padding: 15px;
+    justify-content: flex-start;
+    gap: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.social-icon a {
+    pointer-events: auto;
+}
+
+.social-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.facebook {
+    background-color: #4267B2;
+}
+
+.twitter {
+    background-color: #1DA1F2;
+}
+
+.instagram {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+.linkedin {
+    background-color: #0077B5;
+}
+
+.social-icon.disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.agent-professional {
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.agent-professional h4 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    color: #333;
+    display: flex;
+    align-items: center;
+}
+
+.agent-professional h4 i {
+    color: #c7ac67;
+    margin-right: 8px;
+}
+
+.professional-details {
+    display: flex;
+    justify-content: space-between;
+}
+
+.detail-col {
+    flex: 1;
+}
+
+.detail-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.detail-value {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.agent-about {
+    padding: 15px;
+}
+
+.agent-about h4 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.about-preview {
+    font-size: 14px;
+    color: #555;
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+}
+
+.view-details-btn {
+    background: none;
+    border: none;
+    color: #4287f5;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.view-details-btn:after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid #4287f5;
+    border-bottom: 2px solid #4287f5;
+    transform: rotate(-45deg);
+    margin-left: 5px;
+}
+
+#state-agents-header {
+    width: 100%;
+    padding: 10px 0;
+    margin: 0 0 10px 0;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #333;
+    position: sticky;
+    top: 0;
+    background-color: rgb(240, 240, 240);
+    z-index: 10;
+}
