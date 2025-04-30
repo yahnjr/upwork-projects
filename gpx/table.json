@@ -6,7 +6,8 @@
       "Name": "Hillview1",
       "CaptureDate": "2025-04-22",
       "GPX": "[{\"lat\":27.316426,\"lon\":-82.523703,\"ele\":3.7,\"time\":\"2025-04-22T13:32:39Z\"},{\"lat\":27.316431,\"lon\":-82.52344,\"ele\":3,\"time\":\"2025-04-22T13:32:44Z\"},{\"lat\":27.316411,\"lon\":-82.522707,\"ele\":4.3,\"time\":\"2025-04-22T13:32:55Z\"},{\"lat\":27.316413,\"lon\":-82.522108,\"ele\":5,\"time\":\"2025-04-22T13:33:04Z\"},{\"lat\":27.316424,\"lon\":-82.521935,\"ele\":4.2,\"time\":\"2025-04-22T13:33:13Z\"}]",
-      "Location": "Hillview"
+      "Location": "Hillview",
+      "VideoLink": "631e7d95-e24f-4ce6-ac04-e9bf4eb3586f"
     }
   },
   {
@@ -17,7 +18,7 @@
       "Attachments": [
         {
           "id": "attHScPwT2CLcQR5V",
-          "url": "https://v5.airtableusercontent.com/v3/u/40/40/1745568000000/QncmVcS43Gq6l8cBbqAR1A/0Eg6jfiAnWaNxc69pm3-92mEiYI-mzBEGULAA9azZ89J7nfdL2eVOtTpQh11FV5aLPvtwQaN5q2Onwb3pnysbhVBmUYEf7qE87xA7bwcYANP2kEkyopDtNnBXaSto42riDQvVP-NL76T2ANBmhN6APmdhFh8VQQMHjx-5QmrshI/stBxJc_RmWJaUb9JHF_zub3moO8sOyBm05VXLnUmWHQ",
+          "url": "https://v5.airtableusercontent.com/v3/u/40/40/1746000000000/yFfwhB9ooQvYjGpoN2Q_ew/2752HachVhM4VC7HUFWPsn0DEyKHIeg8kZzud6m83ftjOo5OcFsmyaRRusv5Jfm_EHM4oSqVvELGpcgKgBb09yszlZVuIpEZ6OLmzcNTnBcaghfMuFDSymZkgoKT_aq_UfZptQfCls6h5JqZ0mtyQRYExUTAMeKJ0slKN-zkxRI/Wb4iBihHB9utPGUZ8Omp3cqTusuN3O4jpIT-S5pfxAw",
           "filename": "Arlington_1.gpx",
           "size": 1320,
           "type": "application/octet-stream"
@@ -26,7 +27,7 @@
       "CaptureDate": "2025-04-09",
       "GPX": "[{\"lat\":27.315498,\"lon\":-82.527766,\"ele\":3.7,\"time\":\"2025-04-09T12:39:52Z\"},{\"lat\":27.3155,\"lon\":-82.527782,\"ele\":3.8,\"time\":\"2025-04-09T12:39:54Z\"},{\"lat\":27.315516,\"lon\":-82.527644,\"ele\":3.9,\"time\":\"2025-04-09T12:39:57Z\"},{\"lat\":27.315512,\"lon\":-82.527427,\"ele\":3.9,\"time\":\"2025-04-09T12:40:01Z\"},{\"lat\":27.315534,\"lon\":-82.527231,\"ele\":3.5,\"time\":\"2025-04-09T12:40:04Z\"},{\"lat\":27.31548,\"lon\":-82.527164,\"ele\":3.4,\"time\":\"2025-04-09T12:40:05Z\"},{\"lat\":27.315487,\"lon\":-82.525511,\"ele\":4.5,\"time\":\"2025-04-09T12:40:32Z\"}]",
       "Location": "Arlington",
-      "VideoLink": "https://www.youtube.com/watch?v=nV_hd6bLXmw"
+      "VideoLink": "e26a8f12-fcb7-4355-9634-e1cee23209b1"
     }
   },
   {
@@ -36,7 +37,8 @@
       "Name": "Hillview2",
       "CaptureDate": "2025-04-23",
       "GPX": "[{\"lat\":27.316424,\"lon\":-82.52177,\"ele\":3.2,\"time\":\"2025-04-22T13:33:19Z\"},{\"lat\":27.316436,\"lon\":-82.521537,\"ele\":2.9,\"time\":\"2025-04-22T13:33:26Z\"},{\"lat\":27.316423,\"lon\":-82.521483,\"ele\":2.9,\"time\":\"2025-04-22T13:33:27Z\"},{\"lat\":27.316424,\"lon\":-82.521314,\"ele\":2.6,\"time\":\"2025-04-22T13:33:30Z\"},{\"lat\":27.31644,\"lon\":-82.52125,\"ele\":2.3,\"time\":\"2025-04-22T13:33:31Z\"},{\"lat\":27.316437,\"lon\":-82.521116,\"ele\":2.1,\"time\":\"2025-04-22T13:33:33Z\"},{\"lat\":27.316426,\"lon\":-82.521057,\"ele\":1.4,\"time\":\"2025-04-22T13:33:34Z\"},{\"lat\":27.316439,\"lon\":-82.520983,\"ele\":2,\"time\":\"2025-04-22T13:33:35Z\"},{\"lat\":27.316441,\"lon\":-82.520842,\"ele\":2.8,\"time\":\"2025-04-22T13:33:37Z\"},{\"lat\":27.316421,\"lon\":-82.520204,\"ele\":2.5,\"time\":\"2025-04-22T13:33:46Z\"},{\"lat\":27.316431,\"lon\":-82.520011,\"ele\":3.8,\"time\":\"2025-04-22T13:33:53Z\"}]",
-      "Location": "Hillview"
+      "Location": "Hillview",
+      "VideoLink": "16c1ba08-2397-4ad7-8e88-acd4ca8f5c30"
     }
   }
 ]

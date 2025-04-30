@@ -98,9 +98,12 @@ function fetchGPXData() {
                 debugLog('Found matching entry:', matchingEntry.fields.Name);
                 if (matchingEntry.fields.GPX) {
                     processGpxString(matchingEntry.fields.GPX);
-                    videoLink = `video-files/${matchingEntry.fields.Name}.mp4`
+                    videoId = matchingEntry.fields.VideoLink;
 
-                    loadVideo(videoLink);                }
+                    videoLink = `https://vz-0b011410-a6d.b-cdn.net/${videoId}/play_720p.mp4`;
+
+                    loadVideo(videoLink);                
+                }
             } else {
                 debugLog('No matching entry found for location:', location, 'and date:', date);
             }
@@ -227,6 +230,7 @@ function loadVideo(source) {
     if (source instanceof File) {
         videoPlayer.src = URL.createObjectURL(source);
     } else if (typeof source === 'string') {
+        videoPlayer.crossOrigin = 'anonymous';
         videoPlayer.src = source;
     } else {
         console.error('Invalid video source:', source);
@@ -244,8 +248,6 @@ function loadVideo(source) {
         }, 500);
     }, { once: true });
 }
-
-
 
 function init360VideoPlayer() {
     if (!videoPlayer) return;
