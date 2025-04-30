@@ -100,7 +100,7 @@ function fetchGPXData() {
                     processGpxString(matchingEntry.fields.GPX);
                     videoId = matchingEntry.fields.VideoLink;
 
-                    videoLink = `https://vz-0b011410-a6d.b-cdn.net/${videoId}/play_720p.mp4`;
+                    videoLink = `https://gpx-videos.s3.amazonaws.com/${matchingEntry.fields.Name}.mp4`;
 
                     loadVideo(videoLink);                
                 }
