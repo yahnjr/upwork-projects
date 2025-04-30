@@ -96,14 +96,15 @@ function fetchGPXData() {
 
             if (matchingEntry) {
                 debugLog('Found matching entry:', matchingEntry.fields.Name);
-                if (matchingEntry.fields.GPX) {
-                    processGpxString(matchingEntry.fields.GPX);
-                    videoId = matchingEntry.fields.VideoLink;
-
-                    videoLink = `https://gpx-videos.s3.us-east-2.amazonaws.com/${matchingEntry.fields.Name}.mp4`;
-
-                    loadVideo(videoLink);                
-                }
+                baseFileName = matchingEntry.fields.Name;
+                
+                // Load the video from S3
+                videoLink = `https://gpx-videos.s3.us-east-2.amazonaws.com/${matchingEntry.fields.Name}.mp4`;
+                loadVideo(videoLink);
+                
+                // Load the GPX file from S3
+                const gpxUrl = `https://gpx-videos.s3.us-east-2.amazonaws.com/${matchingEntry.fields.Name}.gpx`;
+                fetchGpxFile(gpxUrl);
             } else {
                 debugLog('No matching entry found for location:', location, 'and date:', date);
             }
@@ -113,104 +114,39 @@ function fetchGPXData() {
         });
 }
 
-function processGpxString(jsonString) {
-    try {
-        const points = JSON.parse(jsonString);
-        
-        pointsWithTimestamps = [];
-        let coordinates = [];
-        
-        if (points.length > 0 && points[0].time) {
-            firstTimestamp = new Date(points[0].time).getTime() / 1000;
-        }
-        
-        points.forEach((point, index) => {
-            const timestamp = point.time ? 
-                (new Date(point.time).getTime() / 1000) - firstTimestamp : 
-                index * 1;
-            
-            pointsWithTimestamps.push({
-                coordinates: [point.lon, point.lat],
-                timestamp: timestamp
-            });
-            
-            coordinates.push([point.lon, point.lat]);
-        });
-        
-        pointsWithTimestamps.sort((a, b) => a.timestamp - b.timestamp);
-        
-        if (pointsWithTimestamps.length > 0) {
-            const firstCoordinates = pointsWithTimestamps[0].coordinates;
-            map.setCenter(firstCoordinates);
-            map.setZoom(17);
-            debugLog(`Setting map center to: ${firstCoordinates}`);
-        }
-        
-        createGeoJsonFromPoints(coordinates);
-        
-        addMapSources();
-        createPlayerMarker();
-        createPreviewMarker();
-        makePointsClickable();
-        
-        debugLog(`Processed ${pointsWithTimestamps.length} points with timestamps`);
-    } catch (error) {
-        debugLog('Error processing JSON string:', error);
-    }
-}
-
-function promptForVideoFile() {
-    const videoInput = document.createElement('input');
-    videoInput.type = 'file';
-    videoInput.accept = 'video/*';
-    videoInput.style.display = 'none';
-    document.body.appendChild(videoInput);
-    
-    videoInput.addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            debugLog(`Video file selected: ${file.name}`);
-            loadVideo(file);
-            
-            const loadControls = document.getElementById('load-controls');
-            if (loadControls) {
-                loadControls.remove();
+function fetchGpxFile(gpxUrl) {
+    fetch(gpxUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch GPX file: ' + response.statusText);
             }
-            
-            baseFileName = file.name.substring(0, file.name.lastIndexOf('.'));
-            showGpxLoadButton(baseFileName);
-        }
-    });
+            return response.text();
+        })
+        .then(gpxContent => {
+            processGpxContent(gpxContent);
+        })
+        .catch(error => {
+            debugLog('Error fetching GPX file:', error);
+        });
+}
+
+function processGpxContent(gpxContent) {
+    const parser = new DOMParser();
+    const gpxDoc = parser.parseFromString(gpxContent, "text/xml");
     
-    videoInput.click();
-}
-
-function showGpxLoadButton(baseFileName) {
-    debugLog(`Showing GPX load button for ${baseFileName}`);
-}
-
-function promptForGpxFile() {
-    const { location, date } = getUrlParameters();
-    if (location && date) {
-        fetchGPXData();
+    const trackPoints = gpxDoc.querySelectorAll('trkpt');
+    debugLog(`Found ${trackPoints.length} track points in GPX file`);
+    
+    if (trackPoints.length === 0) {
+        alert('No track points found in the GPX file');
         return;
     }
-
-    const gpxInput = document.createElement('input');
-    gpxInput.type = 'file';
-    gpxInput.accept = '.gpx';
-    gpxInput.style.display = 'none';
-    document.body.appendChild(gpxInput);
     
-    gpxInput.addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            debugLog(`GPX file selected: ${file.name}`);
-            processGpxFile(file);
-        }
-    });
-    
-    gpxInput.click();
+    processGpxPoints(trackPoints);
+    addMapSources();
+    createPlayerMarker();
+    createPreviewMarker();
+    makePointsClickable();
 }
 
 function loadVideo(source) {
@@ -491,12 +427,6 @@ function createCustomControls() {
         }
     });
     
-    const loadVideoButton = createButton('load-video-button', 'fa-file-video', 'Load Video');
-    loadVideoButton.addEventListener('click', promptForVideoFile);
-    
-    const loadGpxButton = createButton('load-gpx-button', 'fa-map-marker-alt', 'Load GPX');
-    loadGpxButton.addEventListener('click', promptForGpxFile);
-    
     const drawButton = createButton('draw-button', 'fa-pencil-alt', 'Draw');
     drawButton.id = 'rectangleButton';
     drawButton.addEventListener('click', function() {
@@ -550,8 +480,6 @@ function createCustomControls() {
     
     
     buttonsContainer.appendChild(playButton);
-    buttonsContainer.appendChild(loadVideoButton);
-    buttonsContainer.appendChild(loadGpxButton);
     buttonsContainer.appendChild(toggleViewButton);
     buttonsContainer.appendChild(drawButton);
     buttonsContainer.appendChild(annotateButton);
@@ -1350,7 +1278,6 @@ map.on('load', () => {
     const loadButton = document.createElement('button');
     loadButton.className = 'load-video-button';
     loadButton.innerHTML = 'Load Video';
-    loadButton.addEventListener('click', promptForVideoFile);
     
     loadControls.appendChild(loadButton);
     document.getElementById('gpx-video-app-wrap').appendChild(loadControls);
@@ -1364,20 +1291,3 @@ function debugLog(...args) {
         console.log('[GpxVideo]', ...args);
     }
 }
-
-// Road map:
-// 1. Link to video hosting and air table
-// 2. Add points on map
-// 3. Stream map location to map center
-// 4. Clearing/deleting/moving annotations
-// 5. Saving annotation screenshots to folder tagged on airtable?
-// 6. Recoverable annotations?
-// 7. Fix free draw polygons
-// 8. Set up video url to load
-// 9. Air table fetch
-//  10. Secure air table key
-// 11. First step- fetch airtable and display options
-// 12. Second step- Set up video player with URL
-// 13. Third step- Set up GPX parsing from string
-// 14. Fourth step- URL parameter reading
-// 15. Setup application on Softr
