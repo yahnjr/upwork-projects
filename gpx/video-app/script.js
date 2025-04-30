@@ -36,10 +36,48 @@ map = new mapboxgl.Map({
 
 function getUrlParameters() {
     const urlParams = new URLSearchParams(window.location.search);
-    const location = urlParams.get('location');
-    const date = urlParams.get('date');
+    const location = urlParams.get('location'); // Gets the decoded location name
+    const name = urlParams.get('name');       // Gets the decoded video base name
+    const gpxDataString = urlParams.get('gpx'); // Gets the decoded GPX JSON string
 
-    return { location, date };
+    if (gpxDataString && gpxDataString.length > 1800) {
+        console.warn("GPX data string in URL is very long (" + gpxDataString.length + " chars). This might exceed browser URL length limits.");
+    }
+
+    return { location, name, gpxDataString };
+}
+
+function loadDataFromUrl() {
+    const { location, name, gpxDataString } = getUrlParameters();
+
+    if (!location || !name || !gpxDataString) {
+        console.error('Missing required URL parameters: location, name, or gpx');
+        // Display an error message to the user on the page
+        document.body.innerHTML = '<p style="color: red; font-family: sans-serif;">Error: Missing required data in URL (location, name, or gpx).</p>';
+        return;
+    }
+
+    console.log("Received data from URL - Location:", location, "Name:", name);
+    // console.log("Received GPX data string:", gpxDataString); // Potentially very long log
+
+    baseFileName = name; // Set the base filename for potential use elsewhere
+
+    // Construct the video link ASSUMING 'name' is the base filename
+    // and you have a 'video-files' folder relative to your index.html on GitHub Pages
+    videoLink = `video-files/${name}.mp4`; 
+    console.log("Constructed video link:", videoLink);
+
+    // Process the GPX data string directly
+    processGpxString(gpxDataString); // This function already expects a JSON string
+
+    // Load the video associated with the 'name' parameter
+    loadVideo(videoLink); 
+
+    // Hide the timestamp link container as it's not needed in this approach
+    const timestampContainer = document.getElementById('timestamp-link-container');
+    if (timestampContainer) {
+        timestampContainer.style.display = 'none'; 
+    }
 }
 
 function fetchGPXData() {
@@ -112,6 +150,7 @@ function fetchGPXData() {
 
 function processGpxString(jsonString) {
     try {
+        // --- THIS PART REMAINS LARGELY THE SAME ---
         const points = JSON.parse(jsonString);
         
         pointsWithTimestamps = [];
@@ -119,13 +158,26 @@ function processGpxString(jsonString) {
         
         if (points.length > 0 && points[0].time) {
             firstTimestamp = new Date(points[0].time).getTime() / 1000;
+        } else if (points.length > 0) {
+            // Fallback if 'time' is missing, use index - adjust as needed
+             console.warn("GPX points seem to be missing timestamps. Using index * 1s as fallback.");
+             firstTimestamp = 0; // Assuming video starts at 0 relative to points
+        } else {
+             console.error("No points found in the provided GPX data.");
+             return; // Stop processing if no points
         }
         
         points.forEach((point, index) => {
             const timestamp = point.time ? 
                 (new Date(point.time).getTime() / 1000) - firstTimestamp : 
-                index * 1;
+                index * 1; // Ensure fallback aligns with video time if needed
             
+            // Add validation for lat/lon
+            if (typeof point.lat !== 'number' || typeof point.lon !== 'number') {
+                console.warn(`Skipping point at index ${index} due to invalid coordinates.`);
+                return; // Skip this point
+            }
+
             pointsWithTimestamps.push({
                 coordinates: [point.lon, point.lat],
                 timestamp: timestamp
@@ -141,18 +193,35 @@ function processGpxString(jsonString) {
             map.setCenter(firstCoordinates);
             map.setZoom(17);
             debugLog(`Setting map center to: ${firstCoordinates}`);
+        } else {
+             console.error("No valid points remain after processing.");
+             // Handle error - maybe show message
+             return;
         }
         
-        createGeoJsonFromPoints(coordinates);
+        createGeoJsonFromPoints(coordinates); // Make sure coordinates isn't empty
         
-        addMapSources();
-        createPlayerMarker();
-        createPreviewMarker();
-        makePointsClickable();
+        // Ensure map is ready before adding sources/markers if necessary
+        if (map.isStyleLoaded()) {
+             addMapSources();
+             createPlayerMarker();
+             createPreviewMarker();
+             makePointsClickable();
+        } else {
+            map.once('load', () => {
+                addMapSources();
+                createPlayerMarker();
+                createPreviewMarker();
+                makePointsClickable();
+            });
+        }
         
         debugLog(`Processed ${pointsWithTimestamps.length} points with timestamps`);
+        // --- END OF UNCHANGED PART ---
     } catch (error) {
-        debugLog('Error processing JSON string:', error);
+        debugLog('Error processing GPX JSON string from URL:', error);
+        // Display user-friendly error
+         document.body.innerHTML = `<p style="color: red; font-family: sans-serif;">Error processing GPX data. Is it in the correct JSON format in the URL? Details: ${error.message}</p>`;
     }
 }
 
@@ -221,7 +290,7 @@ function loadVideo(source) {
         videoContainer.className = 'video-container';
         videoContainer.appendChild(videoPlayer);
         
-        document.getElementById('app-wrap').appendChild(videoContainer);
+        document.getElementById('gpx-video-app-wrap').appendChild(videoContainer);
     }
     
     if (source instanceof File) {
@@ -1337,7 +1406,7 @@ map.on('load', () => {
     canvas.height = window.innerHeight - 160;
     canvasContainer.appendChild(canvas);
     
-    document.getElementById('app-wrap').appendChild(canvasContainer);
+    document.getElementById('gpx-video-app-wrap').appendChild(canvasContainer);
     
     fabricCanvas = new fabric.Canvas('annotation-canvas');
     fabricCanvas.selection = false;
@@ -1351,10 +1420,10 @@ map.on('load', () => {
     loadButton.addEventListener('click', promptForVideoFile);
     
     loadControls.appendChild(loadButton);
-    document.getElementById('app-wrap').appendChild(loadControls);
+    document.getElementById('gpx-video-app-wrap').appendChild(loadControls);
     
     setupFabricEvents();
-    fetchGPXData();
+    loadDataFromUrl();
 });
 
 function debugLog(...args) {
