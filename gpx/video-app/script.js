@@ -168,12 +168,16 @@ function loadVideo(source) {
     
     setupVideoPlayer();
     
-    videoPlayer.addEventListener('loadedmetadata', function() {
-        setTimeout(function() {
-            init360VideoPlayer();
-        }, 500);
-    }, { once: true });
-}
+        videoPlayer.addEventListener('loadeddata', function() {
+            videoPlayer.currentTime = 0;
+            
+            videoPlayer.addEventListener('seeked', function() {
+                setTimeout(function() {
+                    init360VideoPlayer();
+                }, 100);
+            }, { once: true });
+        }, { once: true });
+    }
 
 function init360VideoPlayer() {
     if (!videoPlayer) return;
@@ -193,6 +197,8 @@ function init360VideoPlayer() {
     const texture = new THREE.VideoTexture(videoPlayer);
     texture.minFilter = THREE.LinearFilter;
     texture.format = THREE.RGBFormat;
+
+    texture.needsUpdate = true;
     
     const geometry = new THREE.SphereGeometry(500, 60, 40);
     geometry.scale(-1, 1, 1);
@@ -215,6 +221,10 @@ function init360VideoPlayer() {
     video360Container.addEventListener('wheel', onDocumentMouseWheel);
     
     window.addEventListener('resize', onWindowResize);
+
+    renderer.render(scene, camera);
+
+    videoPlayer.style.display = 'none';
     
     isVideoMode360 = true;
     animate();
@@ -328,9 +338,24 @@ function toggleVideoMode() {
         if (!video360Container) {
             init360VideoPlayer();
         } else {
-            video360Container.style.display = 'block';
+            if (videoPlayer.readyState >= 2) {
+                video360Container.style.display = 'block';
+                videoPlayer.style.display = 'none';
+                
+                if (renderer && scene && camera) {
+                    renderer.render(scene, camera);
+                }
+            } else {
+                videoPlayer.addEventListener('loadeddata', function() {
+                    video360Container.style.display = 'block';
+                    videoPlayer.style.display = 'none';
+                    
+                    if (renderer && scene && camera) {
+                        renderer.render(scene, camera);
+                    }
+                }, { once: true });
+            }
         }
-        videoPlayer.style.display = 'none';
         isVideoMode360 = true;
         animate();
     }
