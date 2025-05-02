@@ -26,14 +26,6 @@ let video360Container;
 let matchingLocations = [];
 let videoLink = null;
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
-map = new mapboxgl.Map({
-    container: 'map',
-    style: 'mapbox://styles/mapbox/satellite-streets-v11',
-    center: [-98.5795, 39.8283],
-    zoom: 2 
-});
-
 function getUrlParameters() {
     const urlParams = new URLSearchParams(window.location.search);
     const location = urlParams.get('location');
@@ -98,11 +90,9 @@ function fetchGPXData() {
                 debugLog('Found matching entry:', matchingEntry.fields.Name);
                 baseFileName = matchingEntry.fields.Name;
                 
-                // Load the video from S3
                 videoLink = `https://gpx-videos.s3.us-east-2.amazonaws.com/${matchingEntry.fields.Name}.mp4`;
                 loadVideo(videoLink);
                 
-                // Load the GPX file from S3
                 const gpxUrl = `https://gpx-videos.s3.us-east-2.amazonaws.com/${matchingEntry.fields.Name}.gpx`;
                 fetchGpxFile(gpxUrl);
             } else {
@@ -1163,61 +1153,122 @@ window.addEventListener('resize', () => {
 });
 
 function takeScreenshot() {
-    debugLog('Taking screenshot...');
+    debugLog('Taking screenshot in iframe-compatible mode...');
     
+    // Create a single canvas for the composite image
     const screenshotCanvas = document.createElement('canvas');
     const context = screenshotCanvas.getContext('2d');
     
-    screenshotCanvas.width = window.innerWidth;
-    screenshotCanvas.height = window.innerHeight;
+    // Set the canvas dimensions to match the video container's visible area
+    let videoWidth, videoHeight, videoLeft, videoTop;
     
-    const mapCanvas = map.getCanvas();
-    context.drawImage(mapCanvas, 0, 0, mapCanvas.width, mapCanvas.height);
-    
-    if (isVideoMode360 && renderer) {
-        context.drawImage(
-            renderer.domElement,
-            video360Container.getBoundingClientRect().left,
-            video360Container.getBoundingClientRect().top,
-            video360Container.getBoundingClientRect().width,
-            video360Container.getBoundingClientRect().height
-        );
-    } else if (videoPlayer && videoPlayer.videoWidth && videoPlayer.videoHeight) {
+    if (isVideoMode360 && video360Container) {
+        const video360Rect = video360Container.getBoundingClientRect();
+        videoWidth = video360Rect.width;
+        videoHeight = video360Rect.height;
+        videoLeft = video360Rect.left;
+        videoTop = video360Rect.top;
+    } else if (videoPlayer) {
         const videoRect = videoPlayer.getBoundingClientRect();
-        context.drawImage(
-            videoPlayer,
-            videoRect.left, videoRect.top,
-            videoRect.width, videoRect.height
-        );
+        videoWidth = videoRect.width;
+        videoHeight = videoRect.height;
+        videoLeft = videoRect.left;
+        videoTop = videoRect.top;
+    } else {
+        debugLog('No video element found for screenshot');
+        return;
     }
     
-    if (fabricCanvas) {
-        const fabricImage = fabricCanvas.toDataURL({
-            format: 'png',
-            quality: 1
-        });
-        
-        const tempImage = new Image();
-        tempImage.onload = function() {
-            context.drawImage(tempImage, 0, 0);
+    screenshotCanvas.width = videoWidth;
+    screenshotCanvas.height = videoHeight;
+    
+    // For 360 mode, we need to capture the renderer output
+    if (isVideoMode360 && renderer) {
+        try {
+            // Use toDataURL from the renderer instead of trying to draw it
+            // This avoids cross-origin issues in iframes
+            const rendererImage = new Image();
+            rendererImage.onload = function() {
+                context.drawImage(rendererImage, 0, 0, videoWidth, videoHeight);
+                addAnnotationsAndFinalize();
+            };
             
+            // Force a render to ensure we get the latest frame
+            renderer.render(scene, camera);
+            
+            // Get the data URL directly from the renderer's canvas
+            rendererImage.src = renderer.domElement.toDataURL('image/png');
+        } catch (e) {
+            debugLog('Error capturing 360 video:', e);
+            // Fall back to video capture if renderer capture fails
+            captureVideoFrame();
+        }
+    } else {
+        captureVideoFrame();
+    }
+    
+    function captureVideoFrame() {
+        try {
+            // For regular video mode, draw the video frame directly
+            if (videoPlayer && videoPlayer.videoWidth > 0) {
+                context.drawImage(videoPlayer, 0, 0, videoWidth, videoHeight);
+                addAnnotationsAndFinalize();
+            } else {
+                debugLog('Video element not ready for capture');
+                // Try to add annotations anyway
+                addAnnotationsAndFinalize();
+            }
+        } catch (e) {
+            debugLog('Error capturing video frame:', e);
+            // Still try to save the annotations at least
+            addAnnotationsAndFinalize();
+        }
+    }
+    
+    function addAnnotationsAndFinalize() {
+        // Add annotations from fabric canvas if available
+        if (fabricCanvas) {
+            try {
+                // Create a temporary canvas with only the annotations
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = videoWidth;
+                tempCanvas.height = videoHeight;
+                
+                // Clone the fabric canvas for screenshot purposes
+                const tempFabricCanvas = new fabric.Canvas(tempCanvas);
+                
+                // Copy all objects from the main canvas
+                fabricCanvas.getObjects().forEach(obj => {
+                    const clone = fabric.util.object.clone(obj);
+                    // Adjust position if needed based on video container position
+                    tempFabricCanvas.add(clone);
+                });
+                
+                tempFabricCanvas.renderAll();
+                
+                // Draw the annotations over the video frame
+                context.drawImage(tempCanvas, 0, 0);
+                
+                // Clean up temporary canvas
+                tempFabricCanvas.dispose();
+            } catch (e) {
+                debugLog('Error adding annotations to screenshot:', e);
+            }
+        }
+        
+        // Generate and download the image
+        try {
             const dataUrl = screenshotCanvas.toDataURL('image/png');
             const link = document.createElement('a');
-            link.download = `${baseFileName}-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.png`;
+            link.download = `${baseFileName || 'gpx-video'}-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.png`;
             link.href = dataUrl;
             link.click();
             
-            debugLog('Screenshot downloaded');
-        };
-        tempImage.src = fabricImage;
-    } else {
-        const dataUrl = screenshotCanvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.download = `gpx-video-screenshot-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.png`;
-        link.href = dataUrl;
-        link.click();
-        
-        debugLog('Screenshot downloaded (no annotations)');
+            debugLog('Screenshot downloaded in iframe mode');
+        } catch (e) {
+            debugLog('Error saving screenshot:', e);
+            alert('Could not save screenshot. This may be due to iframe security restrictions.');
+        }
     }
 }
 
@@ -1254,39 +1305,114 @@ document.getElementById('map').addEventListener('mouseleave', function() {
     } 
 });
 
-map.on('load', () => {
-    debugLog('Map loaded');
 
-    const canvasContainer = document.createElement('div');
-    canvasContainer.className = 'annotation-canvas-container';
-    
-    const canvas = document.createElement('canvas');
-    canvas.id = 'annotation-canvas';
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight - 160;
-    canvasContainer.appendChild(canvas);
-    
-    document.getElementById('gpx-video-app-wrap').appendChild(canvasContainer);
-    
-    fabricCanvas = new fabric.Canvas('annotation-canvas');
-    fabricCanvas.selection = false;
-    
-    const loadControls = document.createElement('div');
-    loadControls.id = 'load-controls';
-    
-    const loadButton = document.createElement('button');
-    loadButton.className = 'load-video-button';
-    loadButton.innerHTML = 'Load Video';
-    
-    loadControls.appendChild(loadButton);
-    document.getElementById('gpx-video-app-wrap').appendChild(loadControls);
-    
-    setupFabricEvents();
-    fetchGPXData();
-});
+function initializeMap() {
+    if (map) {
+        map.resize();
+        return;
+    }
+
+    setTimeout(() => {
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
+        map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/satellite-streets-v11',
+            center: [-98.5795, 39.8283],
+            zoom: 2,
+            preserveDrawingBuffer: true
+        });
+        
+        map.on('load', () => {
+            debugLog('Map loaded');
+            
+            map.resize();
+            
+            const canvasContainer = document.createElement('div');
+            canvasContainer.className = 'annotation-canvas-container';
+            
+            const canvas = document.createElement('canvas');
+            canvas.id = 'annotation-canvas';
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight - 160;
+            canvasContainer.appendChild(canvas);
+            
+            document.getElementById('gpx-video-app-wrap').appendChild(canvasContainer);
+            
+            fabricCanvas = new fabric.Canvas('annotation-canvas');
+            fabricCanvas.selection = false;
+            
+            const loadControls = document.createElement('div');
+            loadControls.id = 'load-controls';
+            
+            const loadButton = document.createElement('button');
+            loadButton.className = 'load-video-button';
+            loadButton.innerHTML = 'Load Video';
+            
+            loadControls.appendChild(loadButton);
+            document.getElementById('gpx-video-app-wrap').appendChild(loadControls);
+            
+            setupFabricEvents();
+            fetchGPXData();
+        });
+    }, 300); 
+}
 
 function debugLog(...args) {
     if (debugMode) {
         console.log('[GpxVideo]', ...args);
     }
+}
+
+function setupIframeHandling() {
+    const isInIframe = window !== window.parent;
+    debugLog('Running in iframe:', isInIframe);
+    
+    if (isInIframe) {
+        const resizeHandler = () => {
+            if (map) {
+                map.resize();
+                debugLog('Map resized due to iframe event');
+            }
+            
+            if (fabricCanvas) {
+                fabricCanvas.setWidth(window.innerWidth);
+                fabricCanvas.setHeight(window.innerHeight - 160);
+                fabricCanvas.renderAll();
+                debugLog('Fabric canvas resized');
+            }
+            
+            if (renderer) {
+                renderer.setSize(
+                    videoPlayer.parentElement.offsetWidth,
+                    videoPlayer.parentElement.offsetHeight
+                );
+                camera.aspect = videoPlayer.parentElement.offsetWidth / videoPlayer.parentElement.offsetHeight;
+                camera.updateProjectionMatrix();
+                debugLog('Renderer resized');
+            }
+        };
+        
+        window.addEventListener('resize', resizeHandler);
+        
+        window.addEventListener('message', (event) => {
+            if (event.data === 'resize' || event.data.type === 'resize') {
+                resizeHandler();
+            }
+        });
+        
+        setInterval(resizeHandler, 2000);
+    }
+}
+
+function initializeApplication() {
+    initializeMap();
+    setupIframeHandling();
+}
+
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(initializeApplication, 100);
+} else {
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(initializeApplication, 100);
+    });
 }
