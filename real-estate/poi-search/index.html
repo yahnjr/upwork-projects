@@ -32,6 +32,7 @@
       max-width: 280px;
       z-index: 1;
       transition: all 0.3s ease;
+      display: none;
     }
     
     .panel-header {
@@ -872,7 +873,9 @@
                 btn.classList.remove('active');
             });
             document.getElementById('btn-amenity').classList.add('active');
-            selectedCategory = 'amenity';;
+            selectedCategory = 'amenity';
+
+            document.getElementById('search-panel').style.display = 'block';
         });
         
         contentDiv.appendChild(searchBtn);
