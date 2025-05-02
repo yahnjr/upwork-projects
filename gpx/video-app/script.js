@@ -380,7 +380,6 @@ function setupVideoPlayer() {
         updateProgressBar();
     });
     
-    // Add play/pause button update
     videoPlayer.addEventListener('play', function() {
         const playButton = document.querySelector('.play-pause-button i');
         if (playButton) {

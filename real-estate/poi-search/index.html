@@ -3,113 +3,412 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>POI Finder</title>
+  <title>Enhanced POI Finder</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/2.15.0/mapbox-gl.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   <style>
-    body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
-    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
-    .control-panel {
+    body { 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    }
+    
+    #map { 
+      position: absolute; 
+      top: 0; 
+      bottom: 0; 
+      width: 100%; 
+    }
+    
+    .search-panel {
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 20px;
+      left: 20px;
       background-color: white;
-      padding: 15px;
-      border-radius: 5px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-      max-width: 300px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      max-width: 280px;
       z-index: 1;
+      transition: all 0.3s ease;
     }
+    
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .panel-header h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+    
     .input-group {
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
-    input[type="text"], select, input[type="number"] {
+    
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+    }
+    
+    input[type="number"] {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       box-sizing: border-box;
-      border: 1px solid #ccc;
+      border: 1px solid #ddd;
       border-radius: 4px;
-      margin-top: 4px;
+      font-size: 14px;
     }
-    button {
-      padding: 8px 15px;
+    
+    .category-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .category-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px;
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 12px;
+      width: 60px;
+      text-align: center;
+    }
+    
+    .category-btn i {
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+    
+    .category-btn.active {
+      background-color: #4285f4;
+      color: white;
+      border-color: #3367d6;
+    }
+    
+    .category-btn:hover {
+      background-color: #e0e0e0;
+      transform: translateY(-2px);
+    }
+    
+    .category-btn.active:hover {
+      background-color: #3367d6;
+    }
+    
+    .search-btn {
+      width: 100%;
+      padding: 12px;
       background-color: #4285f4;
       color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      margin-top: 5px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
     }
-    button:hover {
+    
+    .search-btn:hover {
       background-color: #3367d6;
     }
+    
+    .search-btn:disabled {
+      background-color: #b0c4de;
+      cursor: not-allowed;
+    }
+    
+    .property-list-panel {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      max-width: 300px;
+      max-height: 80vh;
+      overflow-y: auto;
+      z-index: 1;
+    }
+    
+    .property-list-panel h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+    
     .poi-list {
-      margin-top: 15px;
-      max-height: 200px;
+      max-height: calc(80vh - 70px);
       overflow-y: auto;
     }
+    
     .poi-item {
-      padding: 5px 0;
+      padding: 12px;
       border-bottom: 1px solid #eee;
       cursor: pointer;
+      transition: background-color 0.2s;
+      border-radius: 4px;
+      margin-bottom: 8px;
     }
+    
     .poi-item:hover {
       background-color: #f5f5f5;
     }
+    
+    .poi-item-header {
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #333;
+    }
+    
+    .poi-item-category {
+      font-size: 12px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
     .loading {
       display: none;
-      margin-top: 10px;
+      margin-top: 15px;
+      text-align: center;
+      color: #666;
     }
+    
     .mapboxgl-popup {
-      max-width: 300px;
+      min-width: 450px;
+      max-width: 500px;
     }
+    
     .mapboxgl-popup-content {
+      padding: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .popup-header {
+      background-color: #4285f4;
+      color: white;
       padding: 15px;
     }
+    
+    .popup-header h4 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    
+    .popup-content {
+      padding: 15px;
+    }
+    
+    .property-popup-content .popup-header {
+      background-color: #34ebc6;
+      color: #333;
+    }
+    
+    .poi-popup-content .popup-header {
+      background-color: #f44141;
+    }
+    
     .property-search-form {
-      margin-top: 10px;
+      padding: 15px;
     }
-    .property-popup-content h4, .poi-popup-content h4 {
-      margin-top: 0;
-      margin-bottom: 10px;
-    }
+    
     .poi-details {
-      font-size: 13px;
+      font-size: 14px;
     }
+    
     .poi-details table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 8px;
     }
+    
     .poi-details td {
-      padding: 4px 0;
+      padding: 8px 0;
       vertical-align: top;
+      border-bottom: 1px solid #eee;
     }
+    
     .poi-details td:first-child {
-      font-weight: bold;
-      width: 35%;
+      font-weight: 500;
+      width: 40%;
+      color: #555;
     }
+    
     .poi-popup-content a {
       color: #4285f4;
       text-decoration: none;
     }
+    
     .poi-popup-content a:hover {
       text-decoration: underline;
+    }
+    
+    .empty-state {
+      color: #666;
+      text-align: center;
+      margin-top: 20px;
+      font-style: italic;
+    }
+    
+    .property-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background-color: #34ebc6;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    
+    .poi-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background-color: #f44141;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    
+    .selected-property-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background-color: #FF9500;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    
+    .search-status {
+      margin-top: 15px;
+      font-size: 13px;
+      color: #666;
+      display: none;
+    }
+    
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top-color: #4285f4;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+    .search-info {
+      font-size: 13px;
+      color: #666;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .category-label {
+      background-color: #f0f0f0;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      display: inline-block;
+      margin-right: 5px;
+      color: #555;
     }
   </style>
 </head>
 <body>
   <div id="map"></div>
-  <div class="control-panel">
-    <h2>POI Finder</h2>
-    <p>You can also click the map to locate POI's within a quarter mile of that location.</p>
-    <div class="input-group">
-      <label for="address">Search Address:</label>
-      <input type="text" id="address" placeholder="Enter an address">
+  
+  <div class="search-panel" id="search-panel">
+    <div class="panel-header">
+      <h2>POI Finder</h2>
     </div>
-    <button id="search-btn">Search</button>
-    <div class="loading" id="loading">Searching...</div>
-    <div class="poi-list" id="poi-list"></div>
+    
+    <div class="search-info" id="search-info">
+      <div class="selected-property-indicator"></div>
+      <span>Click a property on the map to search nearby POIs</span>
+    </div>
+    
+    <div class="input-group">
+      <label>Category:</label>
+      <div class="category-buttons">
+        <div class="category-btn" data-category="amenity" id="btn-amenity">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>All</span>
+        </div>
+        <div class="category-btn" data-category="shop">
+          <i class="fas fa-shopping-bag"></i>
+          <span>Shops</span>
+        </div>
+        <div class="category-btn" data-category="restaurant">
+          <i class="fas fa-utensils"></i>
+          <span>Food</span>
+        </div>
+        <div class="category-btn" data-category="school">
+          <i class="fas fa-graduation-cap"></i>
+          <span>Schools</span>
+        </div>
+        <div class="category-btn" data-category="healthcare">
+          <i class="fas fa-hospital"></i>
+          <span>Health</span>
+        </div>
+        <div class="category-btn" data-category="leisure">
+          <i class="fas fa-running"></i>
+          <span>Leisure</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="input-group">
+      <label for="search-radius">Radius (miles):</label>
+      <input type="number" id="search-radius" min="0.1" max="5" step="0.1" value="0.25">
+    </div>
+    
+    <button id="search-btn" class="search-btn" disabled>
+      <i class="fas fa-search"></i> Search Nearby
+    </button>
+    
+    <div class="search-status" id="search-status">
+      <div class="spinner"></div> Searching nearby points of interest...
+    </div>
+  </div>
+  
+  <div class="property-list-panel">
+    <h2>Points of Interest</h2>
+    <div class="poi-list" id="poi-list">
+      <div class="empty-state">
+        Select a property and search for POIs to see results here
+      </div>
+    </div>
   </div>
 
   <script>
@@ -124,14 +423,30 @@
 
     map.addControl(new mapboxgl.NavigationControl());
 
-    let currentMarker = null;
     let poiMarkers = [];
+    let selectedPropertyMarker = null;
     let selectedPropertyId = null;
+    let selectedLocation = null;
+    let selectedCategory = 'amenity';
 
-    const addressInput = document.getElementById('address');
     const searchBtn = document.getElementById('search-btn');
     const poiList = document.getElementById('poi-list');
-    const loading = document.getElementById('loading');
+    const searchRadius = document.getElementById('search-radius');
+    const searchStatus = document.getElementById('search-status');
+    const searchInfo = document.getElementById('search-info');
+    
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    categoryButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        categoryButtons.forEach(btn => btn.classList.remove('active'));
+        
+        button.classList.add('active');
+        
+        selectedCategory = button.dataset.category;
+      });
+    });
+    
+    document.getElementById('btn-amenity').classList.add('active');
 
     function loadProperties() {
         return fetch('properties.geojson')
@@ -147,9 +462,11 @@
                     type: 'circle',
                     source: 'properties',
                     paint: {
-                        'circle-radius': 6,
+                        'circle-radius': 8,
                         'circle-color': '#34ebc6',
-                        'circle-opacity': 0.95
+                        'circle-opacity': 0.95,
+                        'circle-stroke-width': 1,
+                        'circle-stroke-color': '#fff'
                     },
                     minzoom: 8
                 });
@@ -159,9 +476,9 @@
                     type: 'circle',
                     source: 'properties',
                     paint: {
-                        'circle-radius': 8,
+                        'circle-radius': 12,
                         'circle-color': '#FF9500',
-                        'circle-stroke-width': 2,
+                        'circle-stroke-width': 3,
                         'circle-stroke-color': '#FFFFFF',
                         'circle-opacity': 1
                     },
@@ -176,61 +493,28 @@
     }
 
     searchBtn.addEventListener('click', async () => {
-      const address = addressInput.value.trim();
-      if (!address) return;
-
-      loading.style.display = 'block';
-      poiList.innerHTML = '';
+      if (!selectedLocation) return;
+      
+      const radius = parseFloat(searchRadius.value) * 1609; 
+      
+      searchStatus.style.display = 'block';
       
       try {
-        if (currentMarker) currentMarker.remove();
         poiMarkers.forEach(marker => marker.remove());
         poiMarkers = [];
-
-        const response = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`);
-        const data = await response.json();
         
-        if (data.features && data.features.length > 0) {
-          const location = data.features[0];
-          const [lng, lat] = location.center;
-          
-          currentMarker = new mapboxgl.Marker({ color: '#4285f4' })
-            .setLngLat([lng, lat])
-            .addTo(map);
-          
-          map.flyTo({ center: [lng, lat], zoom: 15 });
-          
-          await fetchPOIs(lat, lng);
-        } else {
-          poiList.innerHTML = '<div class="poi-item">No results found for this address.</div>';
-        }
+        await fetchPOIs(selectedLocation.lat, selectedLocation.lng, selectedCategory, radius);
+        
+        const categoryName = selectedCategory === 'amenity' ? 'All POIs' : selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1) + 's';
+        searchInfo.innerHTML = `
+          <div class="selected-property-indicator"></div>
+          <span>Showing ${categoryName} within ${searchRadius.value} miles</span>
+        `;
       } catch (error) {
+        console.error("Error fetching POIs:", error);
         poiList.innerHTML = `<div class="poi-item">Error: ${error.message}</div>`;
       } finally {
-        loading.style.display = 'none';
-      }
-    });
-
-    // map.on('click', async function(e) {
-    //     const features = map.queryRenderedFeatures(e.point, { layers: ['properties-layer'] });
-    //     if (features.length > 0) return;
-        
-    //     const { lng, lat } = e.lngLat;
-
-    //     if (currentMarker) currentMarker.remove();
-    //     poiMarkers.forEach(marker => marker.remove());
-    //     poiMarkers = [];
-
-    //     currentMarker = new mapboxgl.Marker({ color: '#4285f3' })
-    //         .setLngLat([lng, lat])
-    //         .addTo(map);
-
-    //     await fetchPOIs(lat, lng);
-    // });
-
-    addressInput.addEventListener('keyup', (event) => {
-      if (event.key === 'Enter') {
-        searchBtn.click();
+        searchStatus.style.display = 'none';
       }
     });
 
@@ -242,7 +526,13 @@
         const name = tags.name || 'Unnamed POI';
         const category = getElementCategory(element);
 
-        popupContent.innerHTML = `<h4>${name}</h4>`;
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'popup-header';
+        headerDiv.innerHTML = `<h4>${name}</h4>`;
+        popupContent.appendChild(headerDiv);
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'popup-content';
         
         const detailsDiv = document.createElement('div');
         detailsDiv.className = 'poi-details';
@@ -302,7 +592,8 @@
         }
         
         detailsDiv.appendChild(table);
-        popupContent.appendChild(detailsDiv);
+        contentDiv.appendChild(detailsDiv);
+        popupContent.appendChild(contentDiv);
         
         return popupContent;
     }
@@ -339,6 +630,52 @@
         return 'Point of Interest';
     }
 
+    function getCategoryIcon(category) {
+        const categoryMap = {
+            'amenity': 'fa-map-marker-alt',
+            'shop': 'fa-shopping-bag',
+            'restaurant': 'fa-utensils',
+            'food': 'fa-utensils',
+            'cafe': 'fa-coffee',
+            'fast_food': 'fa-hamburger',
+            'school': 'fa-graduation-cap',
+            'education': 'fa-graduation-cap',
+            'healthcare': 'fa-hospital',
+            'hospital': 'fa-hospital',
+            'pharmacy': 'fa-pills',
+            'doctor': 'fa-user-md',
+            'leisure': 'fa-running',
+            'sport': 'fa-futbol',
+            'tourism': 'fa-camera',
+            'historic': 'fa-landmark',
+            'office': 'fa-building',
+            'bank': 'fa-landmark',
+            'atm': 'fa-money-bill-wave',
+            'bar': 'fa-beer',
+            'pub': 'fa-beer',
+            'library': 'fa-book',
+            'parking': 'fa-parking',
+            'fuel': 'fa-gas-pump',
+            'bus': 'fa-bus',
+            'train': 'fa-train',
+            'post': 'fa-envelope',
+            'place_of_worship': 'fa-church'
+        };
+        
+        let mainCat = category;
+        let subCat = '';
+        
+        if (category.includes(':')) {
+            [mainCat, subCat] = category.split(': ');
+        }
+        
+        if (subCat && categoryMap[subCat]) {
+            return categoryMap[subCat];
+        }
+        
+        return categoryMap[mainCat] || 'fa-map-marker';
+    }
+
     async function fetchPOIs(lat, lng, category = 'amenity', radius = 402) {
         console.log(`Making request at ${lat}, ${lng} for ${category} within ${radius}m`);
 
@@ -354,6 +691,52 @@
                   node(around:${radius},${lat},${lng})["amenity"];  
                   way(around:${radius},${lat},${lng})["amenity"];  
                   relation(around:${radius},${lat},${lng})["amenity"];  
+                  node(around:${radius},${lat},${lng})["shop"];
+                  way(around:${radius},${lat},${lng})["shop"];
+                  relation(around:${radius},${lat},${lng})["shop"];
+                  node(around:${radius},${lat},${lng})["leisure"];
+                  way(around:${radius},${lat},${lng})["leisure"];
+                  relation(around:${radius},${lat},${lng})["leisure"];
+                  node(around:${radius},${lat},${lng})["tourism"];
+                  way(around:${radius},${lat},${lng})["tourism"];
+                  relation(around:${radius},${lat},${lng})["tourism"];
+                );
+                out body;
+                `;
+        } else if (category === 'school') {
+          query = `
+                [out:json];
+                (
+                  node(around:${radius},${lat},${lng})["amenity"="school"];  
+                  way(around:${radius},${lat},${lng})["amenity"="school"];  
+                  relation(around:${radius},${lat},${lng})["amenity"="school"];
+                  node(around:${radius},${lat},${lng})["amenity"="college"];  
+                  way(around:${radius},${lat},${lng})["amenity"="college"];  
+                  relation(around:${radius},${lat},${lng})["amenity"="college"];                 
+                  node(around:${radius},${lat},${lng})["amenity"="university"];  
+                  way(around:${radius},${lat},${lng})["amenity"="university"];  
+                  relation(around:${radius},${lat},${lng})["amenity"="university"];
+                  node(around:${radius},${lat},${lng})["amenity"="kindergarten"];  
+                  way(around:${radius},${lat},${lng})["amenity"="kindergarten"];  
+                  relation(around:${radius},${lat},${lng})["amenity"="kindergarten"];
+                  node(around:${radius},${lat},${lng})["amenity"="language_school"];  
+                  way(around:${radius},${lat},${lng})["amenity"="language_school"];  
+                  relation(around:${radius},${lat},${lng})["amenity"="language_school"];                  
+                  node(around:${radius},${lat},${lng})["amenity"="music_school"];  
+                  way(around:${radius},${lat},${lng})["amenity"="music_school"];  
+                  relation(around:${radius},${lat},${lng})["amenity"="music_school"];                  
+                  node(around:${radius},${lat},${lng})["amenity"="driving_school"];  
+                  way(around:${radius},${lat},${lng})["amenity"="driving_school"];  
+                  relation(around:${radius},${lat},${lng})["amenity"="driving_school"];
+                  node(around:${radius},${lat},${lng})["building"="school"];  
+                  way(around:${radius},${lat},${lng})["building"="school"];  
+                  relation(around:${radius},${lat},${lng})["building"="school"];                  
+                  node(around:${radius},${lat},${lng})["building"="university"];  
+                  way(around:${radius},${lat},${lng})["building"="university"];  
+                  relation(around:${radius},${lat},${lng})["building"="university"];
+                  node(around:${radius},${lat},${lng})["amenity"="library"];  
+                  way(around:${radius},${lat},${lng})["amenity"="library"];  
+                  relation(around:${radius},${lat},${lng})["amenity"="library"];
                 );
                 out body;
                 `;
@@ -374,6 +757,8 @@
         console.log("Overpass API response:", data);
 
         if (data.elements && data.elements.length > 0) {
+            const poiFragment = document.createDocumentFragment();
+            
             data.elements.forEach(element => {
                 if (element.lat && element.lon) {
                     const poiMarker = new mapboxgl.Marker({ color: '#f44141' })
@@ -389,29 +774,63 @@
 
                     const name = element.tags.name || 'Unnamed POI';
                     const type = getElementCategory(element);
+                    const iconClass = getCategoryIcon(type);
+                    
                     const poiItem = document.createElement('div');
                     poiItem.className = 'poi-item';
-                    poiItem.innerHTML = `<strong>${name}</strong><br>${type}`;
+                    poiItem.innerHTML = `
+                        <div class="poi-item-header">${name}</div>
+                        <div class="poi-item-category">
+                            <div class="poi-indicator"></div>
+                            <i class="fas ${iconClass}"></i> ${formatCategoryName(type)}
+                        </div>
+                    `;
+                    
                     poiItem.onclick = () => {
                         map.flyTo({ center: [element.lon, element.lat], zoom: 17 });
                         poiMarker.togglePopup(); 
                     };
-                    poiList.appendChild(poiItem);
+                    
+                    poiFragment.appendChild(poiItem);
                 }
             });
+            
+            poiList.appendChild(poiFragment);
+            
+            if (poiMarkers.length === 0) {
+                poiList.innerHTML = `<div class="empty-state">No ${category === 'amenity' ? 'POIs' : category} found within ${(radius/1609).toFixed(2)} miles.</div>`;
+            }
         } else {
-            poiList.innerHTML = `<div class="poi-item">No ${category === 'amenity' ? 'POIs' : category} found within ${(radius/1609).toFixed(2)} miles.</div>`;
+            poiList.innerHTML = `<div class="empty-state">No ${category === 'amenity' ? 'POIs' : category} found within ${(radius/1609).toFixed(2)} miles.</div>`;
         }
     }
 
-    function highlightProperty(propertyId) {
+    function highlightProperty(propertyId, lngLat) {
         selectedPropertyId = propertyId;
         map.setFilter('highlighted-property', ['==', 'id', propertyId]);
+        
+        searchBtn.disabled = false;
+        
+        searchInfo.innerHTML = `
+            <div class="selected-property-indicator"></div>
+            <span>Property selected - ready to search nearby</span>
+        `;
+        
+        selectedLocation = lngLat;
     }
 
     function clearPropertyHighlight() {
         selectedPropertyId = null;
         map.setFilter('highlighted-property', ['==', 'id', '']);
+        
+        searchBtn.disabled = true;
+        
+        searchInfo.innerHTML = `
+            <div class="property-indicator"></div>
+            <span>Click a property on the map to search nearby POIs</span>
+        `;
+        
+        selectedLocation = null;
     }
 
     function createPropertyPopup(feature, lngLat) {
@@ -421,46 +840,49 @@
         const propertyName = feature.properties.name || 'Property';
         const propertyId = feature.properties.id || '';
         
-        popupContent.innerHTML = `
-            <h4>${propertyName}</h4>
-            <div class="property-search-form">
-                <div class="input-group">
-                    <label for="poi-category">Search for:</label>
-                    <select id="poi-category">
-                        <option value="amenity">All Amenities</option>
-                        <option value="shop">Shops</option>
-                        <option value="restaurant">Restaurants</option>
-                        <option value="school">Schools</option>
-                        <option value="leisure">Leisure</option>
-                        <option value="healthcare">Healthcare</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="search-radius">Radius (miles):</label>
-                    <input type="number" id="search-radius" min="0.1" max="5" step="0.1" value="1">
-                </div>
-                <button id="property-search-btn">Search</button>
-            </div>
-        `;
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'popup-header';
+        headerDiv.innerHTML = `<h4>${propertyName}</h4>`;
+        popupContent.appendChild(headerDiv);
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'popup-content';
+        
+        const detailsTable = document.createElement('table');
+        detailsTable.className = 'poi-details';
+        
+        for (const key in feature.properties) {
+            if (key !== 'id' && key !== 'name') {
+                addTableRow(detailsTable, formatTagName(key), feature.properties[key]);
+            }
+        }
+        
+        contentDiv.appendChild(detailsTable);
+        
+        const searchBtn = document.createElement('button');
+        searchBtn.className = 'search-btn';
+        searchBtn.innerHTML = '<i class="fas fa-search"></i> Search Around This Property';
+        searchBtn.style.marginTop = '15px';
+        
+        searchBtn.addEventListener('click', () => {
+            highlightProperty(propertyId, lngLat);
+            popup.remove();
+            
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('btn-amenity').classList.add('active');
+            selectedCategory = 'amenity';;
+        });
+        
+        contentDiv.appendChild(searchBtn);
+        popupContent.appendChild(contentDiv);
         
         const popup = new mapboxgl.Popup()
             .setLngLat(lngLat)
-            .setDOMContent(popupContent)
-            .addTo(map);
+            .setDOMContent(popupContent);
             
-        popupContent.querySelector('#property-search-btn').addEventListener('click', async () => {
-            const category = popupContent.querySelector('#poi-category').value;
-            const radiusMiles = parseFloat(popupContent.querySelector('#search-radius').value);
-            const radiusMeters = radiusMiles * 1609;
-            
-            highlightProperty(propertyId);
-            popup.remove();
-            await fetchPOIs(lngLat.lat, lngLat.lng, category, radiusMeters);
-        });
-        
-        popup.on('close', () => {
-            clearPropertyHighlight();
-        });
+        return popup;
     }
 
     map.on('load', () => {
@@ -471,10 +893,12 @@
                 const feature = e.features[0];
                 const coordinates = feature.geometry.coordinates.slice();
                 
-                createPropertyPopup(feature, {
+                const popup = createPropertyPopup(feature, {
                     lng: coordinates[0],
                     lat: coordinates[1]
                 });
+                
+                popup.addTo(map);
             });
             
             map.on('mouseenter', 'properties-layer', () => {
@@ -487,6 +911,21 @@
         });
 
         console.log('Map loaded and ready');
+        
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                map.flyTo({
+                    center: [position.coords.longitude, position.coords.latitude],
+                    zoom: 11
+                });
+            },
+            () => {
+                map.flyTo({
+                    center: [-74.5, 40],
+                    zoom: 9
+                });
+            }
+        );
     });
   </script>
 </body>
