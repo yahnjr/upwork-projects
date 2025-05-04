@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapbox Screenshot App</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/2.15.0/mapbox-gl.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/2.15.0/mapbox-gl.css" rel="stylesheet" />
+    
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: Arial, sans-serif;
+        }
+        
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .control-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            z-index: 1;
+            min-width: 200px;
+        }
+        
+        button {
+            background: #3887be;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        
+        button:hover {
+            background: #2371a3;
+        }
+
+        .mapboxgl-ctrl-logo {
+            margin: 0 !important;
+        }
+    
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <div class="control-panel">
+        <h3>Mapbox Screenshot App</h3>
+        <button id="screenshot-btn">Take Screenshot</button>
+        <button id="toggle-labels-btn">Toggle Labels</button>
+    </div>
+
+    <script>
+        const mapboxToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
+        
+        mapboxgl.accessToken = mapboxToken;
+        
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: [-74.5, 40],
+            zoom: 9,
+            preserveDrawingBuffer: true
+        });
+        
+        map.addControl(new mapboxgl.NavigationControl());
+        
+        let labelsVisible = true;
+        
+        function takeScreenshot() {
+            map.once('render', function() {
+                const mapCanvas = map.getCanvas();
+                
+                const width = mapCanvas.width;
+                const height = mapCanvas.height;
+                const targetCanvas = document.createElement('canvas');
+                targetCanvas.width = width;
+                targetCanvas.height = height;
+                const ctx = targetCanvas.getContext('2d');
+                
+                ctx.drawImage(mapCanvas, 0, 0);
+                
+                const link = document.createElement('a');
+                link.href = targetCanvas.toDataURL('image/png');
+                link.download = 'mapbox-screenshot-' + new Date().toISOString().slice(0,10) + '.png';
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+            
+            map.triggerRepaint();
+        }
+
+        function toggleLabels() {
+            labelsVisible = !labelsVisible;
+            
+            const visibility = labelsVisible ? 'visible' : 'none';
+            
+            if (map.getLayer('property-labels')) {
+                map.setLayoutProperty('property-labels', 'visibility', visibility);
+                document.getElementById('toggle-labels-btn').textContent = labelsVisible ? 'Hide Labels' : 'Show Labels';
+            }
+        }
+
+        function addData() {
+            fetch('properties.geojson')
+                .then(response => response.json())
+                .then(data => {
+                    map.addSource('properties', {
+                        type: 'geojson',
+                        data: data
+                    });
+
+                    map.addLayer({
+                        'id': 'properties-layer',
+                        'type': 'circle',
+                        'source': 'properties',
+                        'paint': {
+                            'circle-radius': 5,
+                            'circle-color': '#FF0000'
+                        }
+                    });
+                    
+                    map.addLayer({
+                        'id': 'property-labels',
+                        'type': 'symbol',
+                        'source': 'properties',
+                        'layout': {
+                            'text-field': ['get', 'address'],
+                            'text-font': ['Open Sans Bold'],
+                            'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+                            'text-radial-offset': 0.6,
+                            'text-justify': 'auto',
+                            'text-size': [
+                                'interpolate',
+                                ['linear'],
+                                ['zoom'],
+                                8, 10,
+                                10, 16,
+                                11, 22
+                            ],
+                            'symbol-sort-key': ['get', 'id'],
+                            'symbol-spacing': [
+                                'interpolate',
+                                ['linear'],
+                                ['zoom'],
+                                8, 100,
+                                10, 250
+                            ],
+                            'visibility': 'visible'
+                        },
+                        'paint': {
+                            'text-color': '#111111',
+                            'text-halo-color': '#FFFFFF',
+                            'text-halo-width': 2,
+                            'text-opacity': [
+                                'interpolate',
+                                ['linear'],
+                                ['zoom'],
+                                8, 0,
+                                10, 1
+                            ]
+                        },
+                        'minzoom': 6
+                    });
+
+                })
+                .catch(error => console.error('Error loading property data:', error));
+        }
+
+        map.on('load', function() {
+            addData();
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('screenshot-btn').addEventListener('click', takeScreenshot);
+            document.getElementById('toggle-labels-btn').addEventListener('click', toggleLabels);
+        });
+    </script>
+</body>
+</html>
