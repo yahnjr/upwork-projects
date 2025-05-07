@@ -1,10 +1,32 @@
 mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
-let chosenLayer = "Walkability";
-let visibleStates = [];
+
 let selectedProperties = [];
-let maxSelectedProperties = 5;
-let primaryLayer = "Walkability";
-let comparisonLayer = null;
+let fetchedAreas = new Set();
+let activeDataLayers = []; 
+let dataLayerTypes = {
+    'Walkability': {
+        id: 'walkability-layer',
+        color: '#41b6c4',
+        gradientColors: ['#0c2c84', '#41b6c4', '#e4f2f4'], 
+        property: 'Walkability'
+    },
+    'Air Quality': {
+        id: 'air-quality-layer',
+        color: '#62de74',
+        gradientColors: ['#28ac21', '#62de74', '#ecf8ed'],
+        property: 'Air_Quality'
+    },
+    'Crime': {
+        id: 'crime-layer',
+        color: '#ffb757',
+        gradientColors: ['#e34a33', '#ffb757', '#f7efdc'], 
+        property: 'Crime' 
+    }
+};
+
+let currentSortLayer = null;
+let currentSortDirection = 'asc';
+let lockedDataLayerId = null;
 
 let map = new mapboxgl.Map({
     container: 'map',
@@ -15,131 +37,41 @@ let map = new mapboxgl.Map({
     ]
 });
 
-map.on('load', function () {   
+const propertiesPanel = document.getElementById('properties-panel');
+const addColumnBtn = document.getElementById('add-column-btn');
+const dropdown = document.getElementById('data-layer-dropdown');
+const tableContainer = document.getElementById('property-table-container');
+const table = document.getElementById('property-table');
+const thead = document.querySelector('#property-table thead'); 
+const headerRow = document.getElementById('property-table-header-row'); 
+const tbody = document.getElementById('property-table-body'); 
+const addressHeader = document.getElementById('address-header');
+const legendContainer = document.getElementById('legend'); 
+
+map.on('load', function () {
     parseUrlParams();
 
-    console.log("Query parameters parsed");
-
-    const geojsonURL = 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/14/query?where=STATE%3D%2736%27&outFields=GEOID,NAME&outSR=4326&f=geojson';
-
-    console.log("Fetching GeoJSON from:", geojsonURL);
+    console.log("Loading initial data");
 
     Promise.all([
-        fetch('states.geojson').then(response => response.json()),
-        fetch('properties.geojson').then(response => response.json()),
-        fetch(geojsonURL).then(response => response.json())
+        fetch('properties.geojson').then(response => response.json())
     ])
-    .then(([stateData, propertiesData, censusData]) => {
-        states = stateData;
-        properties = propertiesData;
-        census = censusData;
+    .then(([propertiesData]) => {
+        const properties = propertiesData;
 
-        console.log("GeoJSON data loaded. Feature count:", census.features.length);
-        console.log("First feature before modification:", census.features[0]);
-
-        census.features.forEach(f => {
-            const GEOID = f.properties.GEOID;
-            const id = (parseInt(GEOID) / 10);
-
-            f.properties.Walkability = (id * 7 + 13) % 10;
-            f.properties.Air_Quality = (id * 11 + 5) % 12;
-            f.properties.Crime = (id * 19 + 3) % 15;
-        });
-
-        console.log("First feature after adding attributes:", census.features[0]);
-
-        map.addSource('states', {
-            type: 'geojson', 
-            data: states
-        });
-
-        map.addLayer({
-            id: 'invisible-states',
-            type: 'fill',
-            source: 'states',
-            paint: {
-                'fill-color': '#ffffff',
-                'fill-opacity': 0
-            }
-        });
-
-        console.log("Added reference state layer");
-        
         map.addSource('properties', {
-            type: 'geojson', 
+            type: 'geojson',
             data: properties
         });
 
         map.addSource('census-data', {
             type: 'geojson',
-            data: census
-        });
-        console.log("GeoJSON source added to map.");
-
-        map.addLayer({
-            id: 'walkability-layer',
-            type: 'fill',
-            source: 'census-data',
-            paint: {
-                'fill-color': [
-                    'interpolate',
-                    ['linear'],
-                    ['get', 'Walkability'],
-                    0, '#0c2c84',
-                    5,  '#41b6c4',
-                    10, '#dcf7f7'
-                ],
-                'fill-opacity': 0.4
-            },
-            minZoom: 10
+            data: {
+                type: 'FeatureCollection',
+                features: []
+            }
         });
 
-        console.log("Walkability layer added.");
-
-        map.addLayer({
-            id: 'air-quality-layer',
-            type: 'fill',
-            source: 'census-data',
-            paint: {
-                'fill-color': [
-                    'interpolate',
-                    ['linear'],
-                    ['get', 'Air_Quality'],
-                    0, '#28ac21',
-                    5, '#62de74',
-                    10, '#e0f8ec'
-                ],
-                'fill-opacity': 0.4
-            },
-            layout: {
-                visibility: 'none'
-            },
-            minZoom: 10
-        });
-        console.log("Air Quality layer added.");
-
-        map.addLayer({
-            id: 'crime-layer',
-            type: 'fill',
-            source: 'census-data',
-            paint: {
-                'fill-color': [
-                    'interpolate',
-                    ['linear'],
-                    ['get', 'Crime'],
-                    0, '#e34a33',
-                    5, '#ffb757',
-                    10, '#f7deb5'
-                ],
-                'fill-opacity': 0.4
-            },
-            layout: {
-                visibility: 'none'
-            },
-            minZoom: 10
-        });
-        console.log("Crime layer added.");
-        
         map.addLayer({
             id: 'properties-layer',
             type: 'circle',
@@ -152,13 +84,34 @@ map.on('load', function () {
             minzoom: 8
         });
 
-        console.log("Added properties layer");
+        Object.values(dataLayerTypes).forEach(layerInfo => {
+             map.addLayer({
+                id: layerInfo.id,
+                type: 'fill',
+                source: 'census-data',
+                paint: {
+                    'fill-color': [
+                        'interpolate',
+                        ['linear'],
+                        ['get', layerInfo.property],
+                        0, layerInfo.gradientColors[0],
+                        5, layerInfo.gradientColors[1],
+                        10, layerInfo.gradientColors[2]
+                    ],
+                    'fill-opacity': 0.6
+                },
+                layout: {
+                    'visibility': 'none' 
+                },
+                minZoom: 8
+            });
+        });
 
         map.addLayer({
             id: 'selected-properties',
             type: 'circle',
             source: 'properties',
-            filter: ['in', 'id', ''],
+            filter: ['in', 'uniqueID', ''],
             paint: {
                 'circle-radius': 8,
                 'circle-color': '#ff4d4d',
@@ -167,362 +120,378 @@ map.on('load', function () {
             },
             minzoom: 8
         });
-        
-        map.on('click', 'properties-layer', function(e) {
-            const coordinates = e.features[0].geometry.coordinates.slice();
-            const propertyId = e.features[0].properties.uniqueID;
-            const propertyAddress = e.features[0].properties.address || `Property #${propertyId}`;
-            const city = e.features[0].properties.city;
-            
-            const isSelected = selectedProperties.some(p => p.id === propertyId);
-            
-            const popupContent = document.createElement('div');
-            
-            if (isSelected) {
-                const p = document.createElement('p');
-                p.textContent = `#${propertyAddress} is already selected`
-                popupContent.appendChild(p);
-            } else if (selectedProperties.length >= maxSelectedProperties) {
-                const p = document.createElement('p');
-                p.textContent = `Maximum of ${maxSelectedProperties} properties already selected`;
-                popupContent.appendChild(p);
-            } else {
-                const p = document.createElement('p');
-                p.textContent = propertyAddress;
-                popupContent.appendChild(p);
-                
-                const button = document.createElement('button');
-                button.textContent = 'Add to list';
-                button.onclick = function() {
-                    if (selectedProperties.length < maxSelectedProperties) {
-                        const censusData = getCensusDataForProperty(coordinates);
-                        
-                        selectedProperties.push({
-                            id: propertyId,
-                            address: propertyAddress,
-                            city: city,
-                            coordinates: coordinates,
-                            censusData: censusData
-                        });
-                        
-                        updatePropertyList();
-                        
-                        updateSelectedPropertiesLayer();
 
-                        map.getCanvas().click();
-                    }
-                };
-                popupContent.appendChild(button);
-            }
-            
-            new mapboxgl.Popup()
-                .setLngLat(coordinates)
-                .setDOMContent(popupContent)
-                .addTo(map);
-        });
-        
         map.on('mouseenter', 'properties-layer', function() {
             map.getCanvas().style.cursor = 'pointer';
         });
+
         map.on('mouseleave', 'properties-layer', function() {
             map.getCanvas().style.cursor = '';
         });
 
-        updateLegend(chosenLayer);
-        
-        document.getElementById('layer-form').addEventListener('change', function(e) {
-            if (e.target.classList.contains('radio-option')) {
-                chosenLayer = e.target.value;
-                console.log("Layer selected:", chosenLayer);
-                
-                map.setLayoutProperty('crime-layer', 'visibility', 'none');
-                map.setLayoutProperty('air-quality-layer', 'visibility', 'none');
-                map.setLayoutProperty('walkability-layer', 'visibility', 'none');
-                
-                if (chosenLayer === 'Crime') {
-                    map.setLayoutProperty('crime-layer', 'visibility', 'visible');
-                } else if (chosenLayer === 'Air Quality') {
-                    map.setLayoutProperty('air-quality-layer', 'visibility', 'visible');
-                } else if (chosenLayer === 'Walkability') {
-                    map.setLayoutProperty('walkability-layer', 'visibility', 'visible');
+        map.on('click', 'properties-layer', function(e) {
+            if (e.features.length > 0) {
+                const property = e.features[0];
+                const propertyId = property.properties.uniqueID;
+
+                const alreadySelected = selectedProperties.some(p => p.id === propertyId);
+
+                if (!alreadySelected) {
+                    const coordinates = property.geometry.coordinates.slice();
+                    const propertyAddress = property.properties.address || `Property #${propertyId}`;
+                    const city = property.properties.city || '';
+
+                    const newProperty = {
+                        id: propertyId,
+                        address: propertyAddress,
+                        city: city,
+                        coordinates: coordinates,
+                        censusData: {
+                            Walkability: 0,
+                            Air_Quality: 0,
+                            Crime: 0
+                        }
+                    };
+
+                    selectedProperties.push(newProperty);
+
+                    fetchCensusDataForArea(coordinates);
+                    updatePropertyTable();
+                    updateSelectedPropertiesLayer();
+
+                    const selectedIds = selectedProperties.map(p => p.id);
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.set('selected', selectedIds.join(','));
+                    window.history.pushState({}, '', newUrl);
                 }
             }
-
-            updateLegend(chosenLayer);
         });
+
+        setupTableView();
     })
     .catch(error => {
-        console.error("Error loading data:", error);
-    });
-        
-    fetch(geojsonURL)
-        .then(response => {
-            console.log("Fetch response received:", response);
-            if (!response.ok) {
-                throw new Error("Network response was not ok.");
-            }
-            return response.json();
-        })
-        .catch(error => {
-            console.error("Error loading or parsing GeoJSON:", error);
-        });
-
-    function queryCensus() {
-        visibleStates = map.queryRenderedFeatures({ layers: ['invisible-states']});
-        console.log("initial state query:", visibleStates);
-
-        const uniquStateIds = new Set();
-        visibleStates.forEach(state => {
-            if (state.properties && state.properties.FIPS) {
-                uniquStateIds.add(state.properties.FIPS);
-            }
-        });
-
-        const uniqueStates = Array.from(uniquStateIds);
-        console.log('States visible: ', uniqueStates);
-
-        if (uniqueStates.length > 3) {
-            console.log("Too many states to query census");
-            return;
-        } else if (uniqueStates.length === 0) {
-            console.log("Error querying state layer");
-            return;
-        }
-
-        stateWhereClause = uniqueStates.map(code => `STATE='${code}'`).join(' OR ');
-        const geojsonURL =  `https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/14/query?where=${encodeURIComponent(stateWhereClause)}&outFields=GEOID,NAME&outSR=4326&f=geojson`;
-        
-        console.log('Fetching census data from: ', geojsonURL);
-
-        fetch(geojsonURL)
-            .then(response => {
-                if(!response.ok) {
-                    throw new Error("Network response error");
-                }
-                return response.json();
-            })
-            .then(censusData => {
-                console.log("Census data received:", censusData);
-
-                censusData.features.forEach(f => {
-                    const GEOID = f.properties.GEOID;
-                    const id = (parseInt(GEOID) / 10);
-
-                    f.properties.Walkability = (id * 7 + 13) % 10;
-                    f.properties.Air_Quality = (id * 11 + 5) % 12;
-                    f.properties.Crime = (id * 19 + 3) % 15;
-                });
-                
-                if (map.getSource('census-data')) {
-                    map.getSource('census-data').setData(censusData);
-                    console.log("Updated census data on map");
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching or processing census data:", error);
-            });
-    }
-
-    map.on('moveend', () => {
-        queryCensus();
+        console.error("Error loading initial data:", error);
     });
 });
 
-function updatePropertyList() {
-    const listContainer = document.getElementById('property-list');
-    const countElement = document.getElementById('selected-count');
-    
-    countElement.textContent = `(${selectedProperties.length}/${maxSelectedProperties})`;
+function setupTableView() {
+    console.log("Setting up table view and interactions");
 
-    listContainer.innerHTML = '';
-    
-    selectedProperties.forEach((property, index) => {
-        const item = document.createElement('div');
-        item.className = 'property-item';
-        item.textContent = `${property.address}, ${property.city}`
-        item.uniqueID = property.id;
-
-        const textSpan = document.createElement('span');
-        textSpan.textContent = `${property.address}, ${property.city}`;
-        textSpan.style.cursor = 'pointer';
-
-        const removeBtn = document.createElement('span');
-        removeBtn.textContent = '×';
-        removeBtn.className = 'remove-property';
-        removeBtn.style.float = 'right';
-        removeBtn.style.cursor = 'pointer';
-        removeBtn.style.fontWeight = 'bold';
-        removeBtn.style.color = '#f44336';
-        
-        removeBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            removeProperty(property.id);
-        });
-
-        item.appendChild(textSpan);
-        item.appendChild(removeBtn);
-        item.uniqueId = property.id;
-        
+    const dropdownItems = dropdown.querySelectorAll('.dropdown-item');
+    dropdownItems.forEach(item => {
         item.addEventListener('click', function() {
-            map.flyTo({
-                center: property.coordinates,
-                zoom: 15
-            });
+            const layerName = this.getAttribute('data-layer-name');
+            addDataLayer(layerName);
+            dropdown.style.display = 'none'; 
+        });
+    });
+
+    addColumnBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.addEventListener('click', function() {
+        dropdown.style.display = 'none';
+    });
+
+    table.addEventListener('mouseover', handleTableMouseOver);
+    table.addEventListener('mouseout', handleTableMouseOut);
+    table.addEventListener('click', handleTableClick);
+}
+
+
+function handleTableMouseOver(e) {
+    const target = e.target.closest('th.data-header, td.data-cell');
+    if (target) {
+        const layerName = target.getAttribute('data-layer');
+        if (layerName) {
+            const layerInfo = dataLayerTypes[layerName];
+            if (layerInfo) {
+                setActiveDataLayer(layerInfo.id); 
+            }
+        }
+    }
+}
+
+function handleTableMouseOut(e) {
+    if (!table.contains(e.relatedTarget)) {
+        hideAllDataLayers(); 
+        if (!lockedDataLayerId) {
+            legendContainer.style.display = 'none';
+        } else {
+            const lockedLayerName = Object.keys(dataLayerTypes).find(key => dataLayerTypes[key].id === lockedDataLayerId);
+            if(lockedLayerName) {
+               updateLegend(lockedLayerName);
+               legendContainer.style.display = 'block';
+            }
+        }
+    } else {
+        const leavingElement = e.target.closest('th.data-header, td.data-cell');
+        if (leavingElement) {
+            const leavingLayerName = leavingElement.getAttribute('data-layer');
+            const leavingLayerId = leavingLayerName ? dataLayerTypes[leavingLayerName]?.id : null;
+
+            if (leavingLayerId && leavingLayerId !== lockedDataLayerId) {
+                if (map.getLayer(leavingLayerId)) {
+                    map.setLayoutProperty(leavingLayerId, 'visibility', 'none');
+                }
+                if (lockedDataLayerId && map.getLayer(lockedDataLayerId)) {
+                    map.setLayoutProperty(lockedDataLayerId, 'visibility', 'visible');
+                }
+            }
+        }
+    }
+}
+
+function handleTableClick(e) {
+    const target = e.target.closest('th.data-header, td.data-cell');
+    if (target) {
+        const layerName = target.getAttribute('data-layer');
+        if (layerName) {
+            const layerInfo = dataLayerTypes[layerName];
+            if (layerInfo) {
+                if (currentSortLayer === layerName) {
+                    currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSortLayer = layerName;
+                    currentSortDirection = 'asc';
+                }
+
+                const propertyKeyToSort = layerInfo.property;
+                selectedProperties.sort((a, b) => {
+                    const valA = a.censusData[propertyKeyToSort] || 0;
+                    const valB = b.censusData[propertyKeyToSort] || 0;
+
+                    if (currentSortDirection === 'asc') {
+                        return valA - valB;
+                    } else {
+                        return valB - valA;
+                    }
+                });
+
+                lockedDataLayerId = layerInfo.id; 
+
+                updatePropertyTable(); 
+                setActiveDataLayer(lockedDataLayerId); 
+
+                console.log(`Sorted by ${layerName} (${currentSortDirection}). Layer ${lockedDataLayerId} locked.`);
+            }
+        }
+    }
+}
+
+
+function addDataLayer(layerName) {
+    if (activeDataLayers.includes(layerName)) {
+        console.warn(`Layer "${layerName}" is already added.`);
+        return;
+    }
+
+    activeDataLayers.push(layerName);
+
+    const newHeader = document.createElement('th');
+    newHeader.textContent = layerName;
+    newHeader.setAttribute('data-layer', layerName);
+    newHeader.classList.add('data-header');
+    newHeader.style.position = 'relative';
+
+    const removeBtn = document.createElement('span');
+    removeBtn.innerHTML = '×';
+    removeBtn.classList.add('remove-btn'); 
+    removeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        removeDataLayer(layerName);
+    });
+
+    newHeader.appendChild(removeBtn);
+
+    const addColumnHeader = headerRow.querySelector('#add-column-header');
+    if (addColumnHeader) {
+        headerRow.insertBefore(newHeader, addColumnHeader);
+    } else {
+        headerRow.appendChild(newHeader);
+    }
+
+
+    updatePropertyTable();
+}
+
+function removeDataLayer(layerName) {
+    const index = activeDataLayers.indexOf(layerName);
+    if (index > -1) {
+        activeDataLayers.splice(index, 1);
+    }
+
+    const headerToRemove = headerRow.querySelector(`th[data-layer="${layerName}"]`);
+    if (headerToRemove) {
+        headerToRemove.remove();
+    }
+
+    if (currentSortLayer === layerName) {
+        currentSortLayer = null;
+        currentSortDirection = 'asc';
+    }
+    if (lockedDataLayerId === dataLayerTypes[layerName]?.id) {
+        lockedDataLayerId = null;
+        hideAllDataLayers(); 
+        legendContainer.style.display = 'none';
+    } else {
+        hideAllDataLayers();
+         if (!lockedDataLayerId) {
+             legendContainer.style.display = 'none';
+         }
+    }
+
+    updatePropertyTable();
+}
+
+function hideAllDataLayers() {
+    Object.values(dataLayerTypes).forEach(layerInfo => {
+        if (map.getLayer(layerInfo.id)) { 
+            if (layerInfo.id !== lockedDataLayerId) {
+                map.setLayoutProperty(layerInfo.id, 'visibility', 'none');
+            }
+        }
+    });
+}
+
+function updatePropertyTable() {
+    tbody.innerHTML = '';
+
+    headerRow.querySelectorAll('.data-header').forEach(header => {
+        header.classList.remove('sort-asc', 'sort-desc');
+        const existingIndicator = header.querySelector('.sort-indicator');
+        if (existingIndicator) {
+            existingIndicator.remove();
+        }
+
+        if (header.getAttribute('data-layer') === currentSortLayer) {
+            header.classList.add(`sort-${currentSortDirection}`);
+            const indicator = document.createElement('span');
+            indicator.classList.add('sort-indicator');
+            indicator.innerHTML = currentSortDirection === 'asc' ? ' ↑' : ' ↓';
+            header.appendChild(indicator);
+        }
+    });
+
+    selectedProperties.forEach(property => {
+        const row = document.createElement('tr');
+        row.setAttribute('data-property-id', property.id);
+
+        const addressCell = document.createElement('td');
+        addressCell.textContent = `${property.address}, ${property.city}`;
+        addressCell.classList.add('address-cell');
+        addressCell.title = `Click to remove ${property.address}`; 
+        addressCell.style.cursor = 'pointer';
+
+        row.appendChild(addressCell);
+
+        activeDataLayers.forEach(layerName => {
+            const dataCell = document.createElement('td');
+            dataCell.setAttribute('data-layer', layerName);
+            dataCell.classList.add('data-cell');
+            const layerInfo = dataLayerTypes[layerName];
+            let dataValue = property.censusData[layerInfo.property] || 0;
+            dataValue = Math.max(0, Math.min(10, dataValue));
+
+            dataCell.style.backgroundColor = getGradientColorForValue(layerName, dataValue);
+
+            const dataBarContainer = document.createElement('div');
+            dataBarContainer.classList.add('data-bar-container');
+
+            const dataBar = document.createElement('div');
+            dataBar.classList.add('data-bar');
+            dataBar.style.width = `${dataValue * 10}%`; 
             
-            showPropertyDetails(property);
+            const barColor = getGradientColorForValue(layerName, dataValue);
+            dataBar.style.backgroundColor = barColor; 
+
+            dataBarContainer.appendChild(dataBar);
+
+            const valueText = document.createElement('div');
+            valueText.textContent = `${dataValue}/10`;
+            valueText.classList.add('value-text'); 
+
+            console.log(`Converting color ${dataCell.style.backgroundColor} to RGB`);
+            const rgbColor = dataCell.style.backgroundColor;
+            console.log(rgbColor);
+            const brightness = (rgbColor.r * 299 + rgbColor.g * 587 + rgbColor.b * 114) / 1000;
+            if (brightness < 128) {
+                valueText.style.color = '#ffffff';
+            } else {
+                valueText.style.color = '#000000';
+            }
+
+            dataCell.appendChild(valueText);
+            dataCell.appendChild(dataBarContainer);
+
+            row.appendChild(dataCell);
         });
-        
-        listContainer.appendChild(item);
+
+        tbody.appendChild(row);
     });
+
+    updatePanelWidth();
 }
 
-function removeProperty(propertyId) {
-    selectedProperties = selectedProperties.filter(p => p.id !== propertyId);
-    updatePropertyList();
-    updateSelectedPropertiesLayer();
-
-    const detailsContainer = document.getElementById('property-details');
-    if (detailsContainer.style.display === 'block') {
-        const currentPropertyId = selectedProperties.find(p => 
-            p.address === document.getElementById('property-address').textContent.split(',')[0]
-        )?.id;
-        
-        if (!currentPropertyId || currentPropertyId === propertyId) {
-            detailsContainer.style.display = 'none';
-        }
-    }
+function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
 }
 
-function updateSelectedPropertiesLayer() {
-    const selectedIds = selectedProperties.map(p => p.id);
-    map.setFilter('selected-properties', ['in', 'uniqueID', ...selectedIds]);
+function rgbToHex(r, g, b) {
+    return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
-function getCensusDataForProperty(coordinates) {
-    const censusFeatures = map.queryRenderedFeatures(
-        map.project(coordinates),
-        { layers: ['walkability-layer', 'air-quality-layer', 'crime-layer'] }
-    );
-    
-    const censusData = {
-        Walkability: Math.floor(Math.random() * 10),
-        Air_Quality: Math.floor(Math.random() * 10),
-        Crime: Math.floor(Math.random() * 10)
+function interpolateRgb(rgb1, rgb2, factor) {
+    factor = Math.max(0, Math.min(1, factor)); 
+    return {
+        r: Math.round(rgb1.r + (rgb2.r - rgb1.r) * factor),
+        g: Math.round(rgb1.g + (rgb2.g - rgb1.g) * factor),
+        b: Math.round(rgb1.b + (rgb2.b - rgb1.b) * factor)
     };
-    
-    if (censusFeatures.length > 0) {
-        const feature = censusFeatures[0];
-        if (feature.properties) {
-            if (feature.properties.Walkability !== undefined) 
-                censusData.Walkability = feature.properties.Walkability;
-            if (feature.properties.Air_Quality !== undefined) 
-                censusData.Air_Quality = feature.properties.Air_Quality;
-            if (feature.properties.Crime !== undefined) 
-                censusData.Crime = feature.properties.Crime;
-                console.log(`Feature data found: ${censusData.Crime}, ${censusData.Walkability}, ${censusData.Air_Quality}`);
-        } else {
-            console.log("Error querying underlying census data");
-        }
-    }
-    
-    return censusData;
 }
 
-function showPropertyDetails(property) {
-    const detailsContainer = document.getElementById('property-details');
-    const addressElement = document.getElementById('property-address');
-    const walkabilityValue = document.getElementById('walkability-value');
-    const airQualityValue = document.getElementById('air-quality-value');
-    const crimeValue = document.getElementById('crime-value');
-    const walkabilityBar = document.getElementById('walkability-bar');
-    const airQualityBar = document.getElementById('air-quality-bar');
-    const crimeBar = document.getElementById('crime-bar');
-    
-    addressElement.textContent = `${property.address}, ${property.city}`;
-    walkabilityValue.textContent = property.censusData.Walkability;
-    airQualityValue.textContent = property.censusData.Air_Quality;
-    crimeValue.textContent = property.censusData.Crime;
-    
-    walkabilityBar.style.width = `${property.censusData.Walkability * 10}%`;
-    airQualityBar.style.width = `${property.censusData.Air_Quality * 10}%`;
-    crimeBar.style.width = `${property.censusData.Crime * 10}%`;
-    
-    detailsContainer.style.display = 'block';
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    const finishedBtn = document.getElementById('finished-btn');
-
-    finishedBtn.addEventListener('click', function() {
-        if (selectedProperties.length > 0) {
-            const selectedIds = selectedProperties.map(p => p.id);
-
-            map.setFilter('properties-layer', ['in', 'uniqueID', ...selectedIds]);
-
-            showShareContainer();
-        } else {
-            alert('Please select at least one property');
-        }
-    });
-});
-
-function showShareContainer() {
-    let shareContainer = document.getElementById('share-container');
-
-    if (!shareContainer) {
-        shareContainer = document.createElement('div');
-        shareContainer.id = 'share-container';
-        
-        const title = document.createElement('div');
-        title.style.fontWeight = 'bold';
-        title.style.marginBottom = '8px';
-        title.textContent = 'Share Selected Properties';
-        
-        const shareUrl = document.createElement('input');
-        shareUrl.id = 'share-url';
-        shareUrl.readOnly = true;
-        
-        const copyBtn = document.createElement('button');
-        copyBtn.className = 'action-btn';
-        copyBtn.textContent = 'Copy URL';
-        copyBtn.style.marginTop = '5px';
-        
-        const resetBtn = document.createElement('button');
-        resetBtn.className = 'action-btn';
-        resetBtn.textContent = 'Reset View';
-        resetBtn.style.marginTop = '5px';
-        resetBtn.style.marginLeft = '5px';
-        
-        shareContainer.appendChild(title);
-        shareContainer.appendChild(shareUrl);
-        shareContainer.appendChild(copyBtn);
-        shareContainer.appendChild(resetBtn);
-        
-        document.body.appendChild(shareContainer);
-
-        copyBtn.addEventListener('click', function() {
-            shareUrl.select();
-            document.execCommand('copy');
-            copyBtn.textContent = 'Copied!';
-            setTimeout(() => {
-                copyBtn.textContent = 'Copy';
-            }, 2000);
-        });
-
-        resetBtn.addEventListener('click', function() {
-            map.setFilter('properties-layer', null);
-
-            shareContainer.style.display = 'none';
-        });
+function getGradientColorForValue(layerName, value) {
+    const layerInfo = dataLayerTypes[layerName];
+    if (!layerInfo || !layerInfo.gradientColors || layerInfo.gradientColors.length < 3) {
+        console.warn(`Gradient colors not properly defined for layer: ${layerName}`);
+        return '#ffffff';
     }
 
-    const selectedIds = selectedProperties.map(p => p.id).join(',');
-    const baseUrl = window.location.href.split('?')[0];
-    const shareUrl = `${baseUrl}?selected=${selectedIds}`;
+    const colors = layerInfo.gradientColors.map(hexToRgb);
+    
+    const normalizedValue = Math.max(0, Math.min(10, value)) / 10;
+    
+    let interpolatedRgb;
 
-    document.getElementById('share-url').value = shareUrl;
+    if (normalizedValue <= 0.5) {
+        const factor = normalizedValue * 2; 
+        interpolatedRgb = interpolateRgb(colors[0], colors[1], factor);
+    } else {
+        const factor = (normalizedValue - 0.5) * 2;
+        interpolatedRgb = interpolateRgb(colors[1], colors[2], factor);
+    }
+    
+    return rgbToHex(interpolatedRgb.r, interpolatedRgb.g, interpolatedRgb.b);
+}
 
-    shareContainer.style.display = 'block';
+
+function updatePanelWidth() {
+    const addressHeaderWidth = addressHeader.getBoundingClientRect().width;
+    const columnWidth = 100; 
+
+    const totalWidth = addressHeaderWidth + (activeDataLayers.length * columnWidth);
+
+    propertiesPanel.style.width = `${totalWidth}px`;
+    propertiesPanel.style.maxWidth = `${totalWidth}px`;
+
+    tableContainer.style.overflowX = (totalWidth > propertiesPanel.offsetWidth) ? 'auto' : 'hidden';
 }
 
 function parseUrlParams() {
@@ -532,267 +501,378 @@ function parseUrlParams() {
     if (selectedParam && selectedParam.length > 0) {
         const selectedIds = selectedParam.split(',');
         console.log("Found selected IDs in URL:", selectedIds);
-        
-        const checkPropertiesData = function() {
-            if (map.getSource('properties') && map.isSourceLoaded('properties')) {
-                setTimeout(() => {
-                    console.log("Properties source loaded, processing selected IDs");
-                    
-                    const propertiesData = map.getSource('properties')._data;
-                    
-                    if (propertiesData && propertiesData.features) {
-                        console.log("Found properties features:", propertiesData.features.length);
-                        
-                        selectedIds.forEach(id => {
-                            const property = propertiesData.features.find(f => 
-                                f.properties.uniqueID === id
-                            );
-                            
-                            if (property) {
-                                console.log("Found matching property:", id);
-                                const coordinates = property.geometry.coordinates.slice();
-                                const propertyId = property.properties.uniqueID;
-                                const propertyAddress = property.properties.address || `Property #${propertyId}`;
-                                const city = property.properties.city || '';
-                                
-                                const censusData = {
-                                    Walkability: Math.floor(Math.random() * 10),
-                                    Air_Quality: Math.floor(Math.random() * 12),
-                                    Crime: Math.floor(Math.random() * 15)
-                                };
-                                
-                                selectedProperties.push({
-                                    id: propertyId,
-                                    address: propertyAddress,
-                                    city: city,
-                                    coordinates: coordinates,
-                                    censusData: censusData
-                                });
-                            } else {
-                                console.log("Could not find property with ID:", id);
-                            }
-                        });
-                        
-                        if (selectedProperties.length > 0) {
-                            console.log("Updating UI with selected properties:", selectedProperties.length);
-                            updatePropertyList();
-                            updateSelectedPropertiesLayer();
-                            
-                            const bounds = new mapboxgl.LngLatBounds();
-                            selectedProperties.forEach(p => {
-                                bounds.extend(p.coordinates);
-                            });
-                            
-                            map.fitBounds(bounds, {
-                                padding: 100
-                            });
 
-                            map.setFilter('selected-properties', ['in', 'uniqueID', ...selectedIds]);
-                            
-                            showShareContainer();
-                        }
-                    } else {
-                        console.error("Properties data not available");
-                    }
-                }, 500);
-                
-                return true;
-            }
-            return false;
+        const processSelectedIds = () => {
+             console.log("Processing selected IDs from URL...");
+             const propertiesSource = map.getSource('properties');
+
+             if (propertiesSource && propertiesSource._data && propertiesSource._data.features) {
+                 const propertiesData = propertiesSource._data;
+
+                 let coordinatesForFetch = [];
+
+                 selectedIds.forEach(id => {
+                     const property = propertiesData.features.find(f =>
+                         f.properties && f.properties.uniqueID === id 
+                     );
+
+                     if (property) {
+                         console.log("Found matching property from URL ID:", id);
+                         const coordinates = property.geometry.coordinates.slice();
+                         const propertyId = property.properties.uniqueID;
+                         const propertyAddress = property.properties.address || `Property #${propertyId}`;
+                         const city = property.properties.city || '';
+
+                         const censusData = {
+                             Walkability: 0,
+                             Air_Quality: 0,
+                             Crime: 0
+                         };
+
+                         selectedProperties.push({
+                             id: propertyId,
+                             address: propertyAddress,
+                             city: city,
+                             coordinates: coordinates,
+                             censusData: censusData
+                         });
+
+                         coordinatesForFetch.push(coordinates);
+                     } else {
+                         console.log("Could not find property with ID from URL:", id);
+                     }
+                 });
+
+                 if (selectedProperties.length > 0) {
+                     console.log(`Added ${selectedProperties.length} properties from URL.`);
+                     updatePropertyTable();
+                     updateSelectedPropertiesLayer();
+                     zoomToSelectedProperties();
+
+                     coordinatesForFetch.forEach(coordinates => {
+                         fetchCensusDataForArea(coordinates);
+                     });
+                 }
+                 return true;
+             }
+             return false;
         };
-        
-        if (!checkPropertiesData()) {
-            const sourceDataListener = function(e) {
-                if (e.sourceId === 'properties' && checkPropertiesData()) {
-                    map.off('sourcedata', sourceDataListener);
+
+        if (map.getSource('properties') && map.isSourceLoaded('properties')) {
+            setTimeout(processSelectedIds, 100);
+        } else {
+            map.on('sourcedata', function sourceDataListener(e) {
+                if (e.sourceId === 'properties' && e.isSourceLoaded) {
+                    setTimeout(() => {
+                         if (processSelectedIds()) {
+                             map.off('sourcedata', sourceDataListener); 
+                         }
+                    }, 100);
                 }
-            };
-            
-            map.on('sourcedata', sourceDataListener);
+            });
         }
     }
 }
 
-function updateLegend() {
-    const existingLegend = document.getElementById('legend');
-    if (existingLegend) {
-        existingLegend.remove();
+function mockFetchCensusData(bounds) {
+    return new Promise((resolve) => {
+        const features = [];
+        const gridSize = 0.05;
+
+        for (let lon = bounds.west; lon <= bounds.east; lon += gridSize) {
+            for (let lat = bounds.south; lat <= bounds.north; lat += gridSize) {
+                const walkabilityValue = Math.floor(Math.random() * 11); 
+                const airQualityValue = Math.floor(Math.random() * 11);
+                const crimeValue = Math.floor(Math.random() * 11);
+
+                const polygon = {
+                    type: 'Feature',
+                    properties: {
+                        GEOID: `${Math.round(lon * 1000)}-${Math.round(lat * 1000)}`,
+                        NAME: `Tract ${Math.round(lon * 10)}-${Math.round(lat * 10)}`,
+                        Walkability: walkabilityValue,
+                        Air_Quality: airQualityValue,
+                        Crime: crimeValue
+                    },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [[
+                            [lon, lat],
+                            [lon + gridSize, lat],
+                            [lon + gridSize, lat + gridSize],
+                            [lon, lat + gridSize],
+                            [lon, lat]
+                        ]]
+                    }
+                };
+
+                features.push(polygon);
+            }
+        }
+
+        setTimeout(() => {
+            resolve({
+                type: 'FeatureCollection',
+                features: features
+            });
+        }, 500); 
+    });
+}
+
+
+function fetchCensusDataForArea(coordinates) {
+    const areaKey = `${Math.round(coordinates[0] * 100) / 100}-${Math.round(coordinates[1] * 100) / 100}`;
+
+    if (fetchedAreas.has(areaKey)) {
+        console.log(`Census data for area ${areaKey} already fetched`);
+        updateSelectedPropertiesCensusData();
+        return;
     }
-    
-    const legendContainer = document.createElement('div');
-    legendContainer.id = 'legend';
-    
-    if (comparisonLayer) {
-        legendContainer.style.width = '250px';
-        
-        const primaryGradient = getGradientForLayer(primaryLayer);
-        const comparisonGradient = getGradientForLayer(comparisonLayer);
-        
-        // Create a 2D gradient with four distinct corners
-        legendContainer.innerHTML = `
-            <div style="text-align: center; font-weight: bold; margin-bottom: 10px;">
-                <span>${primaryLayer} × ${comparisonLayer}</span>
-                <button id="reset-comparison" style="margin-left: 10px; cursor: pointer; background: #f44336; color: white; border: none; border-radius: 3px; padding: 2px 5px;">Reset</button>
-            </div>
-            <div style="position: relative; height: 200px; width: 200px; margin: 0 auto; padding: 10px 20px 10px 30px;">
-                <div style="height: 200px; width: 200px; background: 
-                    radial-gradient(circle at top right, ${primaryGradient.colors[0]}, transparent 70%),
-                    radial-gradient(circle at top left, ${comparisonGradient.colors[0]}, transparent 70%),
-                    radial-gradient(circle at bottom right, ${primaryGradient.colors[2]}, transparent 70%),
-                    radial-gradient(circle at bottom left, ${comparisonGradient.colors[2]}, transparent 70%);">
-                </div>
-                
-                <div class="compare-legend-label" style="top: 5px; right: 5px; font-size: 10px;">High ${primaryLayer}/<br>${comparisonLayer}</div>
-                <div class="compare-legend-label" style="top: 5px; left: 5px; font-size: 10px;">High ${comparisonLayer}/<br>Low ${primaryLayer}</div>
-                <div class="compare-legend-label" style="bottom: 5px; right: 5px; font-size: 10px;">High ${primaryLayer}/<br>Low${comparisonLayer}</div>
-                <div class="compare-legend-label" style="bottom: 5px; left: 5px; font-size: 10px;">Low ${primaryLayer}/<br>${comparisonLayer}</div>
-            </div>
-        `;
-    } else {
-        // Your existing single-layer legend code
-        legendContainer.style.width = '120px';
-        
-        const gradient = getGradientForLayer(primaryLayer);
-        
-        legendContainer.innerHTML = `
-            <div style="text-align: center; font-weight: bold; margin-bottom: 5px;">
-                <span>${primaryLayer}</span>
-            </div>
-            <div style="position: relative; height: 200px; margin: 0 auto; text-align: center;">
-                <div style="height: 200px; width: 30px; margin: 0 auto; background: linear-gradient(to bottom, ${gradient.colors[0]}, ${gradient.colors[1]}, ${gradient.colors[2]});"></div>
-                <div class="legend-label" style="top: 0; right: 0; margin-top: 5px;">
-                    More ${primaryLayer}
-                </div>
-                <div class="legend-label" style="bottom: 0; right: 0; margin-bottom: 5px;">
-                    Less ${primaryLayer}
-                </div>
-            </div>
-        `;
-    }
-    
-    document.body.appendChild(legendContainer);
-    
-    if (comparisonLayer) {
-        document.getElementById('reset-comparison').addEventListener('click', () => {
-            disableComparisonMode();
+
+    console.log(`Initiating fetch for census data around coordinates: [${coordinates[0]}, ${coordinates[1]}]`);
+
+    fetchedAreas.add(areaKey);
+
+    const radius = 0.1; 
+    const bounds = {
+        west: coordinates[0] - radius,
+        south: coordinates[1] - radius,
+        east: coordinates[0] + radius,
+        north: coordinates[1] + radius
+    };
+
+    const geometry = `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`;
+
+    const baseUrl = 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/14/query?';
+    const url = new URL(baseUrl);
+
+    url.searchParams.append('geometry', geometry);
+    url.searchParams.append('geometryType', 'esriGeometryEnvelope');
+    url.searchParams.append('spatialRel', 'esriSpatialRelIntersects');
+    url.searchParams.append('inSR', '4326');
+    url.searchParams.append('outFields', 'GEOID,NAME');
+    url.searchParams.append('f', 'geojson');
+
+    console.log("Fetching data from:", url.toString());
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(censusData => {
+            console.log(`Received census data for area ${areaKey}.`, censusData);
+
+            censusData.features.forEach(f => {
+                const GEOID = f.properties.GEOID;
+                const id = parseInt(GEOID, 10); 
+
+                f.properties.Walkability = (id * 7 + 13) % 10;
+                f.properties.Air_Quality = (id * 11 + 5) % 12; 
+                f.properties.Crime = (id * 19 + 3) % 15; 
+
+                 f.properties.Walkability = Math.max(0, Math.min(10, f.properties.Walkability));
+                 f.properties.Air_Quality = Math.max(0, Math.min(10, f.properties.Air_Quality));
+                 f.properties.Crime = Math.max(0, Math.min(10, f.properties.Crime));
+            });
+
+
+            const censusSource = map.getSource('census-data');
+
+            if (censusSource) {
+                const currentData = censusSource._data || { type: 'FeatureCollection', features: [] };
+
+                if (currentData.features) {
+                    const existingGeoIds = new Set(currentData.features.map(f => f.properties.GEOID));
+
+                    const newFeatures = censusData.features.filter(f => !existingGeoIds.has(f.properties.GEOID));
+
+                    const combinedData = {
+                        type: 'FeatureCollection',
+                        features: [...currentData.features, ...newFeatures]
+                    };
+
+                    censusSource.setData(combinedData);
+                    console.log(`Added ${newFeatures.length} new census features to map source.`);
+
+                    updateSelectedPropertiesCensusData();
+
+                } else {
+                     console.warn("Census source had data, but features array was missing or null. Setting new data.");
+                     censusSource.setData(censusData);
+                     updateSelectedPropertiesCensusData();
+                }
+            } else {
+                console.error("Mapbox 'census-data' source not found.");
+                 updateSelectedPropertiesCensusData();
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching census data:", error);
+            fetchedAreas.delete(areaKey);
         });
+}
+
+
+function updateSelectedPropertiesCensusData() {
+    console.log("Updating selected properties with available census data...");
+    const censusSource = map.getSource('census-data');
+    if (!censusSource || !censusSource._data || !censusSource._data.features) {
+        console.log("Census source data not available yet for updating properties.");
+        return;
     }
+
+    const allCensusFeatures = censusSource._data.features;
+
+    selectedProperties.forEach(property => {
+        const matchingCensusFeature = allCensusFeatures.find(feature => {
+            if (feature.geometry && (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon')) {
+                const coords = property.coordinates;
+                if (coords && coords.length === 2) {
+                    const polygonCoords = feature.geometry.coordinates;
+                    if (polygonCoords && polygonCoords.length > 0) {
+                        const bounds = new mapboxgl.LngLatBounds();
+                        
+                        if (feature.geometry.type === 'Polygon') {
+                            polygonCoords[0].forEach(coord => {
+                                if (coord && coord.length === 2) {
+                                    bounds.extend(coord);
+                                }
+                            });
+                        } 
+                        else if (feature.geometry.type === 'MultiPolygon') {
+                            polygonCoords.forEach(polygon => {
+                                if (polygon && polygon.length > 0) {
+                                    polygon[0].forEach(coord => {
+                                        if (coord && coord.length === 2) {
+                                            bounds.extend(coord);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        
+                        return bounds.contains(coords);
+                    }
+                }
+            }
+            return false;
+        });
+
+
+        if (matchingCensusFeature && matchingCensusFeature.properties) {
+             console.log(`Found census data for property ID ${property.id}`);
+             const censusProps = matchingCensusFeature.properties;
+             if (censusProps.Walkability !== undefined)
+                 property.censusData.Walkability = censusProps.Walkability;
+             if (censusProps.Air_Quality !== undefined)
+                 property.censusData.Air_Quality = censusProps.Air_Quality;
+             if (censusProps.Crime !== undefined)
+                 property.censusData.Crime = censusProps.Crime;
+        } else {
+             console.log(`No census data found for property ID ${property.id}.`);
+             property.censusData.Walkability = 0;
+             property.censusData.Air_Quality = 0;
+             property.censusData.Crime = 0;
+        }
+    });
+
+    updatePropertyTable();
+}
+
+
+function updateSelectedPropertiesLayer() {
+    const selectedIds = selectedProperties.map(p => p.id);
+    if (map.getLayer('selected-properties')) { 
+         if (selectedIds.length > 0) {
+             map.setFilter('selected-properties', ['in', 'uniqueID', ...selectedIds]);
+         } else {
+             map.setFilter('selected-properties', ['in', 'uniqueID', '']);
+         }
+    }
+}
+
+function setActiveDataLayer(layerId) {
+    hideAllDataLayers(); 
+
+    if (map.getLayer(layerId)) {
+         map.setLayoutProperty(layerId, 'visibility', 'visible');
+
+         const layerName = Object.keys(dataLayerTypes).find(key => dataLayerTypes[key].id === layerId);
+         if (layerName) {
+             updateLegend(layerName); 
+             legendContainer.style.display = 'block';
+         } else {
+              legendContainer.style.display = 'none';
+         }
+
+    } else {
+        console.warn(`Attempted to set active layer, but layer ID "${layerId}" not found.`);
+         legendContainer.style.display = 'none';
+    }
+}
+
+function zoomToSelectedProperties() {
+    if (selectedProperties.length === 0) return;
+
+    const bounds = new mapboxgl.LngLatBounds();
+    selectedProperties.forEach(p => {
+        if (p.coordinates && p.coordinates.length === 2 && typeof p.coordinates[0] === 'number' && typeof p.coordinates[1] === 'number') {
+             bounds.extend(p.coordinates);
+        } else {
+            console.warn(`Invalid coordinates for property ID ${p.id}:`, p.coordinates);
+        }
+    });
+
+    if (!bounds.isEmpty()) {
+        map.fitBounds(bounds, {
+            padding: {top: 100, bottom: 100, left: 100, right: 100},
+            duration: 1000
+        });
+    } else {
+        console.log("No valid coordinates to zoom to.");
+    }
+}
+
+function updateLegend(layerName) {
+    const layerInfo = dataLayerTypes[layerName];
+    if (!layerInfo) {
+        console.error(`Legend requested for unknown layer: ${layerName}`);
+        legendContainer.style.display = 'none'; 
+        return;
+    }
+
+    const gradientColors = [...layerInfo.gradientColors];
+    
+    legendContainer.innerHTML = `
+        <div class="legend-title">
+            <span>${layerName}</span>
+        </div>
+        <div class="legend-gradient">
+            <div class="legend-bar" style="background: linear-gradient(to top, ${gradientColors.join(', ')}); height: 150px; width: 30px;"></div>
+            <div class="legend-labels">
+                <div class="legend-label top">
+                    Higher (10)
+                </div>
+                <div class="legend-label bottom">
+                    Lower (0)
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 function getGradientForLayer(layerName) {
-    switch(layerName) {
-        case 'Walkability':
-            return {
-                colors: ['#0c2c84', '#41b6c4', '#dcf7f7']
-            };
-        case 'Air Quality':
-            return {
-                colors: ['#28ac21', '#62de74', '#e0f8ec']
-            };
-        case 'Crime':
-            return {
-                colors: ['#e34a33', '#ffb757', '#f7deb5']
-            };
-        default:
-            return {
-                colors: ['#0c2c84', '#41b6c4', '#ffffcc']
-            };
+    const layer = dataLayerTypes[layerName];
+    if (layer) {
+        return {
+            colors: layer.gradientColors
+        };
     }
+
+    return {
+        colors: ['#0c2c84', '#41b6c4', '#ffffcc']
+    };
 }
-
-function enableComparisonMode(secondaryLayer) {
-    comparisonLayer = secondaryLayer;
-    
-    setLayerVisibility(primaryLayer, 'visible', 0.6);
-    setLayerVisibility(comparisonLayer, 'visible', 0.6);
-    
-    updateLegend();
-}
-
-function disableComparisonMode() {
-    setLayerVisibility(primaryLayer, 'visible', 0.4);
-    if (comparisonLayer) {
-        setLayerVisibility(comparisonLayer, 'none', 0.4);
-    }
-    
-    comparisonLayer = null;
-    updateLegend();
-}
-
-function setLayerVisibility(layerName, visibility, opacity) {
-    const layerId = layerName.toLowerCase().replace(' ', '-') + '-layer';
-    map.setLayoutProperty(layerId, 'visibility', visibility);
-    if (opacity !== undefined) {
-        map.setPaintProperty(layerId, 'fill-opacity', opacity);
-    }
-}
-
-document.getElementById('layer-form').addEventListener('change', function(e) {
-    if (e.target.classList.contains('radio-option')) {
-        primaryLayer = e.target.value;
-        console.log("Layer selected:", primaryLayer);
-        
-        comparisonLayer = null;
-        
-        setLayerVisibility('Walkability', 'none');
-        setLayerVisibility('Air Quality', 'none');
-        setLayerVisibility('Crime', 'none');
-        
-        setLayerVisibility(primaryLayer, 'visible');
-
-        const layerCompareBtnName = primaryLayer.toLowerCase().replace(' ', '-') + '-compare';
-        
-        document.getElementById('walkability-compare').disabled = false;
-        document.getElementById('crime-compare').disabled = false;
-        document.getElementById('air-quality-compare').disabled = false;
-
-        document.getElementById(layerCompareBtnName).disabled = true;
-        
-        updateLegend();
-    }
-});
-
-document.getElementById('walkability-filter').addEventListener('click', () => {
-    document.getElementById('walkability-range').style.display = 'block';
-    document.getElementById('walkability-range-value').style.display = 'block';
-});
-
-document.getElementById('crime-filter').addEventListener('click', () => {
-    document.getElementById('crime-range').style.display = 'block';
-    document.getElementById('crime-range-value').style.display = 'block';
-});
-
-document.getElementById('air-quality-filter').addEventListener('click', () => {
-    document.getElementById('air-quality-range').style.display = 'block';
-    document.getElementById('air-quality-range-value').style.display = 'block';
-});
-
-document.getElementById('walkability-compare').addEventListener('click', () => {
-    enableComparisonMode("Walkability");
-});
-
-document.getElementById('crime-compare').addEventListener('click', () => {
-    enableComparisonMode("Crime");
-});
-
-document.getElementById('air-quality-compare').addEventListener('click', () => {
-    enableComparisonMode("Air Quality");
-});
-
-document.getElementById('walkability-range').addEventListener('change', () => {
-    const value = Number(document.getElementById('walkability-range').value)
-    document.getElementById('walkability-range-value').textContent = document.getElementById('walkability-range').value;
-    map.setFilter('walkability-layer', ['>=', ['to-number', ['get', 'Walkability']], value]);
-});
-
-document.getElementById('crime-range').addEventListener('change', () => {
-    const value = Number(document.getElementById('crime-range').value)
-    document.getElementById('crime-range-value').textContent = document.getElementById('crime-range').value;
-    map.setFilter('crime-layer', ['>=', ['to-number', ['get', 'Crime']], value]);
-});
-
-document.getElementById('air-quality-range').addEventListener('change', () => {
-    const value = Number(document.getElementById('air-quality-range').value)
-    document.getElementById('air-quality-range-value').textContent = document.getElementById('air-quality-range').value;
-    map.setFilter('air-quality-layer', ['>=', ['to-number', ['get', 'Air_Quality']], value]);
-});
