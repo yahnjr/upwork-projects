@@ -3,6 +3,10 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZ
 let selectedProperties = [];
 let fetchedAreas = new Set();
 let activeDataLayers = []; 
+let pointsOfInterest = [];
+let maxPOIs = 3;
+let activeRoutes = [];
+let isAddingPOI = false;
 let dataLayerTypes = {
     'Walkability': {
         id: 'walkability-layer',
@@ -167,12 +171,94 @@ map.on('load', function () {
             }
         });
 
+        map.on('click', function(e) {
+            if (!isAddingPOI) return;
+            
+            const coords = [e.lngLat.lng, e.lngLat.lat];
+            addPointOfInterest(coords);
+            
+            isAddingPOI = false;
+            map.getCanvas().style.cursor = '';
+            
+            const instructions = document.getElementById('poi-add-instructions');
+            if (instructions) {
+                instructions.remove();
+            }
+        });
+
         setupTableView();
+        setupPOIFeatures();
     })
     .catch(error => {
         console.error("Error loading initial data:", error);
     });
 });
+
+function setupPOIFeatures() {
+    map.addSource('poi-source', {
+        type: 'geojson',
+        data: {
+            type: 'FeatureCollection',
+            features: []
+        }
+    });
+
+    map.addLayer({
+        id: 'poi-layer',
+        type: 'circle',
+        source: 'poi-source',
+        paint: {
+            'circle-radius': 8,
+            'circle-color': '#fcba03',
+            'circle-stroke-width': 2,
+            'circle-stroke-color': '#ffffff'
+        }
+    });
+
+    map.addLayer({
+        id: 'poi-labels',
+        type: 'symbol',
+        source: 'poi-source',
+        layout: {
+            'text-field': ['get', 'name'],
+            'text-size': 14,
+            'text-offset': [0, -1.5],
+            'text-anchor': 'bottom'
+        },
+        paint: {
+            'text-color': '#e91e63',
+            'text-halo-color': '#ffffff',
+            'text-halo-width': 1
+        }
+    });
+    
+    map.addSource('routes-source', {
+        type: 'geojson',
+        data: {
+            type: 'FeatureCollection',
+            features: []
+        }
+    });
+    
+    map.addLayer({
+        id: 'routes-layer',
+        type: 'line',
+        source: 'routes-source',
+        layout: {
+            'line-join': 'round',
+            'line-cap': 'round',
+            'visibility': 'none'
+        },
+        paint: {
+            'line-color': '#e91e63',
+            'line-width': 3,
+            'line-opacity': 0.8,
+            'line-dasharray': [1, 2]
+        }
+    });
+    
+    createPOIUI();
+}
 
 function setupTableView() {
     console.log("Setting up table view and interactions");
@@ -200,12 +286,22 @@ function setupTableView() {
     table.addEventListener('click', handleTableClick);
 }
 
-
 function handleTableMouseOver(e) {
     const target = e.target.closest('th.data-header, td.data-cell');
     if (target) {
         const layerName = target.getAttribute('data-layer');
         if (layerName) {
+            if (layerName.startsWith('Travel to ')) {
+                const poiId = target.getAttribute('data-poi-id');
+                if (poiId) {
+                    showAllRoutesForPOI(poiId);
+                    
+                    updateTravelTimeLegend(layerName);
+                    legendContainer.style.display = 'block';
+                    return;
+                }
+            }
+            
             const layerInfo = dataLayerTypes[layerName];
             if (layerInfo) {
                 setActiveDataLayer(layerInfo.id); 
@@ -249,6 +345,36 @@ function handleTableClick(e) {
     if (target) {
         const layerName = target.getAttribute('data-layer');
         if (layerName) {
+            if (layerName.startsWith('Travel to ')) {
+                const poiId = target.getAttribute('data-poi-id');
+                if (poiId) {
+                    if (currentSortLayer === layerName) {
+                        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        currentSortLayer = layerName;
+                        currentSortDirection = 'asc';
+                    }
+                    
+                    selectedProperties.sort((a, b) => {
+                        const timeA = a.travelTimes && a.travelTimes[poiId] ? a.travelTimes[poiId] : 999;
+                        const timeB = b.travelTimes && b.travelTimes[poiId] ? b.travelTimes[poiId] : 999;
+                        
+                        if (currentSortDirection === 'asc') {
+                            return timeA - timeB;
+                        } else {
+                            return timeB - timeA;
+                        }
+                    });
+                    
+                    showAllRoutesForPOI(poiId);
+                    updateTravelTimeLegend(layerName);
+                    legendContainer.style.display = 'block';
+                    
+                    updatePropertyTable();
+                    return;
+                }
+            }
+            
             const layerInfo = dataLayerTypes[layerName];
             if (layerInfo) {
                 if (currentSortLayer === layerName) {
@@ -391,40 +517,65 @@ function updatePropertyTable() {
             const dataCell = document.createElement('td');
             dataCell.setAttribute('data-layer', layerName);
             dataCell.classList.add('data-cell');
-            const layerInfo = dataLayerTypes[layerName];
-            let dataValue = property.censusData[layerInfo.property] || 0;
-            dataValue = Math.max(0, Math.min(10, dataValue));
 
-            dataCell.style.backgroundColor = getGradientColorForValue(layerName, dataValue);
-
-            const dataBarContainer = document.createElement('div');
-            dataBarContainer.classList.add('data-bar-container');
-
-            const dataBar = document.createElement('div');
-            dataBar.classList.add('data-bar');
-            dataBar.style.width = `${dataValue * 10}%`; 
-            
-            const barColor = getGradientColorForValue(layerName, dataValue);
-            dataBar.style.backgroundColor = barColor; 
-
-            dataBarContainer.appendChild(dataBar);
-
-            const valueText = document.createElement('div');
-            valueText.textContent = `${dataValue}/10`;
-            valueText.classList.add('value-text'); 
-
-            console.log(`Converting color ${dataCell.style.backgroundColor} to RGB`);
-            const rgbColor = dataCell.style.backgroundColor;
-            console.log(rgbColor);
-            const brightness = (rgbColor.r * 299 + rgbColor.g * 587 + rgbColor.b * 114) / 1000;
-            if (brightness < 128) {
-                valueText.style.color = '#ffffff';
+            if (layerName.startsWith('Travel to ')) {
+                const poi = pointsOfInterest.find(p => `Travel to ${p.name}` === layerName);
+                if (poi) {
+                    dataCell.setAttribute('data-poi-id', poi.id);
+                    const travelTime = property.travelTimes && property.travelTimes[poi.id] !== undefined
+                        ? property.travelTimes[poi.id]
+                        : '—';
+                    let bgColor = '#cccccc';
+                    if (typeof travelTime === 'number') {
+                        if (travelTime < 10) bgColor = 'rgba(0, 255, 0, 0.3)';
+                        else if (travelTime < 30) bgColor = 'rgba(255, 255, 0, 0.3)';
+                        else if (travelTime < 60) bgColor = 'rgba(255, 165, 0, 0.3)';
+                        else bgColor = '#ff0000';
+                    }
+                    dataCell.style.backgroundColor = bgColor;
+                    const valueText = document.createElement('div');
+                    valueText.textContent = typeof travelTime === 'number' ? `${travelTime} min` : travelTime;
+                    valueText.classList.add('value-text');
+                    valueText.style.color = '#000';
+                    dataCell.appendChild(valueText);
+                    
+                    if (typeof travelTime === 'number') {
+                        const dataBarContainer = document.createElement('div');
+                        dataBarContainer.classList.add('data-bar-container');
+                        const dataBar = document.createElement('div');
+                        dataBar.classList.add('data-bar');
+                        const normalizedValue = Math.min(10, travelTime / 6);
+                        dataBar.style.width = `${normalizedValue * 10}%`;
+                        dataBar.style.backgroundColor = bgColor;
+                        dataBarContainer.appendChild(dataBar);
+                        dataCell.appendChild(dataBarContainer);
+                    }
+                }
             } else {
-                valueText.style.color = '#000000';
-            }
+                const layerInfo = dataLayerTypes[layerName];
+                let dataValue = property.censusData[layerInfo.property] || 0;
+                dataValue = Math.max(0, Math.min(10, dataValue));
 
-            dataCell.appendChild(valueText);
-            dataCell.appendChild(dataBarContainer);
+                let {cellColor, barColor } = getGradientColorForValue(layerName, dataValue);
+
+                const dataBarContainer = document.createElement('div');
+                dataBarContainer.classList.add('data-bar-container');
+
+                const dataBar = document.createElement('div');
+                dataBar.classList.add('data-bar');
+                dataBar.style.width = `${dataValue * 10}%`; 
+                dataCell.style.backgroundColor = cellColor;
+                dataBar.style.backgroundColor = barColor; 
+
+                dataBarContainer.appendChild(dataBar);
+
+                const valueText = document.createElement('div');
+                valueText.textContent = `${dataValue}/10`;
+                valueText.classList.add('value-text'); 
+
+                dataCell.appendChild(valueText);
+                dataCell.appendChild(dataBarContainer);
+            }
 
             row.appendChild(dataCell);
         });
@@ -477,14 +628,19 @@ function getGradientColorForValue(layerName, value) {
         const factor = (normalizedValue - 0.5) * 2;
         interpolatedRgb = interpolateRgb(colors[1], colors[2], factor);
     }
+
+    console.log("Interpolated RGB:", interpolatedRgb);
+
+    let cellColor = `rgba(${interpolatedRgb.r}, ${interpolatedRgb.g}, ${interpolatedRgb.b}, 0.3)`;
+    let barColor = `rgba(${interpolatedRgb.r}, ${interpolatedRgb.g}, ${interpolatedRgb.b}, 0.9)`;
     
-    return rgbToHex(interpolatedRgb.r, interpolatedRgb.g, interpolatedRgb.b);
+    return { cellColor, barColor };
 }
 
 
 function updatePanelWidth() {
     const addressHeaderWidth = addressHeader.getBoundingClientRect().width;
-    const columnWidth = 100; 
+    const columnWidth = 150; 
 
     const totalWidth = addressHeaderWidth + (activeDataLayers.length * columnWidth);
 
@@ -633,7 +789,7 @@ function fetchCensusDataForArea(coordinates) {
 
     fetchedAreas.add(areaKey);
 
-    const radius = 0.1; 
+    const radius = 0.3; 
     const bounds = {
         west: coordinates[0] - radius,
         south: coordinates[1] - radius,
@@ -719,63 +875,72 @@ function fetchCensusDataForArea(coordinates) {
 function updateSelectedPropertiesCensusData() {
     console.log("Updating selected properties with available census data...");
     const censusSource = map.getSource('census-data');
-    if (!censusSource || !censusSource._data || !censusSource._data.features) {
-        console.log("Census source data not available yet for updating properties.");
+
+    if (!censusSource || !map.getSource('census-data')._data || !map.getSource('census-data')._data.features) {
+        console.log("Census source data not available yet for updating properties. Setting defaults.");
+        selectedProperties.forEach(property => {
+            if (!property.censusData) property.censusData = {};
+            property.censusData.Walkability = 0;
+            property.censusData.Air_Quality = 0;
+            property.censusData.Crime = 0;
+        });
+        updatePropertyTable();
         return;
     }
 
-    const allCensusFeatures = censusSource._data.features;
+    const allCensusFeatures = map.getSource('census-data')._data.features;
+
+    if (allCensusFeatures.length === 0) {
+        console.log("Census features array is empty. No data to match. Setting defaults.");
+        selectedProperties.forEach(property => {
+            if (!property.censusData) property.censusData = {};
+            property.censusData.Walkability = 0;
+            property.censusData.Air_Quality = 0;
+            property.censusData.Crime = 0;
+        });
+        updatePropertyTable();
+        return;
+    }
 
     selectedProperties.forEach(property => {
+        if (!property.censusData) { 
+            property.censusData = {};
+        }
+
+        const pointCoords = property.coordinates; 
+        if (!pointCoords || pointCoords.length !== 2) {
+            console.warn(`Property ID ${property.id} has invalid or missing coordinates.`);
+            property.censusData.Walkability = 0;
+            property.censusData.Air_Quality = 0;
+            property.censusData.Crime = 0;
+            return; 
+        }
+
+        const point = turf.point(pointCoords);
+
         const matchingCensusFeature = allCensusFeatures.find(feature => {
             if (feature.geometry && (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon')) {
-                const coords = property.coordinates;
-                if (coords && coords.length === 2) {
-                    const polygonCoords = feature.geometry.coordinates;
-                    if (polygonCoords && polygonCoords.length > 0) {
-                        const bounds = new mapboxgl.LngLatBounds();
-                        
-                        if (feature.geometry.type === 'Polygon') {
-                            polygonCoords[0].forEach(coord => {
-                                if (coord && coord.length === 2) {
-                                    bounds.extend(coord);
-                                }
-                            });
-                        } 
-                        else if (feature.geometry.type === 'MultiPolygon') {
-                            polygonCoords.forEach(polygon => {
-                                if (polygon && polygon.length > 0) {
-                                    polygon[0].forEach(coord => {
-                                        if (coord && coord.length === 2) {
-                                            bounds.extend(coord);
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                        
-                        return bounds.contains(coords);
-                    }
+                try {
+                    return turf.booleanPointInPolygon(point, feature.geometry);
+                } catch (e) {
+                    console.error(`Error in turf.booleanPointInPolygon for feature GEOID ${feature.properties.GEOID}:`, e);
+                    return false;
                 }
             }
             return false;
         });
 
-
         if (matchingCensusFeature && matchingCensusFeature.properties) {
-             console.log(`Found census data for property ID ${property.id}`);
-             const censusProps = matchingCensusFeature.properties;
-             if (censusProps.Walkability !== undefined)
-                 property.censusData.Walkability = censusProps.Walkability;
-             if (censusProps.Air_Quality !== undefined)
-                 property.censusData.Air_Quality = censusProps.Air_Quality;
-             if (censusProps.Crime !== undefined)
-                 property.censusData.Crime = censusProps.Crime;
+            console.log(`Found census data for property ID ${property.id} in GEOID ${matchingCensusFeature.properties.GEOID}`);
+            const censusProps = matchingCensusFeature.properties;
+            property.censusData.Walkability = censusProps.Walkability !== undefined ? censusProps.Walkability : 0;
+            property.censusData.Air_Quality = censusProps.Air_Quality !== undefined ? censusProps.Air_Quality : 0;
+            property.censusData.Crime = censusProps.Crime !== undefined ? censusProps.Crime : 0;
         } else {
-             console.log(`No census data found for property ID ${property.id}.`);
-             property.censusData.Walkability = 0;
-             property.censusData.Air_Quality = 0;
-             property.censusData.Crime = 0;
+            console.log(`No specific census tract found for property ID ${property.id} at [${pointCoords.join(', ')}]. Setting defaults.`);
+            property.censusData.Walkability = 0;
+            property.censusData.Air_Quality = 0;
+            property.censusData.Crime = 0;
         }
     });
 
@@ -875,4 +1040,425 @@ function getGradientForLayer(layerName) {
     return {
         colors: ['#0c2c84', '#41b6c4', '#ffffcc']
     };
+}
+
+function createPOIUI() {
+    const poiSection = document.getElementById('poi-section');
+    
+    const instructions = document.createElement('div');
+    instructions.classList.add('poi-instructions');
+    instructions.textContent = 'Click the + button and then the map to add a point of interest (max 3)';
+
+    poiSection.insertBefore(instructions, poiList);
+    
+    updateDropdownWithTravelTimes();
+}
+
+function startAddingPOI() {
+    if (pointsOfInterest.length >= maxPOIs) {
+        alert(`Maximum of ${maxPOIs} points of interest allowed.`);
+        return;
+    }
+    
+    if (isAddingPOI) {
+        isAddingPOI = false;
+        map.getCanvas().style.cursor = '';
+        return;
+    }
+    
+    isAddingPOI = true;
+    map.getCanvas().style.cursor = 'crosshair';
+    
+    const instructions = document.createElement('div');
+    instructions.id = 'poi-add-instructions';
+    instructions.classList.add('poi-add-instructions');
+    
+    document.body.appendChild(instructions);
+}
+
+function addPointOfInterest(coordinates) {
+    if (pointsOfInterest.length >= maxPOIs) {
+        alert(`Maximum of ${maxPOIs} points of interest allowed.`);
+        return;
+    }
+    
+    const poiIndex = pointsOfInterest.length + 1;
+    const poi = {
+        id: `poi-${poiIndex}`,
+        name: `Point ${poiIndex}`,
+        coordinates: coordinates
+    };
+    
+    pointsOfInterest.push(poi);
+    updatePOILayer();
+    updatePOIList();
+    updateDropdownWithTravelTimes();
+}
+
+function updatePOILayer() {
+    const features = pointsOfInterest.map(poi => ({
+        type: 'Feature',
+        properties: {
+            id: poi.id,
+            name: poi.name
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: poi.coordinates
+        }
+    }));
+    
+    const poiSource = map.getSource('poi-source');
+    if (poiSource) {
+        poiSource.setData({
+            type: 'FeatureCollection',
+            features: features
+        });
+    }
+}
+
+function updatePOIList() {
+    const poiList = document.getElementById('poi-list');
+    if (!poiList) return;
+    
+    poiList.innerHTML = '';
+    
+    if (pointsOfInterest.length === 0) {
+        const emptyMessage = document.createElement('div');
+        emptyMessage.textContent = 'No points of interest added yet';
+        emptyMessage.style.fontStyle = 'italic';
+        emptyMessage.style.color = '#999';
+        emptyMessage.style.textAlign = 'center';
+        emptyMessage.style.padding = '10px';
+        poiList.appendChild(emptyMessage);
+        return;
+    }
+    
+    pointsOfInterest.forEach((poi, index) => {
+        const poiItem = document.createElement('div');
+        poiItem.classList.add('poi-item');
+        poiItem.style.borderBottom = index < pointsOfInterest.length - 1 ? '1px solid #eee' : 'none';
+        
+        const poiName = document.createElement('div');
+        poiName.classList.add('poi-name');
+        poiName.textContent = poi.name;
+        poiName.title = 'Click to edit name';
+        poiName.addEventListener('click', () => {
+            const newName = prompt('Enter a new name for this point of interest:', poi.name);
+            if (newName && newName.trim() !== '') {
+                poi.name = newName.trim();
+                updatePOILayer();
+                updatePOIList();
+            }
+        });
+        
+        const poiCoords = document.createElement('div');
+        poiCoords.classList.add('poi-coords');
+        poiCoords.textContent = `${poi.coordinates[0].toFixed(4)}, ${poi.coordinates[1].toFixed(4)}`;
+        poiCoords.style.fontSize = '10px';
+        poiCoords.style.color = '#666';
+        
+        const poiActions = document.createElement('div');
+        poiActions.classList.add('poi-actions');
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.classList.add('poi-remove-btn');
+        removeBtn.innerHTML = '×';
+        removeBtn.title = 'Remove this point of interest';
+
+        removeBtn.addEventListener('click', () => removePOI(poi.id));
+        
+        poiActions.appendChild(removeBtn);
+        
+        const leftContainer = document.createElement('div');
+        leftContainer.appendChild(poiName);
+        leftContainer.appendChild(poiCoords);
+        
+        poiItem.appendChild(leftContainer);
+        poiItem.appendChild(poiActions);
+        
+        poiList.appendChild(poiItem);
+    });
+}
+
+function removePOI(poiId) {
+    const index = pointsOfInterest.findIndex(poi => poi.id === poiId);
+    if (index === -1) return;
+    
+    pointsOfInterest.splice(index, 1);
+    
+    updatePOILayer();
+    updatePOIList();
+    updateDropdownWithTravelTimes();
+    
+    removeTravelTimeColumn(poiId);
+}
+
+function updateDropdownWithTravelTimes() {
+    const dropdown = document.getElementById('data-layer-dropdown');
+    if (!dropdown) return;
+    
+    const existingTravelTimeOptions = dropdown.querySelectorAll('.travel-time-option');
+    existingTravelTimeOptions.forEach(option => option.remove());
+    
+    pointsOfInterest.forEach(poi => {
+        const travelTimeOption = document.createElement('div');
+        travelTimeOption.classList.add('dropdown-item', 'travel-time-option');
+        travelTimeOption.setAttribute('data-layer-name', `Travel to ${poi.name}`);
+        travelTimeOption.setAttribute('data-poi-id', poi.id);
+        travelTimeOption.textContent = `Travel to ${poi.name}`;
+        
+        dropdown.appendChild(travelTimeOption);
+    });
+    
+    setupDropdownListeners();
+}
+
+function setupDropdownListeners() {
+    const dropdownItems = dropdown.querySelectorAll('.dropdown-item');
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const layerName = this.getAttribute('data-layer-name');
+            const poiId = this.getAttribute('data-poi-id');
+            
+            if (poiId) {
+                addTravelTimeLayer(layerName, poiId);
+            } else {
+                addDataLayer(layerName);
+            }
+            
+            dropdown.style.display = 'none';
+        });
+    });
+}
+
+function addTravelTimeLayer(layerName, poiId) {
+    if (activeDataLayers.includes(layerName)) {
+        console.warn(`Layer "${layerName}" is already added.`);
+        return;
+    }
+    
+    const poi = pointsOfInterest.find(p => p.id === poiId);
+    if (!poi) {
+        console.error(`POI with ID ${poiId} not found.`);
+        return;
+    }
+    
+    activeDataLayers.push(layerName);
+    
+    const newHeader = document.createElement('th');
+    newHeader.textContent = layerName;
+    newHeader.setAttribute('data-layer', layerName);
+    newHeader.setAttribute('data-poi-id', poiId);
+    newHeader.classList.add('data-header', 'travel-time-header');
+    newHeader.style.position = 'relative';
+    
+    const removeBtn = document.createElement('span');
+    removeBtn.innerHTML = '×';
+    removeBtn.classList.add('remove-btn');
+    removeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        removeTravelTimeColumn(poiId, layerName);
+    });
+    
+    newHeader.appendChild(removeBtn);
+    
+    const addColumnHeader = headerRow.querySelector('#add-column-header');
+    if (addColumnHeader) {
+        headerRow.insertBefore(newHeader, addColumnHeader);
+    } else {
+        headerRow.appendChild(newHeader);
+    }
+    
+    calculateTravelTimes(poi);
+}
+
+function calculateTravelTimes(poi) {
+    
+    selectedProperties.forEach(property => {
+        if (!property.travelTimes) {
+            property.travelTimes = {};
+        }
+        
+        const distance = calculateDistance(
+            property.coordinates[1], property.coordinates[0],
+            poi.coordinates[1], poi.coordinates[0]
+        );
+        
+        const baseMinutes = distance * 0.7; 
+        const randomFactor = 0.8 + (Math.random() * 0.4); 
+        const travelTimeMinutes = Math.round(baseMinutes * randomFactor);
+        
+        property.travelTimes[poi.id] = travelTimeMinutes;
+    });
+    
+    updatePropertyTable();
+}
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distance = R * c; 
+    return distance;
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI/180);
+}
+
+function removeTravelTimeColumn(poiId, specificLayerName = null) {
+    const travelTimeHeaders = headerRow.querySelectorAll(`th[data-poi-id="${poiId}"]`);
+    
+    travelTimeHeaders.forEach(header => {
+        const layerName = header.getAttribute('data-layer');
+        
+        if (specificLayerName && layerName !== specificLayerName) return;
+        
+        const index = activeDataLayers.indexOf(layerName);
+        if (index > -1) {
+            activeDataLayers.splice(index, 1);
+        }
+        
+        header.remove();
+        
+        if (currentSortLayer === layerName) {
+            currentSortLayer = null;
+            currentSortDirection = 'asc';
+        }
+    });
+    
+    clearRoutes();
+    
+    updatePropertyTable();
+}
+
+function setupRouteDisplay() {
+    table.addEventListener('mouseover', handleTravelTimeCellHover);
+    table.addEventListener('mouseout', handleTravelTimeCellHoverEnd);
+}
+
+function handleTravelTimeCellHover(e) {
+    const cell = e.target.closest('td.data-cell');
+    if (!cell) return;
+    
+    const layerName = cell.getAttribute('data-layer');
+    const poiId = cell.getAttribute('data-poi-id');
+    
+    if (layerName && layerName.startsWith('Travel to ') && poiId) {
+        const propertyId = cell.closest('tr').getAttribute('data-property-id');
+        const property = selectedProperties.find(p => p.id === propertyId);
+        const poi = pointsOfInterest.find(p => p.id === poiId);
+        
+        if (property && poi) {
+            showRoute(property, poi);
+        }
+    }
+}
+
+function handleTravelTimeCellHoverEnd(e) {
+    const relatedTarget = e.relatedTarget;
+    if (!relatedTarget || !relatedTarget.closest || 
+        !relatedTarget.closest('td.data-cell[data-poi-id]')) {
+        clearRoutes();
+    }
+}
+
+function showRoute(property, poi) {
+    // Create a simple straight line route for demonstration
+    // In a real application, you would use actual route geometry from a routing API
+    const routeFeature = {
+        type: 'Feature',
+        properties: {
+            propertyId: property.id,
+            poiId: poi.id
+        },
+        geometry: {
+            type: 'LineString',
+            coordinates: [
+                property.coordinates,
+                poi.coordinates
+            ]
+        }
+    };
+    
+    const routesSource = map.getSource('routes-source');
+    if (routesSource) {
+        routesSource.setData({
+            type: 'FeatureCollection',
+            features: [routeFeature]
+        });
+    }
+    
+    if (map.getLayer('routes-layer')) {
+        map.setLayoutProperty('routes-layer', 'visibility', 'visible');
+    }
+    
+    activeRoutes = [routeFeature];
+}
+
+function showAllRoutesForPOI(poiId) {
+    const poi = pointsOfInterest.find(p => p.id === poiId);
+    if (!poi) return;
+    
+    const routeFeatures = selectedProperties.map(property => ({
+        type: 'Feature',
+        properties: {
+            propertyId: property.id,
+            poiId: poi.id
+        },
+        geometry: {
+            type: 'LineString',
+            coordinates: [
+                property.coordinates,
+                poi.coordinates
+            ]
+        }
+    }));
+    
+    const routesSource = map.getSource('routes-source');
+    if (routesSource) {
+        routesSource.setData({
+            type: 'FeatureCollection',
+            features: routeFeatures
+        });
+    }
+    
+    if (map.getLayer('routes-layer')) {
+        map.setLayoutProperty('routes-layer', 'visibility', 'visible');
+    }
+    
+    activeRoutes = routeFeatures;
+}
+
+function clearRoutes() {
+    if (map.getLayer('routes-layer')) {
+        map.setLayoutProperty('routes-layer', 'visibility', 'none');
+    }
+    
+    activeRoutes = [];
+}
+
+function updateTravelTimeLegend(layerName) {
+    legendContainer.innerHTML = `
+        <div class="legend-title">
+            <span>${layerName}</span>
+        </div>
+        <div class="legend-gradient">
+            <div class="legend-bar" style="background: linear-gradient(to top, #ff0000, #ffff00, #00ff00); height: 150px; width: 30px;"></div>
+            <div class="legend-labels">
+                <div class="legend-label top">
+                    Quick (<10 min)
+                </div>
+                <div class="legend-label bottom">
+                    Slow (>60 min)
+                </div>
+            </div>
+        </div>
+    `;
 }

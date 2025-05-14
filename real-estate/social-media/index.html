@@ -4,23 +4,766 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Social Media Map</title>
-    <link href='style.css' rel='stylesheet' />
     <script src='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            font-family: Arial, sans-serif;
+        }
+
+        #map {
+            width: 70%;
+            height: 100%;
+        }
+
+        #sidebar {
+            width: 23%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f8f9fa;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h3 {
+            margin-top: 0;
+            color: #333;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .search-container {
+            margin-bottom: 15px;
+        }
+
+        #search {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .filter-options {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-option input {
+            margin-right: 5px;
+        }
+
+        .mapboxgl-popup {
+            max-width: 300px;
+        }
+
+        .national-popup-content {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .community-name {
+            margin: 5px 0;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            word-wrap: break-word;
+        }
+
+        .community-name:last-child {
+            border-bottom: none;
+        }
+
+        .popup-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #333;
+            text-align: center;
+        }
+
+        .national-icon {
+            transition: opacity 0.3s ease;
+        }
+
+        #coverage-indicator {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 14px;
+            color: #333;
+            z-index: 10;
+        }
+
+        #accounts-list {
+            height: calc(100% - 150px);
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .coverage-type {
+            font-size: 12px;
+            color: #fff;
+            border-radius: 3px;
+            padding: 3px 6px;
+        }
+
+        .coverage-national {
+            background-color: #2196F3; 
+        }
+
+        .coverage-state {
+            background-color: #4CAF50; 
+        }
+
+        .coverage-city {
+            background-color: #FFC107; 
+        }
+
+        .account-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .account-box:hover {
+            background-color: #e9e9e9;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-    <div id="national-accounts-panel" class="side-panel hidden">
-        <div id="national-list-header">
-            <h3>National Accounts</h3>
-            <i id="hide-national-list" class="fa-solid fa-eye-slash"></i>
-            <i id="show-national-list" class="fa-solid fa-eye" style="display: none"></i>
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <h3>Social Media Accounts</h3>
+        </div>
+        <div class="search-container">
+            <input type="text" id="search" placeholder="Search by city or state" />
+        </div>
+        <div class="filter-options">
+            <div class="filter-option">
+                <input type="checkbox" id="toggle-national" checked />
+                <label for="toggle-national">National</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="toggle-state" checked />
+                <label for="toggle-state">State</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="toggle-local" checked />
+                <label for="toggle-local">City</label>
+            </div>
         </div>
         <div id="accounts-list"></div>
     </div>
-
     <div id="map"></div>
+    <div id="coverage-indicator" style="display: none; position: absolute; left: 0; top: 0;"></div>
    
-    <script src="script.js"></script>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
+        let localSocial, nationalSocial, nationalAccountData;
+        let nationalIcon = null;
+        let currentZoom = 4;
+        let coverageIndicator = document.getElementById('coverage-indicator');
+        let mouseX = 0, mouseY = 0;
+        let currentFilters = ['National', 'State', 'City'];
+        let searchTerm = '';
+        let isOverPanel = false;
+
+        const kansasCenter = [-98.4842, 38.5266];
+
+        let map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/dark-v11',
+            bounds: [
+                [-128.272, 30.165],
+                [-64.152, 48.046]
+            ],
+            zoom: 4 
+        });
+
+        document.getElementById('toggle-national').addEventListener('change', function() {
+            updateFilters();
+        });
+
+        document.getElementById('toggle-state').addEventListener('change', function() {
+            updateFilters();
+        });
+
+        document.getElementById('toggle-local').addEventListener('change', function() {
+            updateFilters();
+        });
+
+        document.getElementById('search').addEventListener('input', function(e) {
+            searchTerm = e.target.value.toLowerCase();
+            populateAccountsList();
+        });
+
+        function updateFilters() {
+            currentFilters = [];
+            
+            if (document.getElementById('toggle-national').checked) {
+                currentFilters.push('National');
+            }
+            
+            if (document.getElementById('toggle-state').checked) {
+                currentFilters.push('State');
+            }
+            
+            if (document.getElementById('toggle-local').checked) {
+                currentFilters.push('City');
+            }
+            
+            populateAccountsList();
+            updateMapFilters();
+        }
+
+        function updateMapFilters() {
+            if (map.getLayer('unclustered-point')) {
+                let filter = ['any'];
+                
+                currentFilters.forEach(type => {
+                    filter.push(['==', ['get', 'CoverageType'], type]);
+                });
+                
+                map.setFilter('unclustered-point', ['all', ['!', ['has', 'point_count']], filter]);
+                
+                map.getSource('social').setData(filterGeoJSON(localSocial));
+            }
+        }
+
+        function filterGeoJSON(geojson) {
+            if (!geojson || !geojson.features) return geojson;
+            
+            const filteredFeatures = geojson.features.filter(feature => {
+                return currentFilters.includes(feature.properties.CoverageType);
+            });
+            
+            return {
+                type: 'FeatureCollection',
+                features: filteredFeatures
+            };
+        }
+
+        function createNationalPopup(data) {
+            const popupContainer = document.createElement('div');
+            popupContainer.className = 'national-popup-content';
+            
+            const title = document.createElement('div');
+            title.className = 'popup-title';
+            title.textContent = 'National Accounts';
+            popupContainer.appendChild(title);
+
+            const nationalAccounts = data.filter(account => account.CoverageType === 'National');
+            
+            nationalAccounts.forEach(account => {
+                const communityDiv = document.createElement('div');
+                communityDiv.className = 'community-name';
+                communityDiv.textContent = account.Community_Name;
+                popupContainer.appendChild(communityDiv);
+            });
+            
+            return popupContainer;
+        }
+
+        function calculateIntersectionPoint(p1_px, p2_px, rect_px) {
+            const x1 = p1_px.x, y1 = p1_px.y;
+            const x2 = p2_px.x, y2 = p2_px.y;
+            const { minX, minY, maxX, maxY } = rect_px;
+
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+
+            let tMin = Infinity;
+            let intersectPt = null;
+
+            if (dx !== 0) {
+                let t = (minX - x1) / dx;
+                if (t > 1e-6) { 
+                    let y = y1 + t * dy;
+                    if (y >= minY && y <= maxY) {
+                        if (t < tMin) {
+                            tMin = t;
+                            intersectPt = { x: minX, y: y };
+                        }
+                    }
+                }
+            }
+
+            if (dx !== 0) {
+                let t = (maxX - x1) / dx;
+                if (t > 1e-6) {
+                    let y = y1 + t * dy;
+                    if (y >= minY && y <= maxY) {
+                        if (t < tMin) {
+                            tMin = t;
+                            intersectPt = { x: maxX, y: y };
+                        }
+                    }
+                }
+            }
+
+            if (dy !== 0) {
+                let t = (minY - y1) / dy;
+                if (t > 1e-6) {
+                    let x = x1 + t * dx;
+                    if (x >= minX && x <= maxX) {
+                        if (t < tMin) {
+                            tMin = t;
+                            intersectPt = { x: x, y: minY };
+                        }
+                    }
+                }
+            }
+
+            if (dy !== 0) {
+                let t = (maxY - y1) / dy;
+                if (t > 1e-6) {
+                    let x = x1 + t * dx;
+                    if (x >= minX && x <= maxX) {
+                        if (t < tMin) {
+                            tMin = t;
+                            intersectPt = { x: x, y: maxY };
+                        }
+                    }
+                }
+            }
+            
+            if (dx === 0 && x1 >= minX && x1 <= maxX) {
+                if (dy > 0 && y1 < maxY) { 
+                    let t = (maxY - y1) / dy;
+                    if (t > 1e-6 && t < tMin) { intersectPt = {x: x1, y: maxY}; }
+                } else if (dy < 0 && y1 > minY) { 
+                    let t = (minY - y1) / dy;
+                    if (t > 1e-6 && t < tMin) { intersectPt = {x: x1, y: minY}; }
+                }
+            }
+            if (dy === 0 && y1 >= minY && y1 <= maxY) { 
+                if (dx > 0 && x1 < maxX) { 
+                    let t = (maxX - x1) / dx;
+                    if (t > 1e-6 && t < tMin) { intersectPt = {x: maxX, y: y1}; }
+                } else if (dx < 0 && x1 > minX) { 
+                    let t = (minX - x1) / dx;
+                    if (t > 1e-6 && t < tMin) { intersectPt = {x: minX, y: y1}; }
+                }
+            }
+
+
+            return intersectPt;
+        }
+
+        function updateNationalIcon() {
+            if (!nationalIcon || !map.getCenter() || !map.getBounds()) return; 
+            
+            const zoom = map.getZoom();
+            const bounds = map.getBounds();
+            const mapGeoCenter = map.getCenter(); 
+
+            const markerElement = nationalIcon.getElement();
+            if (!markerElement) return;
+
+            markerElement.style.display = currentFilters.includes('National') ? 'block' : 'none';
+            if (!currentFilters.includes('National')) return;
+
+            const nationalOpacity = Math.max(0.1, 1 - (zoom - 4) / 5);
+            markerElement.style.opacity = nationalOpacity;
+            
+            if (zoom > 4) {
+                if (bounds.contains(kansasCenter)) {
+                    nationalIcon.setLngLat(kansasCenter);
+                } else {
+                    const mapCanvas = map.getCanvas();
+                    const mapWidth = mapCanvas.clientWidth;
+                    const mapHeight = mapCanvas.clientHeight;
+                    const padding = 150; 
+
+                    const screenRectPx = {
+                        minX: padding,
+                        minY: padding,
+                        maxX: mapWidth - padding,
+                        maxY: mapHeight - padding
+                    };
+
+                    const mapCenterPx = map.project(mapGeoCenter);
+                    const kansasPx = map.project(kansasCenter);  
+
+                    const edgeScreenPx = calculateIntersectionPoint(mapCenterPx, kansasPx, screenRectPx);
+
+                    if (edgeScreenPx) {
+                        const edgeLngLat = map.unproject([edgeScreenPx.x, edgeScreenPx.y]);
+                        nationalIcon.setLngLat(edgeLngLat);
+                    } else {
+                        nationalIcon.setLngLat(kansasCenter);
+                    }
+                }
+            } else {
+                nationalIcon.setLngLat(kansasCenter);
+            }
+            
+            if (map.getLayer('clusters')) {
+                map.setPaintProperty('clusters', 'circle-opacity', Math.min(1, 0.3 + (zoom - 4) / 5));
+            }
+            if (map.getLayer('unclustered-point')) {
+                map.setPaintProperty('unclustered-point', 'icon-opacity', Math.min(1, 0.3 + (zoom - 4) / 5));
+            }
+        }
+
+        function setCoverageIndicatorPosition(x, y) {
+            coverageIndicator.style.left = (x + 15) + 'px';
+            coverageIndicator.style.top = (y + 15) + 'px';
+        }
+
+        function loadData() {
+            Promise.all([
+                fetch('states.geojson').then(response => response.json()),
+                fetch('LocalSocialMedia.geojson').then(response => response.json()),
+                fetch('NationalAccounts.geojson').then(response => response.json()),
+                fetch('NationalAccountData.json').then(response => response.json())
+            ])
+            .then(([statesData, socialData, nationalGeom, nationalData]) => {
+                statesData = statesData;
+                localSocial = socialData;
+                nationalSocial = nationalGeom;
+                nationalAccountData = nationalData;
+
+                map.addSource('states', {
+                    type: 'geojson',
+                    data: statesData
+                });
+
+                map.addSource('social', {
+                    type: 'geojson',
+                    data: localSocial,
+                    cluster: true,
+                    clusterMaxZoom: 14,
+                    clusterRadius: 50
+                });
+
+                map.addSource('national', {
+                    type: 'geojson',
+                    data: nationalSocial
+                });
+
+                map.addLayer({
+                    id: 'national-social',
+                    type: 'fill',
+                    source: 'national',
+                    paint: {
+                        'fill-color': '#33ff99',
+                        'fill-opacity': 0.0,
+                        'fill-opacity-transition': {
+                            duration: 200,
+                            delay: 0
+                        }
+                    }
+                });
+
+                map.addLayer({
+                    id: 'states-layer',
+                    type: 'fill',
+                    source: 'states',
+                    paint: {
+                        'fill-color': '#33ff99',
+                        'fill-opacity': 0.0,
+                        'fill-opacity-transition': {
+                            duration: 200,
+                            delay: 0
+                        }
+                    },
+                    filter: ['==', 'cityState', '']
+                });
+                               
+                map.addLayer({
+                    id: 'clusters',
+                    type: 'circle',
+                    source: 'social',
+                    filter: ['has', 'point_count'],
+                    paint: {
+                        'circle-radius': [
+                            'step',
+                            ['get', 'point_count'],
+                            20, 
+                            10, 
+                            30, 
+                            50,
+                            40 
+                        ],
+                        'circle-color': [
+                            'step',
+                            ['get', 'point_count'],
+                            '#51bbd6', 
+                            10,
+                            '#2196F3',
+                            50,
+                            '#0D47A1'
+                        ],
+                        'circle-opacity': 0.6 
+                    }
+                });
+                
+                map.addLayer({
+                    id: 'cluster-count',
+                    type: 'symbol',
+                    source: 'social',
+                    filter: ['has', 'point_count'],
+                    layout: {
+                        'text-field': '{point_count_abbreviated}',
+                        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                        'text-size': 12
+                    },
+                    paint: {
+                        'text-color': '#ffffff'
+                    }
+                });
+                
+                map.addLayer({
+                    id: 'unclustered-point',
+                    type: 'symbol',
+                    source: 'social',
+                    filter: ['!', ['has', 'point_count']],
+                    layout: {
+                        'icon-image': 'fblogo',
+                        'icon-size': 0.3
+                    },
+                    paint: {
+                        'icon-opacity': 0.3 
+                    }
+                });
+
+                const el = document.createElement('div');
+                el.className = 'national-icon';
+                el.style.backgroundImage = 'url(facebook-icon.png)';
+                el.style.width = '60px';
+                el.style.height = '60px';
+                el.style.backgroundSize = 'cover';
+                el.style.cursor = 'pointer';
+                
+                nationalIcon = new mapboxgl.Marker(el)
+                    .setLngLat(kansasCenter)
+                    .addTo(map);
+                
+                popup = new mapboxgl.Popup({
+                    closeButton: true,
+                    closeOnClick: false,
+                    maxWidth: '300px'
+                });
+                
+                el.addEventListener('mouseenter', () => {
+                    map.setPaintProperty('national-social', 'fill-opacity', 0.3);
+                    
+                    const popupContent = createNationalPopup(nationalAccountData);
+                    popup.setLngLat(nationalIcon.getLngLat())
+                         .setDOMContent(popupContent)
+                         .addTo(map);
+                    
+                    const popupElement = popup.getElement();
+                    if (popupElement) {
+                        popupElement.addEventListener('mouseenter', () => {
+                            isOverPanel = true;
+                        });
+                        
+                        popupElement.addEventListener('mouseleave', () => {
+                            isOverPanel = false;
+                            popup.remove();
+                            map.setPaintProperty('national-social', 'fill-opacity', 0);
+                        });
+                    }
+                });
+                
+                el.addEventListener('mouseleave', () => {
+                    map.setPaintProperty('national-social', 'fill-opacity', 0);
+                    
+                    setTimeout(() => {
+                        if (!isOverPanel && popup.isOpen()) {
+                            popup.remove();
+                        }
+                    }, 100);
+                });
+
+                map.on('mouseenter', 'unclustered-point', (e) => {
+                    if (e.features && e.features.length > 0) {
+                        const hoveredFeature = e.features[0];
+                        if (hoveredFeature.properties && hoveredFeature.properties.CoverageType === 'State') {
+                            const stateName = hoveredFeature.properties.State;
+                            map.setFilter('states-layer', ['==', ['get', 'cityState'], stateName]);
+                            map.setPaintProperty('states-layer', 'fill-opacity', 0.3);
+
+                            coverageIndicator.style.display = 'block';
+                            coverageIndicator.textContent = `Coverage: ${hoveredFeature.properties.State}`;
+                        } else if (hoveredFeature.properties && hoveredFeature.properties.CoverageType === 'City') {
+                            coverageIndicator.style.display = 'block';
+                            coverageIndicator.textContent = `Coverage: ${hoveredFeature.properties.Location}, ${hoveredFeature.properties.State}`;
+                        }
+                    }
+                });
+
+                map.on('mousemove', 'unclustered-point', (e) => {
+                    if (e.originalEvent) {
+                        setCoverageIndicatorPosition(e.originalEvent.clientX, e.originalEvent.clientY);
+                    }
+                });
+
+                map.on('mouseleave', 'unclustered-point', () => {
+                    map.setFilter('states-layer', ['==', ['get', 'cityState'], '']);
+                    map.setPaintProperty('states-layer', 'fill-opacity', 0);
+
+                    coverageIndicator.style.display = 'none';
+                    coverageIndicator.textContent = '';
+                });
+                
+                updateFilters();
+                updateNationalIcon();
+                populateAccountsList();
+            });
+        }
+
+        map.on('zoom', updateNationalIcon);
+        map.on('move', updateNationalIcon);
+        map.on('resize', updateNationalIcon);
+
+        map.on('mousemove', (e) => {
+            mouseX = e.originalEvent.clientX;
+            mouseY = e.originalEvent.clientY;
+        });
+
+        function populateAccountsList() {
+            const accountsList = document.getElementById('accounts-list');
+            accountsList.innerHTML = '';
+
+            if (!nationalAccountData) {
+                fetch('NationalAccountData.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        nationalAccountData = data;
+                        displayFilteredAccounts();
+                    });
+            } else {
+                displayFilteredAccounts();
+            }
+
+            function displayFilteredAccounts() {
+                let filteredData = nationalAccountData.filter(account => {
+                    if (!currentFilters.includes(account.CoverageType)) {
+                        return false;
+                    }
+                    
+                    if (searchTerm) {
+                        const locationStr = account.Location ? account.Location.toString().toLowerCase() : '';
+                        const stateStr = account.State ? account.State.toLowerCase() : '';
+                        const cityStr = account.City ? account.City.toLowerCase() : '';
+                        const nameStr = account.Community_Name ? account.Community_Name.toLowerCase() : '';
+                        
+                        return locationStr.includes(searchTerm) || 
+                               stateStr.includes(searchTerm) || 
+                               cityStr.includes(searchTerm) ||
+                               nameStr.includes(searchTerm);
+                    }
+                    
+                    return true;
+                });
+
+                if (filteredData.length === 0) {
+                    const noResults = document.createElement('div');
+                    noResults.className = 'no-results';
+                    noResults.textContent = 'No accounts match your criteria';
+                    accountsList.appendChild(noResults);
+                    return;
+                }
+
+                filteredData.forEach(account => {
+                    const accountBox = document.createElement('div');
+                    accountBox.className = 'account-box';
+
+                    const accountInfo = document.createElement('div');
+                    accountInfo.className = 'account-info';
+                    
+                    const accountName = document.createElement('div');
+                    accountName.className = 'community-name';
+                    accountName.textContent = account.Community_Name;
+                    
+                    const locationInfo = document.createElement('div');
+                    locationInfo.style.fontSize = '12px';
+                    locationInfo.style.color = '#666';
+                    
+                    if (account.CoverageType === 'National') {
+                        locationInfo.textContent = 'Nationwide Coverage';
+                    } else if (account.CoverageType === 'State' && account.State) {
+                        locationInfo.textContent = account.State;
+                    } else if (account.CoverageType === 'City' && account.Location && account.State) {
+                        locationInfo.textContent = `${account.Location}, ${account.State}`;
+                    }
+                    
+                    accountInfo.appendChild(accountName);
+                    accountInfo.appendChild(locationInfo);
+
+                    const coverageType = document.createElement('span');
+                    coverageType.className = `coverage-type coverage-${account.CoverageType.toLowerCase()}`;
+                    coverageType.textContent = account.CoverageType;
+
+                    accountBox.appendChild(accountInfo);
+                    accountBox.appendChild(coverageType);
+
+                    accountBox.addEventListener('click', () => {
+                        if (account.Coordinates && account.Coordinates.length === 2) {
+                            map.flyTo({ 
+                                center: account.Coordinates, 
+                                zoom: account.CoverageType === 'National' ? 4 : 
+                                      account.CoverageType === 'State' ? 6 : 8 
+                            });
+                        } else if (account.CoverageType === 'National') {
+                            map.flyTo({ center: kansasCenter, zoom: 4 });
+                        }
+                    });
+
+                    accountsList.appendChild(accountBox);
+                });
+            }
+        }
+
+        map.on('load', function() {
+            map.loadImage(
+                'facebook-icon.png',
+                (error, image) => {
+                    if (error) throw error;
+                    map.addImage('fblogo', image);
+                    loadData();
+                }
+            );
+        });
+    </script>
 </body>
 </html>

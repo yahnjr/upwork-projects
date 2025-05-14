@@ -28,80 +28,67 @@ let videoLink = null;
 
 function getUrlParameters() {
     const urlParams = new URLSearchParams(window.location.search);
-    const location = urlParams.get('location');
-    const date = urlParams.get('date');
+    const video = urlParams.get('video');
+    const additionalVideos = urlParams.get('Additional-Videos');
 
-    return { location, date };
+    let additionalVideosArray = [];
+    if (additionalVideos) {
+        additionalVideosArray = additionalVideos.split(',');
+    }
+
+    return { video, additionalVideosArray };
+}
+
+function extractDateFromVideoName(videoName) {
+    const dateMatch = videoName.match(/(\d{2}-\d{2}-\d{4})$/);
+    return dateMatch ? dateMatch[1] : null;
 }
 
 function fetchGPXData() {
-    const { location, date } = getUrlParameters();
-
-    if (!location || !date) {
-        console.error('Missing required URL parameters: location or date');
+    const { video, additionalVideosArray } = getUrlParameters();
+    if (!video) {
+        console.error('Missing required URL parameter: video');
         return;
     }
-
-    console.log("Fetching data for location:", location, "date:", date);
-
-    fetch('../table.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok: ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Received table data:", data);
-
-            let matchingLocations = data.filter(entry => entry.fields.Location === location);
-
-            if (matchingLocations) {
-                console.log(`Found ${matchingLocations.length} entries in same location`);
-
-                if (matchingLocations.length > 1) {
-                    sortedLocations = matchingLocations.sort((a, b) => new Date(a.fields.CaptureDate) - new Date(b.fields.CaptureDate));
     
-                    sortedLocations.forEach(loc => {
-                        const timeStamp = loc.fields.CaptureDate;
-                        const link = document.createElement('a');
-                        link.className = 'timestamp-link';
-                        link.textContent = timeStamp;
-                        link.href = `?location=${encodeURIComponent(loc.fields.Location)}&date=${encodeURIComponent(timeStamp)}`;
-                    
-                        if (loc.fields.CaptureDate === date) {
-                            link.classList.add('selected');
-                        }
-                    
-                        document.getElementById('timestamp-link-container').style.display = 'flex';
-                        document.getElementById('timestamp-link-container').appendChild(link);
-                    });
+    console.log("Fetching data for video:", video);
+    console.log("Additional videos:", additionalVideosArray);
+    
+    const allVideos = [video, ...additionalVideosArray].filter(Boolean);
+    
+    if (allVideos.length > 1) {
+        document.getElementById('timestamp-link-container').style.display = 'flex';
+        
+        allVideos.forEach(videoName => {
+            const link = document.createElement('a');
+            link.className = 'timestamp-link';
+            
+            const dateDisplay = extractDateFromVideoName(videoName);
+            link.textContent = dateDisplay;
+            
+            if (videoName === video) {
+                link.href = `?video=${encodeURIComponent(videoName)}`;
+                if (additionalVideosArray.length > 0) {
+                    link.href += `&Additional-Videos=${encodeURIComponent(additionalVideosArray.join(','))}`;
                 }
+                link.classList.add('selected');
             } else {
-                debugLog('No extra entries found for location:', location);
+                const newAdditional = [...allVideos.filter(v => v !== videoName && v !== video), video];
+                link.href = `?video=${encodeURIComponent(videoName)}`;
+                if (newAdditional.length > 0) {
+                    link.href += `&Additional-Videos=${encodeURIComponent(newAdditional.join(','))}`;
+                }
             }
             
-            const matchingEntry = data.find(entry =>
-                entry.fields.Location === location &&
-                entry.fields.CaptureDate === date
-            );
-
-            if (matchingEntry) {
-                debugLog('Found matching entry:', matchingEntry.fields.Name);
-                baseFileName = matchingEntry.fields.Name;
-                
-                videoLink = `https://gpx-videos.s3.us-east-2.amazonaws.com/${matchingEntry.fields.Name}.mp4`;
-                loadVideo(videoLink);
-                
-                const gpxUrl = `https://gpx-videos.s3.us-east-2.amazonaws.com/${matchingEntry.fields.Name}.gpx`;
-                fetchGpxFile(gpxUrl);
-            } else {
-                debugLog('No matching entry found for location:', location, 'and date:', date);
-            }
-        })
-        .catch(error => {
-            debugLog('Error fetching JSON data:', error);
+            document.getElementById('timestamp-link-container').appendChild(link);
         });
+    }
+    
+    const videoLink = `https://gpx-videos.s3.us-east-2.amazonaws.com/${video}.mp4`;
+    loadVideo(videoLink);
+    
+    const gpxUrl = `https://gpx-videos.s3.us-east-2.amazonaws.com/${video}.gpx`;
+    fetchGpxFile(gpxUrl);
 }
 
 function fetchGpxFile(gpxUrl) {

@@ -6,6 +6,7 @@
     <title>Unified Data Map</title>
     <script src='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
     <link href='style.css' rel='stylesheet' /> </head>
 <body>
     <div id="app-container">
@@ -31,6 +32,13 @@
                     <tbody id="property-table-body">
                         </tbody>
                 </table>
+            </div>
+            <div id="poi-section" class="poi-section">
+                <div id="poi-header" class="table-header">
+                    <h3>Points of Interest</h3>
+                    <button id="add-poi-btn" class="add-column-btn" title="Add Point of Interest" onclick="startAddingPOI()">+</button>
+                </div>
+                <div id="poi-list" class="poi-list"></div>
             </div>
         </div>
 
