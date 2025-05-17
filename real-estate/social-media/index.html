@@ -164,6 +164,14 @@
             padding: 20px;
             color: #666;
         }
+
+        .property-popup {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            margin: 10px 0;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
@@ -498,7 +506,7 @@
                     source: 'states',
                     paint: {
                         'fill-color': '#33ff99',
-                        'fill-opacity': 0.0,
+                        'fill-opacity': 0.01,
                         'fill-opacity-transition': {
                             duration: 200,
                             delay: 0
@@ -676,34 +684,8 @@
             }
 
             function displayFilteredAccounts() {
-                let filteredData = nationalAccountData.filter(account => {
-                    if (!currentFilters.includes(account.CoverageType)) {
-                        return false;
-                    }
-                    
-                    if (searchTerm) {
-                        const locationStr = account.Location ? account.Location.toString().toLowerCase() : '';
-                        const stateStr = account.State ? account.State.toLowerCase() : '';
-                        const cityStr = account.City ? account.City.toLowerCase() : '';
-                        const nameStr = account.Community_Name ? account.Community_Name.toLowerCase() : '';
-                        
-                        return locationStr.includes(searchTerm) || 
-                               stateStr.includes(searchTerm) || 
-                               cityStr.includes(searchTerm) ||
-                               nameStr.includes(searchTerm);
-                    }
-                    
-                    return true;
-                });
-
-                if (filteredData.length === 0) {
-                    const noResults = document.createElement('div');
-                    noResults.className = 'no-results';
-                    noResults.textContent = 'No accounts match your criteria';
-                    accountsList.appendChild(noResults);
-                    return;
-                }
-
+                let filteredData = filterAccountsByVisibleArea() || [];
+                
                 filteredData.forEach(account => {
                     const accountBox = document.createElement('div');
                     accountBox.className = 'account-box';
@@ -749,18 +731,223 @@
                         }
                     });
 
+                    accountBox.addEventListener('mouseenter', () => {
+                        if (account.CoverageType === 'National') {
+                            map.setPaintProperty('national-social', 'fill-opacity', 0.3);
+                        } else if (account.CoverageType === 'State' && account.State) {
+                            map.setFilter('states-layer', ['==', ['get', 'cityState'], account.State]);
+                            map.setPaintProperty('states-layer', 'fill-opacity', 0.3);
+                        } else if (account.CoverageType === 'City' && account.Coordinates && account.Coordinates.length === 2) {
+                            if (!map.getSource('temp-city-highlight')) {
+                                map.addSource('temp-city-highlight', {
+                                    type: 'geojson',
+                                    data: {
+                                        type: 'Feature',
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: account.Coordinates
+                                        },
+                                        properties: {}
+                                    }
+                                });
+                                
+                                map.addLayer({
+                                    id: 'city-highlight-circle',
+                                    type: 'circle',
+                                    source: 'temp-city-highlight',
+                                    paint: {
+                                        'circle-radius': 15,
+                                        'circle-color': '#FFC107',
+                                        'circle-opacity': 0.4,
+                                        'circle-stroke-width': 2,
+                                        'circle-stroke-color': '#FFC107'
+                                    }
+                                });
+                            } else {
+                                map.getSource('temp-city-highlight').setData({
+                                    type: 'Feature',
+                                    geometry: {
+                                        type: 'Point',
+                                        coordinates: account.Coordinates
+                                    },
+                                    properties: {}
+                                });
+                                
+                                map.setLayoutProperty('city-highlight-circle', 'visibility', 'visible');
+                            }
+                        }
+                    });
+
+                    accountBox.addEventListener('mouseleave', () => {
+                        map.setPaintProperty('national-social', 'fill-opacity', 0);
+                        map.setFilter('states-layer', ['==', ['get', 'cityState'], '']);
+                        map.setPaintProperty('states-layer', 'fill-opacity', 0);
+                        
+                        if (map.getLayer('city-highlight-circle')) {
+                            map.setLayoutProperty('city-highlight-circle', 'visibility', 'none');
+                        }
+                    });
+
                     accountsList.appendChild(accountBox);
                 });
             }
         }
 
+        function filterAccountsByVisibleArea() {
+            if (!map || !nationalAccountData) return [];
+            
+            const bounds = map.getBounds();
+            const visibleAccounts = [];
+            
+            let visibleFeatures = map.querySourceFeatures('social');
+            
+            let renderedFeatures = map.queryRenderedFeatures({ 
+                layers: ['clusters', 'unclustered-point'] 
+            });
+            
+            let visibleClusterIds = new Set();
+            renderedFeatures.forEach(feature => {
+                if (feature.properties && feature.properties.cluster_id) {
+                    visibleClusterIds.add(feature.properties.cluster_id);
+                }
+            });
+            
+            console.log('Map bounds:', bounds.toArray());
+            console.log('Visible features count:', visibleFeatures.length);
+            console.log('Rendered features count:', renderedFeatures.length);
+            console.log('Visible cluster IDs:', [...visibleClusterIds]);
+            
+            nationalAccountData.forEach(account => {
+                console.log('Checking account:', account);
+                if (!currentFilters.includes(account.CoverageType)) {
+                    console.log('Skipping account due to filter:', account.CoverageType);
+                    return;
+                }
+                
+                if (searchTerm) {
+                    const locationStr = account.Location ? account.Location.toString().toLowerCase() : '';
+                    const stateStr = account.State ? account.State.toLowerCase() : '';
+                    const cityStr = account.City ? account.City.toLowerCase() : '';
+                    const nameStr = account.Community_Name ? account.Community_Name.toLowerCase() : '';
+                    
+                    if (!(locationStr.includes(searchTerm) || 
+                        stateStr.includes(searchTerm) || 
+                        cityStr.includes(searchTerm) ||
+                        nameStr.includes(searchTerm))) {
+                        console.log('Skipping account due to search term:', searchTerm);
+                        return;
+                    }
+                }
+                
+                if (account.CoverageType === 'National') {
+                    visibleAccounts.push(account);
+                    return;
+                }
+                
+                if (account.Location_Decimal) {
+                    let coordinates = account.Location_Decimal.split(',').map(item => item.trim());
+                    console.log('Account Location_Decimal:', coordinates);
+                    const lng = coordinates[1];
+                    const lat = coordinates[0];
+                    
+                    if (bounds.contains([lng, lat])) {
+                        visibleAccounts.push(account);
+                        return;
+                    } else {
+                        console.log('Account coordinates not in bounds:', account.Coordinates);
+                    }
+                    
+                    if (account.CoverageType === 'State' && account.State) {
+                        const stateFeatures = map.queryRenderedFeatures({ 
+                            layers: ['states-layer'] 
+                        });
+                        
+                        for (let feature of stateFeatures) {
+                            if (feature.properties && feature.properties.name === account.State) {
+                                visibleAccounts.push(account);
+                                return;
+                            }
+                        }
+                    }
+                    
+                    for (let feature of visibleFeatures) {
+                        if (feature.properties && feature.properties.cluster) {
+                            const clusterCoords = feature.geometry.coordinates;
+                            
+                            const distance = Math.sqrt(
+                                Math.pow(clusterCoords[0] - lng, 2) + 
+                                Math.pow(clusterCoords[1] - lat, 2)
+                            );
+                            
+                            const zoomLevel = map.getZoom();
+                            let threshold = 0.5; 
+                            
+                            if (zoomLevel > 10) {
+                                threshold = 0.1;
+                            } else if (zoomLevel > 6) {
+                                threshold = 0.2;
+                            }
+                            
+                            if (distance < threshold) {
+                                visibleAccounts.push(account);
+                                return;
+                            }
+                        }
+                    }
+                } else {
+                    console.log('No coordinates for account:', account);
+                }
+            });
+            
+            console.log('Filtered visible accounts:', visibleAccounts.length);
+            return visibleAccounts;
+        }
+
+        map.on('moveend', populateAccountsList);
+        map.on('zoomend', populateAccountsList);
+
+
+        function initializeHighlightLayers() {
+            if (!map.getSource('temp-city-highlight')) {
+                map.addSource('temp-city-highlight', {
+                    type: 'geojson',
+                    data: {
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [0, 0]
+                        },
+                        properties: {}
+                    }
+                });
+                
+                map.addLayer({
+                    id: 'city-highlight-circle',
+                    type: 'circle',
+                    source: 'temp-city-highlight',
+                    paint: {
+                        'circle-radius': 15,
+                        'circle-color': '#FFC107',
+                        'circle-opacity': 0.4,
+                        'circle-stroke-width': 2,
+                        'circle-stroke-color': '#FFC107'
+                    },
+                    layout: {
+                        'visibility': 'none'
+                    }
+                });
+            }
+        }
+
         map.on('load', function() {
-            map.loadImage(
+           map.loadImage(
                 'facebook-icon.png',
                 (error, image) => {
                     if (error) throw error;
                     map.addImage('fblogo', image);
                     loadData();
+                    
+                    setTimeout(initializeHighlightLayers, 1000);
                 }
             );
         });
