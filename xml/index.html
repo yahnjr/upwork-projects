@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.29/"></script>
+  <title>ArcGIS 3D GeoJSON Contour Map</title>
+  <style>
+    html, body, #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+    #basemapPanel {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 12px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      z-index: 99;
+    }
+    #layerPanel {
+      position: absolute;
+      top: 20px;
+      left: 70px;
+      padding: 12px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      z-index: 99;
+    }
+    .panel-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .layer-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .layer-color {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      border-radius: 2px;
+    }
+    #filePanel {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      padding: 12px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      z-index: 99;
+    }
+    .file-input {
+      margin-bottom: 8px;
+    }
+    #loadingIndicator {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      z-index: 100;
+    }
+  </style>
+
+</head>
+<body>
+  <div id="viewDiv"></div>
+  <div id="loadingIndicator">Loading contour data...</div>
+  <div id="layerPanel">
+    <div class="panel-title">Contour Layers</div>
+    <div class="layer-item">
+      <div class="layer-color" style="background-color: #26eba2;"></div>
+      <input type="radio" id="contour1ftRadio" name="contourSelect" value="1ft" checked> 1ft Contour
+    </div>
+    <div class="layer-item">
+      <div class="layer-color" style="background-color: #26d4eb;"></div>
+      <input type="radio" id="contour5ftRadio" name="contourSelect" value="5ft"> 5ft Contour
+    </div>
+    <div class="layer-item">
+      <div class="layer-color" style="background-color: #2661eb;"></div>
+      <input type="radio" id="contour10ftRadio" name="contourSelect" value="10ft"> 10ft Contour
+    </div>
+  </div>
+
+  <script>
+    require([
+      "esri/Map",
+      "esri/views/SceneView",
+      "esri/layers/GeoJSONLayer",
+      "esri/widgets/Home",
+      "esri/geometry/Extent",
+      "esri/geometry/SpatialReference"
+    ], function(Map, SceneView, GeoJSONLayer, Home, Extent, SpatialReference) {
+      
+      let contour1ftLayer, contour5ftLayer, contour10ftLayer;
+      let firstLayerLoaded = false;
+
+      const map = new Map({
+        basemap: "satellite",
+        ground: "world-elevation"
+      });
+
+      const view = new SceneView({
+        container: "viewDiv",
+        map: map,
+        viewingMode: "local",
+        camera: {
+          position: {
+            x: -85.8979,
+            y: 34.8546,
+            z: 824.1536
+          },
+          tilt: 63.15,
+          heading: 0
+        }
+      });
+
+      const homeBtn = new Home({
+        view: view
+      });
+      view.ui.add(homeBtn, "top-left");
+
+      const contourRenderer1ft = {
+        type: "simple",
+        symbol: {
+          type: "simple-line",
+          color: "#26eba2",
+          width: "1.5px",
+          style: "solid"
+        }
+      };
+
+      const contourRenderer5ft = {
+        type: "simple",
+        symbol: {
+          type: "simple-line",
+          color: "#26d4eb",
+          width: "2px",
+          style: "solid"
+        }
+      };
+
+      const contourRenderer10ft = {
+        type: "simple",
+        symbol: {
+          type: "simple-line",
+          color: "#2661eb",
+          width: "2.5px",
+          style: "solid"
+        }
+      };
+
+      function createGeoJSONLayer(blob, renderer, title, elevationInfo = null) {
+        const url = URL.createObjectURL(blob);
+        
+        const layer = new GeoJSONLayer({
+          url: url,
+          renderer: renderer,
+          title: title,
+          popupTemplate: {
+            title: title,
+            content: "Elevation: {elevation} ft"
+          }
+        });
+        
+        if (elevationInfo) {
+          layer.elevationInfo = elevationInfo;
+        }
+        
+        return layer;
+      }
+
+      contour1ftLayer = new GeoJSONLayer({
+        url: "Contours_1ft.geojson",
+        renderer: contourRenderer1ft,
+        title: "1ft Contour Lines",
+        popupTemplate: {
+          title: "1ft Contour Lines",
+          content: "Contour: {Contour} ft" 
+        },
+        labelingInfo: [{
+          labelExpressionInfo: {
+            expression: "$feature.Contour + ' ft'" 
+          },
+          symbol: {
+            type: "text",
+            color: "black",
+            haloSize: 1,
+            haloColor: "white",
+            font: {
+              size: 9,
+              family: "sans-serif"
+            }
+          },
+          labelPlacement: "center-along", 
+          minScale: 1000, 
+          maxScale: 0     
+        }]
+      });
+
+      contour5ftLayer = new GeoJSONLayer({
+        url: "Contours_5ft.geojson",
+        renderer: contourRenderer5ft,
+        title: "5ft Contour Lines",
+        popupTemplate: {
+          title: "5ft Contour Lines",
+          content: "Contour: {Contour} ft" 
+        },
+        labelingInfo: [{
+          labelExpressionInfo: {
+            expression: "$feature.Contour + ' ft'" 
+          },
+          symbol: {
+            type: "text",
+            color: "black",
+            haloSize: 1,
+            haloColor: "white",
+            font: {
+              size: 9,
+              family: "sans-serif"
+            }
+          },
+          labelPlacement: "center-along", 
+          minScale: 2000, 
+          maxScale: 0     
+        }]
+      });
+
+      contour10ftLayer = new GeoJSONLayer({
+        url: "Contours_10ft.geojson",
+        renderer: contourRenderer10ft,
+        title: "10ft Contour Lines",
+        popupTemplate: {
+          title: "10ft Contour Lines",
+          content: "Contour: {Contour} ft" 
+        },
+        labelingInfo: [{
+          labelExpressionInfo: {
+            expression: "$feature.Contour + ' ft'" 
+          },
+          symbol: {
+            type: "text",
+            color: "black",
+            haloSize: 1,
+            haloColor: "white",
+            font: {
+              size: 9,
+              family: "sans-serif"
+            }
+          },
+          labelPlacement: "center-along", 
+          minScale: 3000, 
+          maxScale: 0     
+        }]
+      });
+
+      map.add(contour1ftLayer);
+      map.add(contour5ftLayer);
+      map.add(contour10ftLayer);
+
+      if (contour1ftLayer) contour1ftLayer.visible = true;
+      if (contour5ftLayer) contour5ftLayer.visible = false;
+      if (contour10ftLayer) contour10ftLayer.visible = false;
+
+
+      function handleContourChange() {
+        const selectedValue = document.querySelector('input[name="contourSelect"]:checked').value;
+
+        if (contour1ftLayer) {
+          contour1ftLayer.visible = (selectedValue === "1ft");
+        }
+        if (contour5ftLayer) {
+          contour5ftLayer.visible = (selectedValue === "5ft");
+        }
+        if (contour10ftLayer) {
+          contour10ftLayer.visible = (selectedValue === "10ft");
+        }
+      }
+
+      document.getElementById("contour1ftRadio").addEventListener("change", handleContourChange);
+      document.getElementById("contour5ftRadio").addEventListener("change", handleContourChange);
+      document.getElementById("contour10ftRadio").addEventListener("change", handleContourChange);
+
+    });
+  </script>
+</body>
+</html>

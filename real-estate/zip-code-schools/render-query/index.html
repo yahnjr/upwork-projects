@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Mapbox Tileset with Search and Turf</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+<link
+  rel="stylesheet"
+  href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css"
+/>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    .mapboxgl-ctrl-geocoder { max-width: 80%; margin: 10px; }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script>
+  const MAPBOX_ACCESS_TOKEN = prompt("Please enter your Mapbox access token:");
+    mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
+
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [-98, 38],
+    zoom: 4
+  });
+
+  const geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl,
+    marker: false,
+    placeholder: 'Search a place…'
+  });
+
+  map.addControl(geocoder);
+
+  map.on('load', () => {
+    map.addSource('custom-tileset', {
+      type: 'vector',
+      url: 'mapbox://mustwants.93czo4tl'
+    });
+
+    const layers = [
+      { id: 'states-layer', sourceLayer: 'state', color: '#0080ff', opacity: 0 },
+      { id: 'counties-layer', sourceLayer: 'county', color: '#eda49f', opacity: 0 },
+      { id: 'zip-codes-layer', sourceLayer: 'zcta', color: '#d2eb34', opacity: 0 }
+    ];
+
+    layers.forEach(({ id, sourceLayer, color, opacity }) => {
+      map.addLayer({
+        id,
+        type: 'fill',
+        source: 'custom-tileset',
+        'source-layer': sourceLayer,
+        paint: {
+          'fill-color': color,
+          'fill-opacity': opacity
+        }
+      });
+    });
+
+    geocoder.on('result', (e) => {
+        const center = e.result.center;
+        const circle = turf.circle(center, 30, { units: 'miles' });
+
+        if (map.getSource('search-circle')) {
+            map.getSource('search-circle').setData(circle);
+        } else {
+            map.addSource('search-circle', {
+            type: 'geojson',
+            data: circle
+            });
+            map.addLayer({
+            id: 'search-circle-layer',
+            type: 'line',
+            source: 'search-circle',
+            paint: {
+                'line-color': '#ff0000',
+                'line-width': 2
+            }
+            });
+        }
+
+        const bbox = turf.bbox(circle);
+        const features = map.queryRenderedFeatures([
+            map.project([bbox[0], bbox[1]]),
+            map.project([bbox[2], bbox[3]])
+        ], {
+            layers: ['zip-codes-layer', 'counties-layer', 'states-layer']
+        });
+
+        const intersecting = features.filter(f => turf.booleanIntersects(circle, f.geometry));
+
+        const intersectedZips = intersecting.filter(f => f.layer.id === 'zip-codes-layer');
+        const intersectedCounties = intersecting.filter(f => f.layer.id === 'counties-layer');
+        const intersectedStates = intersecting.filter(f => f.layer.id === 'states-layer');
+
+        map.setFilter('zip-codes-layer', ['in', 'GEOID20', ...intersectedZips.map(f => f.properties.GEOID20)]);
+        map.setPaintProperty('zip-codes-layer', 'fill-opacity', 0.5);
+        map.setFilter('counties-layer', ['in', 'COUNTYNS', ...intersectedCounties.map(f => f.properties.COUNTYNS)]);
+        map.setPaintProperty('counties-layer', 'fill-opacity', 0.5);
+        map.setFilter('states-layer', ['in', 'STATEFP', ...intersectedStates.map(f => f.properties.STATEFP)]);
+        map.setPaintProperty('states-layer', 'fill-opacity', 0.5);
+
+        console.log(`🔍 Search result at [${center}]`);
+        console.log(`📬 Intersected ZIP codes (${intersectedZips.length}):`, intersectedZips);
+        console.log(`🏛️ Intersected Counties (${intersectedCounties.length}):`, intersectedCounties);
+        console.log(`🗺️ Intersected States (${intersectedStates.length}):`, intersectedStates);
+        });
+  });
+</script>
+
+</body>
+</html>

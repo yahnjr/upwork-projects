@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapbox Dataset Visualization</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/2.15.0/mapbox-gl.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/2.15.0/mapbox-gl.css" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    .map-legend {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+      /* cursor: pointer; will be added by JS */
+    }
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      border-radius: 50%;
+      border: 1px solid #333;
+    }
+    .loader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 2;
+      text-align: center;
+    }
+    .status-bar {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1;
+      max-width: 300px;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="loader" class="loader">Loading data...</div>
+  <div id="status-bar" class="status-bar">
+    <p>Visible zip codes: <span id="zip-count">0</span></p>
+    <p>Schools: <span id="schools-message">Zoom in to see schools (fewer than 100 zip codes needed)</span></p>
+  </div>
+  <div class="map-legend">
+    <h3>Legend</h3>
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #FF5733; opacity: 0.2;"></div>
+      <div>ZIP Codes (reference only)</div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #33A1FF;"></div>
+      <div>Public Schools</div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #33FF57;"></div>
+      <div>Private Schools</div>
+    </div>
+  </div>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
+    
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/light-v11',
+      center: [-98.5, 39.8],
+      zoom: 3
+    });
+
+    let zipsData = [];
+    let publicSchoolsData = [];
+    let privateSchoolsData = [];
+    let zipsGeoJson = null;
+    let zipCodesInView = [];
+    
+    function updateVisibleSchools() {
+      if (!map.getSource('zips') || !map.isStyleLoaded()) {
+        // console.warn("updateVisibleSchools called before zips source or style is ready, or map not loaded.");
+        return;
+      }
+      
+      const zipFeatures = map.querySourceFeatures('zips'); 
+      const uniqueZipCodes = new Set();
+      
+      zipFeatures.forEach(feature => {
+        if (feature.properties && feature.properties.zip) {
+          uniqueZipCodes.add(String(feature.properties.zip)); 
+        }
+      });
+      
+      zipCodesInView = Array.from(uniqueZipCodes);
+      document.getElementById('zip-count').textContent = zipCodesInView.length;
+      const schoolsMessageEl = document.getElementById('schools-message');
+      
+      if (zipCodesInView.length > 0 && zipCodesInView.length < 500) {
+        const filteredPublicSchools = filterSchoolsByZipCodes(publicSchoolsData, zipCodesInView, 'zip_code');
+        const filteredPrivateSchools = filterSchoolsByZipCodes(privateSchoolsData, zipCodesInView, 'ZIP');
+        
+        if (map.getSource('public-schools')) {
+          map.getSource('public-schools').setData(createSchoolsGeoJson(filteredPublicSchools, 'Public School'));
+        }
+        
+        if (map.getSource('private-schools')) {
+          map.getSource('private-schools').setData(createSchoolsGeoJson(filteredPrivateSchools, 'Private School'));
+        }
+        
+        if (map.getLayer('public-schools-layer')) map.setLayoutProperty('public-schools-layer', 'visibility', 'visible');
+        if (map.getLayer('private-schools-layer')) map.setLayoutProperty('private-schools-layer', 'visibility', 'visible');
+        
+        schoolsMessageEl.textContent = 
+          `Showing ${filteredPublicSchools.length} public and ${filteredPrivateSchools.length} private schools in ${zipCodesInView.length} zip codes.`;
+      } else {
+        if (map.getLayer('public-schools-layer')) map.setLayoutProperty('public-schools-layer', 'visibility', 'none');
+        if (map.getLayer('private-schools-layer')) map.setLayoutProperty('private-schools-layer', 'visibility', 'none');
+        
+        if (zipCodesInView.length === 0 && map.getZoom() > 6) { 
+             schoolsMessageEl.textContent = 'No zip codes in the current view.';
+        } else {
+            schoolsMessageEl.textContent = 
+            `Zoom in to see schools (currently ${zipCodesInView.length} zip codes in view, < 100 needed).`;
+        }
+      }
+    }
+    
+    function filterSchoolsByZipCodes(schools, currentZipCodes, zipPropertyName) {
+      if (!Array.isArray(schools)) return [];
+      return schools.filter(school => {
+        const schoolZip = school[zipPropertyName];
+        if (!schoolZip) return false;
+        
+        const cleanedZip = String(schoolZip).trim().split('-')[0].split(' ')[0];
+        return currentZipCodes.includes(cleanedZip);
+      });
+    }
+    
+    function createSchoolsGeoJson(schools, type) {
+      if (!Array.isArray(schools)) return { type: 'FeatureCollection', features: [] };
+      return {
+        type: 'FeatureCollection',
+        features: schools.map(school => {
+          let coordinates;
+          
+          if (type === 'Public School') {
+            coordinates = school.location?.coordinates;
+          } else {
+            const xVal = school.X;
+            const yVal = school.Y;
+            if (xVal !== undefined && yVal !== undefined) {
+                coordinates = [parseFloat(xVal), parseFloat(yVal)];
+            } else {
+                return null;
+            }
+          }
+          
+          if (!coordinates || coordinates.length !== 2 || 
+              isNaN(coordinates[0]) || isNaN(coordinates[1]) ||
+              Math.abs(coordinates[0]) > 180 || Math.abs(coordinates[1]) > 90) {
+            return null;
+          }
+          
+          return {
+            type: 'Feature',
+            properties: { ...school, type: type },
+            geometry: { type: 'Point', coordinates: coordinates }
+          };
+        }).filter(feature => feature !== null) 
+      };
+    }
+
+    map.on('load', async () => {
+      try {
+        const safeJsonParse = async (response) => {
+          const text = await response.text();
+          let cleanedText = text.trim();
+          
+          if (cleanedText.includes('$oid') || cleanedText.includes('$date')) {
+             cleanedText = cleanedText.replace(/\{\s*"\$oid"\s*:\s*"([^"]*)"\s*\}/g, '"$1"');
+             cleanedText = cleanedText.replace(/\{\s*"\$date"\s*:\s*("([^"]*)"|(\d+))\s*\}/g, (match, p1, p2, p3) => p2 ? `"${p2}"` : p3);
+          }
+
+          cleanedText = cleanedText.replace(/,\s*([\]}])/g, '$1');
+          
+          try {
+            return JSON.parse(cleanedText);
+          } catch (e) {
+            console.error("JSON parse error for a file. Text snippet:", cleanedText.substring(0, 200), e);
+            if (!cleanedText.startsWith('[')) {
+                try {
+                    const objects = cleanedText.split('\n')
+                                        .map(line => line.trim())
+                                        .filter(line => line)
+                                        .map(line => JSON.parse(line));
+                    if (objects.length > 0) return objects;
+                } catch (ndjsonError) {
+                    console.error("NDJSON parsing also failed:", ndjsonError);
+                }
+            }
+            throw e; 
+          }
+        };
+        
+        [zipsData, publicSchoolsData, privateSchoolsData] = await Promise.all([
+          fetch('zip_codes.json')
+            .then(res => { if (!res.ok) throw new Error(`HTTP error ${res.status} for uszips.json`); return res; })
+            .then(safeJsonParse).catch(e => { console.error('Failed to load or parse uszips.json:', e); return []; }),
+          fetch('prod.data_public_schools.json')
+            .then(res => { if (!res.ok) throw new Error(`HTTP error ${res.status} for prod.data_public_schools.json`); return res; })
+            .then(safeJsonParse).catch(e => { console.error('Failed to load or parse prod.data_public_schools.json:', e); return []; }),
+          fetch('prod.data_schools_private.json')
+            .then(res => { if (!res.ok) throw new Error(`HTTP error ${res.status} for prod.data_schools_private.json`); return res; })
+            .then(safeJsonParse).catch(e => { console.error('Failed to load or parse prod.data_schools_private.json:', e); return []; })
+        ]);
+        
+        console.log(`Loaded ${zipsData.length} zip codes, ${publicSchoolsData.length} public schools, and ${privateSchoolsData.length} private schools`);
+
+        if (!Array.isArray(zipsData)) zipsData = [];
+        if (!Array.isArray(publicSchoolsData)) publicSchoolsData = [];
+        if (!Array.isArray(privateSchoolsData)) privateSchoolsData = [];
+
+        zipsGeoJson = {
+          type: 'FeatureCollection',
+          features: zipsData.map(zip => {
+            const lng = parseFloat(zip.lng);
+            const lat = parseFloat(zip.lat);
+            if (isNaN(lng) || isNaN(lat) || Math.abs(lng) > 180 || Math.abs(lat) > 90) {
+                return null;
+            }
+            return {
+              type: 'Feature',
+              properties: { ...zip, type: 'ZIP' },
+              geometry: { type: 'Point', coordinates: [lng, lat] }
+            };
+          }).filter(Boolean)
+        };
+
+        map.addSource('zips', {
+          type: 'geojson',
+          data: zipsGeoJson
+        });
+        map.addLayer({
+          id: 'zips-layer',
+          type: 'circle',
+          source: 'zips',
+          paint: {
+            'circle-radius': 3,
+            'circle-color': '#FF5733',
+            'circle-opacity': 0 
+          }
+        });
+
+        map.addSource('public-schools', {
+          type: 'geojson',
+          data: { type: 'FeatureCollection', features: [] } 
+        });
+        map.addLayer({
+          id: 'public-schools-layer',
+          type: 'circle',
+          source: 'public-schools',
+          paint: {
+            'circle-radius': 5,
+            'circle-color': '#33A1FF',
+            'circle-opacity': 0.7
+          },
+          layout: { 'visibility': 'none' }
+        });
+
+        map.addSource('private-schools', {
+          type: 'geojson',
+          data: { type: 'FeatureCollection', features: [] } 
+        });
+        map.addLayer({
+          id: 'private-schools-layer',
+          type: 'circle',
+          source: 'private-schools',
+          paint: {
+            'circle-radius': 5,
+            'circle-color': '#33FF57',
+            'circle-opacity': 0.7
+          },
+          layout: { 'visibility': 'none' } 
+        });
+
+        const addPopupToSchoolLayer = (layerId, nameProperty) => {
+          map.on('click', layerId, (e) => {
+            if (!e.features || e.features.length === 0) return;
+            const feature = e.features[0];
+            const coordinates = feature.geometry.coordinates.slice();
+            const properties = feature.properties;
+            
+             if (Math.abs(coordinates[0]) > 180 || Math.abs(coordinates[1]) > 90 || isNaN(coordinates[0]) || isNaN(coordinates[1])) {
+                // console.error("Invalid coordinates for popup:", coordinates);
+                return;
+            }
+
+            const name = properties[nameProperty] || properties.name || 'Unnamed School';
+            const type = properties.type; 
+            
+            let additionalInfo = '';
+            if (type === 'Public School') {
+              additionalInfo = `<p>Address: ${properties.address_street_1 || 'N/A'}</p>
+                                <p>City: ${properties.city || 'N/A'}, ${properties.state || 'N/A'}</p>
+                                <p>ZIP: ${properties.zip_code || 'N/A'}</p>
+                                <p>Total Students: ${properties.total_students_all_grades_includes_ae || 'N/A'}</p>`;
+            } else if (type === 'Private School') {
+              additionalInfo = `<p>Address: ${properties.STREET || 'N/A'}</p>
+                                <p>City: ${properties.CITY || 'N/A'}, ${properties.STATE || 'N/A'}</p>
+                                <p>ZIP: ${properties.ZIP || 'N/A'}</p>
+                                <p>County: ${properties.NMCNTY || 'N/A'}</p>`;
+            }
+            
+            new mapboxgl.Popup()
+              .setLngLat(coordinates)
+              .setHTML(`<h3>${name}</h3><p>Type: ${type}</p>${additionalInfo}`)
+              .addTo(map);
+          });
+          
+          map.on('mouseenter', layerId, () => { map.getCanvas().style.cursor = 'pointer'; });
+          map.on('mouseleave', layerId, () => { map.getCanvas().style.cursor = ''; });
+        };
+
+        addPopupToSchoolLayer('public-schools-layer', 'school_name');
+        addPopupToSchoolLayer('private-schools-layer', 'NAME');
+
+        map.on('moveend', updateVisibleSchools);
+        map.on('zoomend', updateVisibleSchools);
+        
+
+        map.once('idle', () => {
+            updateVisibleSchools();
+        });
+
+        document.getElementById('loader').style.display = 'none';
+
+      } catch (error) {
+        console.error('Error during map load or data processing:', error);
+        document.getElementById('loader').innerHTML = `Error: ${error.message}. Check console.`;
+      }
+    });
+
+    const setupLayerToggles = () => {
+      const layerIds = ['zips-layer', 'public-schools-layer', 'private-schools-layer'];
+      const legendItems = document.querySelectorAll('.map-legend .legend-item');
+      
+      if (legendItems.length === layerIds.length) {
+        legendItems.forEach((item, index) => {
+          if (!item.dataset.listenerAttached) {
+            item.style.cursor = 'pointer'; 
+            item.addEventListener('click', () => {
+              const layerId = layerIds[index];
+              if (map.getLayer(layerId)) { 
+                const visibility = map.getLayoutProperty(layerId, 'visibility');
+                
+                if (visibility === 'visible' || visibility === undefined) { 
+                  map.setLayoutProperty(layerId, 'visibility', 'none');
+                  item.style.opacity = 0.5; 
+                } else { 
+                  map.setLayoutProperty(layerId, 'visibility', 'visible');
+                  item.style.opacity = 1;
+                }
+              } else {
+                // console.warn(`Layer ${layerId} not found for toggling.`);
+              }
+            });
+            item.dataset.listenerAttached = 'true'; 
+          }
+        });
+      } else {
+        // console.warn("Mismatch between legend items and layerIds. Toggling might not work as expected.");
+      }
+    };
+
+    map.on('idle', setupLayerToggles);
+
+  </script>
+</body>
+</html>
