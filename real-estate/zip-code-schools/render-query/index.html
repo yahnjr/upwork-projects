@@ -107,17 +107,17 @@
         const intersectedCounties = intersecting.filter(f => f.layer.id === 'counties-layer');
         const intersectedStates = intersecting.filter(f => f.layer.id === 'states-layer');
 
-        map.setFilter('zip-codes-layer', ['in', 'GEOID20', ...intersectedZips.map(f => f.properties.GEOID20)]);
+        map.setFilter('zip-codes-layer', ['in', 'GEOIDFQ20', ...intersectedZips.map(f => f.properties.GEOIDFQ20)]);
         map.setPaintProperty('zip-codes-layer', 'fill-opacity', 0.5);
         map.setFilter('counties-layer', ['in', 'COUNTYNS', ...intersectedCounties.map(f => f.properties.COUNTYNS)]);
         map.setPaintProperty('counties-layer', 'fill-opacity', 0.5);
         map.setFilter('states-layer', ['in', 'STATEFP', ...intersectedStates.map(f => f.properties.STATEFP)]);
         map.setPaintProperty('states-layer', 'fill-opacity', 0.5);
 
-        console.log(`🔍 Search result at [${center}]`);
-        console.log(`📬 Intersected ZIP codes (${intersectedZips.length}):`, intersectedZips);
-        console.log(`🏛️ Intersected Counties (${intersectedCounties.length}):`, intersectedCounties);
-        console.log(`🗺️ Intersected States (${intersectedStates.length}):`, intersectedStates);
+        console.log(`Search result at [${center}]`);
+        console.log(`Intersected ZIP codes (${intersectedZips.length}):`, intersectedZips);
+        console.log(`Intersected Counties (${intersectedCounties.length}):`, intersectedCounties);
+        console.log(`Intersected States (${intersectedStates.length}):`, intersectedStates);
         });
   });
 </script>

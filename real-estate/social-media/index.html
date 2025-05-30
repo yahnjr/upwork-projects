@@ -3,953 +3,1115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Media Map</title>
+    <title>Enhanced Social Media Map</title>
     <script src='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        
         body {
             margin: 0;
             height: 100vh;
             width: 100vw;
             display: flex;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
         }
-
+        
         #map {
-            width: 70%;
-            height: 100%;
-        }
-
-        #sidebar {
-            width: 23%;
-            height: 100%;
-            overflow-y: auto;
-            padding: 15px;
-            background-color: #f8f9fa;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .sidebar-header {
-            margin-bottom: 20px;
-        }
-
-        .sidebar-header h3 {
-            margin-top: 0;
-            color: #333;
-            font-size: 20px;
-            text-align: center;
-        }
-
-        .search-container {
-            margin-bottom: 15px;
-        }
-
-        #search {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
+            height: 100%;
+            transition: filter 0.3s ease;
         }
-
-        .filter-options {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            padding: 10px;
-            background-color: #fff;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        
+        #map.dimmed {
+            filter: brightness(0.4) blur(1px);
         }
-
-        .filter-option {
+        
+        #national-accounts-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+            color: white;
+            border: none;
+            padding: 16px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
             display: flex;
             align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            transition: all 0.3s ease;
+            z-index: 500;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
-        .filter-option input {
-            margin-right: 5px;
+        
+        #national-accounts-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(59, 130, 246, 0.6);
+            background: linear-gradient(135deg, #2563EB, #1E40AF);
         }
-
-        .mapboxgl-popup {
-            max-width: 300px;
+        
+        .us-icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
         }
-
-        .national-popup-content {
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-        .community-name {
-            margin: 5px 0;
-            padding: 8px;
-            border-bottom: 1px solid #eee;
-            word-wrap: break-word;
-        }
-
-        .community-name:last-child {
-            border-bottom: none;
-        }
-
-        .popup-title {
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 10px;
-            color: #333;
-            text-align: center;
-        }
-
-        .national-icon {
+        
+        #cards-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            opacity: 0;
             transition: opacity 0.3s ease;
         }
-
-        #coverage-indicator {
-            position: absolute;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 5px;
-            border-radius: 3px;
-            font-size: 14px;
-            color: #333;
-            z-index: 10;
+        
+        #cards-overlay.visible {
+            opacity: 1;
         }
-
-        #accounts-list {
-            height: calc(100% - 150px);
-            overflow-y: auto;
-            padding: 10px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        
+        .cards-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
-
-        .coverage-type {
-            font-size: 12px;
-            color: #fff;
-            border-radius: 3px;
-            padding: 3px 6px;
+        
+        #region-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin: 0;
         }
-
-        .coverage-national {
-            background-color: #2196F3; 
-        }
-
-        .coverage-state {
-            background-color: #4CAF50; 
-        }
-
-        .coverage-city {
-            background-color: #FFC107; 
-        }
-
-        .account-box {
+        
+        #close-cards {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s;
+            gap: 8px;
         }
-
-        .account-box:hover {
-            background-color: #e9e9e9;
+        
+        #close-cards:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
         }
-
-        .no-results {
-            text-align: center;
-            padding: 20px;
-            color: #666;
+        
+        #cards-container {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-auto-rows: max-content;
+            gap: 24px;
+            align-content: start;
+            min-height: 0;
+            max-height: calc(100vh - 80px);
         }
-
-        .property-popup {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            margin: 10px 0;
+        
+        #cards-container.single-card {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: auto;
+            min-height: 0;
+        }
+        
+        #cards-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        #cards-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        #cards-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+        
+        #cards-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        .account-card {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.1),
+                0 1px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
             overflow: hidden;
+        }
+
+        .account-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.15),
+                0 1px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .account-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3B82F6, #8B5CF6, #EC4899);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .account-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            flex-shrink: 0;
+        }
+
+        .account-info h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .badge {
+            background-color: #e0e7ff;
+            color: #4338ca;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 999px;
+            display: inline-block;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .card-body {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .card-footer {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .card-footer::before {
+            content: '📍';
+            font-size: 12px;
+        }
+    
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .account-card {
+            animation: fadeInUp 0.3s ease forwards;
+        }
+        
+        .account-card:nth-child(1) { animation-delay: 0.1s; }
+        .account-card:nth-child(2) { animation-delay: 0.2s; }
+        .account-card:nth-child(3) { animation-delay: 0.3s; }
+        .account-card:nth-child(4) { animation-delay: 0.4s; }
+        .account-card:nth-child(5) { animation-delay: 0.5s; }
+        .account-card:nth-child(6) { animation-delay: 0.6s; }
+        
+        .mapboxgl-ctrl-group {
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+        
+        .mapboxgl-ctrl-group button {
+            background: transparent !important;
+        }
+        
+        .mapboxgl-ctrl-group button:hover {
+            background: rgba(0, 0, 0, 0.05) !important;
+        }
+
+        #context-menu {
+            position: fixed;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.15),
+                0 1px 8px rgba(0, 0, 0, 0.05);
+            padding: 8px 0;
+            min-width: 180px;
+            z-index: 2000;
+            display: none;
+            backdrop-filter: blur(10px);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .context-menu-header {
+            padding: 12px 16px 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            margin-bottom: 4px;
+        }
+
+        .context-menu-item {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .context-menu-item:hover {
+            background: linear-gradient(90deg, #3B82F6, #2563EB);
+            color: white;
+            transform: translateX(2px);
+        }
+
+        .context-menu-item:first-of-type {
+            border-radius: 8px 8px 0 0;
+        }
+
+        .context-menu-item:last-of-type {
+            border-radius: 0 0 8px 8px;
+        }
+
+        .context-menu-item::before {
+            content: '📍';
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .context-menu-item:hover::before {
+            opacity: 1;
+        }
+
+        .context-menu-item[data-value="National Accounts"]::before {
+            content: '🌐';
         }
     </style>
 </head>
 <body>
-    <div id="sidebar">
-        <div class="sidebar-header">
-            <h3>Social Media Accounts</h3>
-        </div>
-        <div class="search-container">
-            <input type="text" id="search" placeholder="Search by city or state" />
-        </div>
-        <div class="filter-options">
-            <div class="filter-option">
-                <input type="checkbox" id="toggle-national" checked />
-                <label for="toggle-national">National</label>
-            </div>
-            <div class="filter-option">
-                <input type="checkbox" id="toggle-state" checked />
-                <label for="toggle-state">State</label>
-            </div>
-            <div class="filter-option">
-                <input type="checkbox" id="toggle-local" checked />
-                <label for="toggle-local">City</label>
-            </div>
-        </div>
-        <div id="accounts-list"></div>
-    </div>
     <div id="map"></div>
-    <div id="coverage-indicator" style="display: none; position: absolute; left: 0; top: 0;"></div>
+    
+    <button id="national-accounts-btn">
+        <svg class="us-icon" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM8 17.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM9.5 8C8.12 8 7 6.88 7 5.5S8.12 3 9.5 3 12 4.12 12 5.5 10.88 8 9.5 8zm5 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM16 9c-1.38 0-2.5-1.12-2.5-2.5S14.62 4 16 4s2.5 1.12 2.5 2.5S17.38 9 16 9z"/>
+        </svg>
+        <span>View National Accounts</span>
+    </button>
+    
+    <div id="cards-overlay">
+        <div class="cards-header">
+            <h2 id="region-title">Region Accounts</h2>
+            <button id="close-cards">
+                <i class="fas fa-times"></i>
+                Close
+            </button>
+        </div>
+        <div id="cards-container">
+        </div>
+    </div>
+
+    <div id="context-menu">
+        <div class="context-menu-header">View accounts...</div>
+        <div class="context-menu-item" data-value="25 Miles">25 Miles</div>
+        <div class="context-menu-item" data-value="State">State</div>
+        <div class="context-menu-item" data-value="Region">Region</div>
+        <div class="context-menu-item" data-value="National Accounts">View National Accounts</div>
+    </div>
    
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
-        let localSocial, nationalSocial, nationalAccountData;
-        let nationalIcon = null;
-        let currentZoom = 4;
-        let coverageIndicator = document.getElementById('coverage-indicator');
-        let mouseX = 0, mouseY = 0;
-        let currentFilters = ['National', 'State', 'City'];
-        let searchTerm = '';
-        let isOverPanel = false;
 
-        const kansasCenter = [-98.4842, 38.5266];
+        const regionColors = {
+            'Midwest': '#3B82F6',
+            'Mountain Northwest': '#8B5CF6',
+            'North Central': '#06B6D4',
+            'North Southeast': '#F59E0B',
+            'Northeast': '#EF4444',
+            'Northwest': '#10B981',
+            'South Central': '#F97316',
+            'South Southeast': '#84CC16',
+            'Southwest': '#F59E0B',
+            'West': '#EC4899'
+        };
 
-        let map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/dark-v11',
-            bounds: [
-                [-128.272, 30.165],
-                [-64.152, 48.046]
-            ],
-            zoom: 4 
-        });
+        let map;
+        let regionsData = null;
+        let socialMediaData = null;
+        let currentActiveRegion = null;
 
-        document.getElementById('toggle-national').addEventListener('change', function() {
-            updateFilters();
-        });
+        function initializeMap() {
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/light-v11',
+                center: [-98.5795, 39.8283],
+                zoom: 4
+            });
 
-        document.getElementById('toggle-state').addEventListener('change', function() {
-            updateFilters();
-        });
-
-        document.getElementById('toggle-local').addEventListener('change', function() {
-            updateFilters();
-        });
-
-        document.getElementById('search').addEventListener('input', function(e) {
-            searchTerm = e.target.value.toLowerCase();
-            populateAccountsList();
-        });
-
-        function updateFilters() {
-            currentFilters = [];
-            
-            if (document.getElementById('toggle-national').checked) {
-                currentFilters.push('National');
-            }
-            
-            if (document.getElementById('toggle-state').checked) {
-                currentFilters.push('State');
-            }
-            
-            if (document.getElementById('toggle-local').checked) {
-                currentFilters.push('City');
-            }
-            
-            populateAccountsList();
-            updateMapFilters();
+            map.on('load', async () => {
+                await loadData();
+                setupLayers();
+                setupInteractions();
+            });
         }
 
-        function updateMapFilters() {
-            if (map.getLayer('unclustered-point')) {
-                let filter = ['any'];
+        async function loadData() {
+            try {
+                const [regionsResponse, socialMediaResponse] = await Promise.all([
+                    fetch('regions.geojson'),
+                    fetch('SocialMedia.geojson')
+                ]);
+
+                regionsData = await regionsResponse.json();
+                socialMediaData = await socialMediaResponse.json();
+
+                console.log('Data loaded successfully');
+                console.log('Regions:', regionsData.features.length);
+                console.log('Social Media Points:', socialMediaData.features.length);
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        function setupLayers() {
+            map.addSource('regions', {
+                type: 'geojson',
+                data: regionsData
+            });
+
+            map.addLayer({
+                id: 'regions-fill',
+                type: 'fill',
+                source: 'regions',
+                paint: {
+                    'fill-color': [
+                        'case',
+                        ...Object.entries(regionColors).flatMap(([region, color]) => [
+                            ['==', ['get', 'Region'], region], 
+                            color
+                        ]),
+                        '#cccccc'
+                    ],
+                    'fill-opacity': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        5, 0.7,
+                        8, 0
+                    ]
+                }
+            });
+
+            map.addLayer({
+                id: 'regions-outline',
+                type: 'line',
+                source: 'regions',
+                paint: {
+                    'line-color': [
+                        'case',
+                        ...Object.entries(regionColors).flatMap(([region, color]) => [
+                            ['==', ['get', 'Region'], region],
+                            color
+                        ]),
+                        '#cccccc'
+                    ],
+                    'line-width': 4,
+                    'line-opacity': 0
+                },
+                filter: ['==', 'Region', ''] 
+            });
+
+            map.addSource('social-media', {
+                type: 'geojson',
+                data: socialMediaData
+            });
+
+            map.loadImage('facebook-icon.png', (error, image) => {
+                if (error) {
+                    console.error('Error loading Facebook icon:', error);
+                    return;
+                }
                 
-                currentFilters.forEach(type => {
-                    filter.push(['==', ['get', 'CoverageType'], type]);
+                map.addImage('facebook-icon', image);
+
+                map.addLayer({
+                    id: 'social-media-points',
+                    type: 'symbol',
+                    source: 'social-media',
+                    layout: {
+                        'icon-image': 'facebook-icon',
+                        'icon-size': 0.5,
+                        'icon-allow-overlap': true
+                    },
+                    paint: {
+                        'icon-opacity': 0
+                    },
+                    filter: ['==', 'Region', ''] 
                 });
-                
-                map.setFilter('unclustered-point', ['all', ['!', ['has', 'point_count']], filter]);
-                
-                map.getSource('social').setData(filterGeoJSON(localSocial));
-            }
+
+                map.addLayer({
+                    id: 'social-media-points-unfiltered',
+                    type: 'symbol',
+                    source: 'social-media',
+                    layout: {
+                        'icon-image': 'facebook-icon',
+                        'icon-size': 0.5,
+                        'icon-allow-overlap': true
+                    },
+                    paint: {
+                        'icon-opacity': [
+                            'interpolate',
+                            ['linear'],
+                            ['zoom'],
+                            5, 0,
+                            8, 1
+                        ]
+                    }
+                });
+
+                addRegionLabelsSimple();
+            });
         }
 
-        function filterGeoJSON(geojson) {
-            if (!geojson || !geojson.features) return geojson;
-            
-            const filteredFeatures = geojson.features.filter(feature => {
-                return currentFilters.includes(feature.properties.CoverageType);
+        function setupInteractions() {
+            map.on('click', 'regions-fill', (e) => {
+                if (map.getZoom() < 6 && e.features.length > 0) {
+                    const regionName = e.features[0].properties.Region;
+                    activateRegion(regionName);
+                }
             });
             
-            return {
-                type: 'FeatureCollection',
-                features: filteredFeatures
-            };
-        }
+            map.on('click', 'social-media-points-unfiltered', (e) => {
+                if (map.getZoom() >= 6 && e.features.length > 0) {
+                    const account = e.features[0].properties;
+                    showIndividualAccount(account);
+                }
+            });
 
-        function createNationalPopup(data) {
-            const popupContainer = document.createElement('div');
-            popupContainer.className = 'national-popup-content';
-            
-            const title = document.createElement('div');
-            title.className = 'popup-title';
-            title.textContent = 'National Accounts';
-            popupContainer.appendChild(title);
+            map.on('mouseenter', 'regions-fill', () => {
+                if (map.getZoom() < 8) {
+                    map.getCanvas().style.cursor = 'pointer';
+                }
+            });
 
-            const nationalAccounts = data.filter(account => account.CoverageType === 'National');
-            
-            nationalAccounts.forEach(account => {
-                const communityDiv = document.createElement('div');
-                communityDiv.className = 'community-name';
-                communityDiv.textContent = account.Community_Name;
-                popupContainer.appendChild(communityDiv);
+            map.on('mouseleave', 'regions-fill', () => {
+                map.getCanvas().style.cursor = '';
             });
             
-            return popupContainer;
+            map.on('mouseenter', 'social-media-points-unfiltered', () => {
+                if (map.getZoom() >= 8) {
+                    map.getCanvas().style.cursor = 'pointer';
+                }
+            });
+
+            map.on('mouseleave', 'social-media-points-unfiltered', () => {
+                map.getCanvas().style.cursor = '';
+            });
+
+            document.getElementById('close-cards').addEventListener('click', hideCards);
+            document.getElementById('national-accounts-btn').addEventListener('click', showNationalAccounts);
+            
+            document.getElementById('cards-overlay').addEventListener('click', (e) => {
+                if (e.target.id === 'cards-overlay') {
+                    hideCards();
+                }
+            });
+
+            document.addEventListener('contextmenu', showContextMenu);
+
+            document.addEventListener('click', (e) => {
+                const contextMenu = document.getElementById('context-menu');
+                if (!contextMenu.contains(e.target)) {
+                    hideContextMenu();
+                }
+            });
+            
+            document.getElementById('context-menu').addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
         }
 
-        function calculateIntersectionPoint(p1_px, p2_px, rect_px) {
-            const x1 = p1_px.x, y1 = p1_px.y;
-            const x2 = p2_px.x, y2 = p2_px.y;
-            const { minX, minY, maxX, maxY } = rect_px;
-
-            const dx = x2 - x1;
-            const dy = y2 - y1;
-
-            let tMin = Infinity;
-            let intersectPt = null;
-
-            if (dx !== 0) {
-                let t = (minX - x1) / dx;
-                if (t > 1e-6) { 
-                    let y = y1 + t * dy;
-                    if (y >= minY && y <= maxY) {
-                        if (t < tMin) {
-                            tMin = t;
-                            intersectPt = { x: minX, y: y };
-                        }
-                    }
-                }
-            }
-
-            if (dx !== 0) {
-                let t = (maxX - x1) / dx;
-                if (t > 1e-6) {
-                    let y = y1 + t * dy;
-                    if (y >= minY && y <= maxY) {
-                        if (t < tMin) {
-                            tMin = t;
-                            intersectPt = { x: maxX, y: y };
-                        }
-                    }
-                }
-            }
-
-            if (dy !== 0) {
-                let t = (minY - y1) / dy;
-                if (t > 1e-6) {
-                    let x = x1 + t * dx;
-                    if (x >= minX && x <= maxX) {
-                        if (t < tMin) {
-                            tMin = t;
-                            intersectPt = { x: x, y: minY };
-                        }
-                    }
-                }
-            }
-
-            if (dy !== 0) {
-                let t = (maxY - y1) / dy;
-                if (t > 1e-6) {
-                    let x = x1 + t * dx;
-                    if (x >= minX && x <= maxX) {
-                        if (t < tMin) {
-                            tMin = t;
-                            intersectPt = { x: x, y: maxY };
-                        }
-                    }
-                }
-            }
+        function activateRegion(regionName) {
+            currentActiveRegion = regionName;
             
-            if (dx === 0 && x1 >= minX && x1 <= maxX) {
-                if (dy > 0 && y1 < maxY) { 
-                    let t = (maxY - y1) / dy;
-                    if (t > 1e-6 && t < tMin) { intersectPt = {x: x1, y: maxY}; }
-                } else if (dy < 0 && y1 > minY) { 
-                    let t = (minY - y1) / dy;
-                    if (t > 1e-6 && t < tMin) { intersectPt = {x: x1, y: minY}; }
-                }
-            }
-            if (dy === 0 && y1 >= minY && y1 <= maxY) { 
-                if (dx > 0 && x1 < maxX) { 
-                    let t = (maxX - x1) / dx;
-                    if (t > 1e-6 && t < tMin) { intersectPt = {x: maxX, y: y1}; }
-                } else if (dx < 0 && x1 > minX) { 
-                    let t = (minX - x1) / dx;
-                    if (t > 1e-6 && t < tMin) { intersectPt = {x: minX, y: y1}; }
-                }
-            }
+            animateFillOut(regionName);
+            
+            map.setFilter('regions-outline', ['==', 'Region', regionName]);
+            
+            setTimeout(() => {
+                animateOutlineIn(regionName);
+            }, 200);
+            
+            setTimeout(() => {
+                animateSocialMediaPointsIn(regionName);
+            }, 200);
+            
+            setTimeout(() => {
+                showRegionCards(regionName);
+            }, 2000);
 
-
-            return intersectPt;
+            clearRegionMarkers();
         }
 
-        function updateNationalIcon() {
-            if (!nationalIcon || !map.getCenter() || !map.getBounds()) return; 
+        function animateFillOut(regionName) {
+            map.setFilter('regions-fill', ['!=', 'Region', regionName]);
             
-            const zoom = map.getZoom();
-            const bounds = map.getBounds();
-            const mapGeoCenter = map.getCenter(); 
-
-            const markerElement = nationalIcon.getElement();
-            if (!markerElement) return;
-
-            markerElement.style.display = currentFilters.includes('National') ? 'block' : 'none';
-            if (!currentFilters.includes('National')) return;
-
-            const nationalOpacity = Math.max(0.1, 1 - (zoom - 4) / 5);
-            markerElement.style.opacity = nationalOpacity;
+            let currentOpacity = 0.7;
+            const targetOpacity = 0.2;
+            const step = 0.02;
             
-            if (zoom > 4) {
-                if (bounds.contains(kansasCenter)) {
-                    nationalIcon.setLngLat(kansasCenter);
+            function fadeStep() {
+                if (currentOpacity <= targetOpacity) {
+                    map.setPaintProperty('regions-fill', 'fill-opacity', [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        5, targetOpacity,
+                        8, 0
+                    ]);
+                    return;
+                }
+                
+                currentOpacity -= step;
+                map.setPaintProperty('regions-fill', 'fill-opacity', [
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    5, Math.max(targetOpacity, currentOpacity),
+                    8, 0
+                ]);
+                
+                setTimeout(fadeStep, 30);
+            }
+            
+            fadeStep();
+        }
+
+        function animateOutlineIn(regionName) {
+            let pulseCount = 0;
+            const maxPulses = 2;
+            const regionColor = regionColors[regionName] || '#3B82F6';
+            let animationFrame = 0;
+            
+            function pulse() {
+                if (pulseCount >= maxPulses) {
+                    map.setPaintProperty('regions-outline', 'line-opacity', 1);
+                    map.setPaintProperty('regions-outline', 'line-width', 4);
+                    map.setPaintProperty('regions-outline', 'line-color', regionColor);
+                    return;
+                }
+                
+                const progress = (animationFrame % 60) / 60; 
+                const opacity = Math.max(0.2, 0.5 + Math.sin(progress * Math.PI * 2) * 0.4);
+                const width = 3 + Math.sin(progress * Math.PI * 2) * 2;
+                
+                map.setPaintProperty('regions-outline', 'line-opacity', opacity);
+                map.setPaintProperty('regions-outline', 'line-width', Math.max(2, width));
+                map.setPaintProperty('regions-outline', 'line-color', regionColor);
+                
+                animationFrame++;
+                
+                if (animationFrame >= 60) {
+                    pulseCount++;
+                    animationFrame = 0;
+                }
+                
+                if (pulseCount < maxPulses) {
+                    requestAnimationFrame(pulse);
                 } else {
-                    const mapCanvas = map.getCanvas();
-                    const mapWidth = mapCanvas.clientWidth;
-                    const mapHeight = mapCanvas.clientHeight;
-                    const padding = 150; 
-
-                    const screenRectPx = {
-                        minX: padding,
-                        minY: padding,
-                        maxX: mapWidth - padding,
-                        maxY: mapHeight - padding
-                    };
-
-                    const mapCenterPx = map.project(mapGeoCenter);
-                    const kansasPx = map.project(kansasCenter);  
-
-                    const edgeScreenPx = calculateIntersectionPoint(mapCenterPx, kansasPx, screenRectPx);
-
-                    if (edgeScreenPx) {
-                        const edgeLngLat = map.unproject([edgeScreenPx.x, edgeScreenPx.y]);
-                        nationalIcon.setLngLat(edgeLngLat);
-                    } else {
-                        nationalIcon.setLngLat(kansasCenter);
-                    }
-                }
-            } else {
-                nationalIcon.setLngLat(kansasCenter);
-            }
-            
-            if (map.getLayer('clusters')) {
-                map.setPaintProperty('clusters', 'circle-opacity', Math.min(1, 0.3 + (zoom - 4) / 5));
-            }
-            if (map.getLayer('unclustered-point')) {
-                map.setPaintProperty('unclustered-point', 'icon-opacity', Math.min(1, 0.3 + (zoom - 4) / 5));
-            }
-        }
-
-        function setCoverageIndicatorPosition(x, y) {
-            coverageIndicator.style.left = (x + 15) + 'px';
-            coverageIndicator.style.top = (y + 15) + 'px';
-        }
-
-        function loadData() {
-            Promise.all([
-                fetch('states.geojson').then(response => response.json()),
-                fetch('LocalSocialMedia.geojson').then(response => response.json()),
-                fetch('NationalAccounts.geojson').then(response => response.json()),
-                fetch('NationalAccountData.json').then(response => response.json())
-            ])
-            .then(([statesData, socialData, nationalGeom, nationalData]) => {
-                statesData = statesData;
-                localSocial = socialData;
-                nationalSocial = nationalGeom;
-                nationalAccountData = nationalData;
-
-                map.addSource('states', {
-                    type: 'geojson',
-                    data: statesData
-                });
-
-                map.addSource('social', {
-                    type: 'geojson',
-                    data: localSocial,
-                    cluster: true,
-                    clusterMaxZoom: 14,
-                    clusterRadius: 50
-                });
-
-                map.addSource('national', {
-                    type: 'geojson',
-                    data: nationalSocial
-                });
-
-                map.addLayer({
-                    id: 'national-social',
-                    type: 'fill',
-                    source: 'national',
-                    paint: {
-                        'fill-color': '#33ff99',
-                        'fill-opacity': 0.0,
-                        'fill-opacity-transition': {
-                            duration: 200,
-                            delay: 0
-                        }
-                    }
-                });
-
-                map.addLayer({
-                    id: 'states-layer',
-                    type: 'fill',
-                    source: 'states',
-                    paint: {
-                        'fill-color': '#33ff99',
-                        'fill-opacity': 0.01,
-                        'fill-opacity-transition': {
-                            duration: 200,
-                            delay: 0
-                        }
-                    },
-                    filter: ['==', 'cityState', '']
-                });
-                               
-                map.addLayer({
-                    id: 'clusters',
-                    type: 'circle',
-                    source: 'social',
-                    filter: ['has', 'point_count'],
-                    paint: {
-                        'circle-radius': [
-                            'step',
-                            ['get', 'point_count'],
-                            20, 
-                            10, 
-                            30, 
-                            50,
-                            40 
-                        ],
-                        'circle-color': [
-                            'step',
-                            ['get', 'point_count'],
-                            '#51bbd6', 
-                            10,
-                            '#2196F3',
-                            50,
-                            '#0D47A1'
-                        ],
-                        'circle-opacity': 0.6 
-                    }
-                });
-                
-                map.addLayer({
-                    id: 'cluster-count',
-                    type: 'symbol',
-                    source: 'social',
-                    filter: ['has', 'point_count'],
-                    layout: {
-                        'text-field': '{point_count_abbreviated}',
-                        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                        'text-size': 12
-                    },
-                    paint: {
-                        'text-color': '#ffffff'
-                    }
-                });
-                
-                map.addLayer({
-                    id: 'unclustered-point',
-                    type: 'symbol',
-                    source: 'social',
-                    filter: ['!', ['has', 'point_count']],
-                    layout: {
-                        'icon-image': 'fblogo',
-                        'icon-size': 0.3
-                    },
-                    paint: {
-                        'icon-opacity': 0.3 
-                    }
-                });
-
-                const el = document.createElement('div');
-                el.className = 'national-icon';
-                el.style.backgroundImage = 'url(facebook-icon.png)';
-                el.style.width = '60px';
-                el.style.height = '60px';
-                el.style.backgroundSize = 'cover';
-                el.style.cursor = 'pointer';
-                
-                nationalIcon = new mapboxgl.Marker(el)
-                    .setLngLat(kansasCenter)
-                    .addTo(map);
-                
-                popup = new mapboxgl.Popup({
-                    closeButton: true,
-                    closeOnClick: false,
-                    maxWidth: '300px'
-                });
-                
-                el.addEventListener('mouseenter', () => {
-                    map.setPaintProperty('national-social', 'fill-opacity', 0.3);
-                    
-                    const popupContent = createNationalPopup(nationalAccountData);
-                    popup.setLngLat(nationalIcon.getLngLat())
-                         .setDOMContent(popupContent)
-                         .addTo(map);
-                    
-                    const popupElement = popup.getElement();
-                    if (popupElement) {
-                        popupElement.addEventListener('mouseenter', () => {
-                            isOverPanel = true;
-                        });
-                        
-                        popupElement.addEventListener('mouseleave', () => {
-                            isOverPanel = false;
-                            popup.remove();
-                            map.setPaintProperty('national-social', 'fill-opacity', 0);
-                        });
-                    }
-                });
-                
-                el.addEventListener('mouseleave', () => {
-                    map.setPaintProperty('national-social', 'fill-opacity', 0);
-                    
                     setTimeout(() => {
-                        if (!isOverPanel && popup.isOpen()) {
-                            popup.remove();
-                        }
+                        map.setPaintProperty('regions-outline', 'line-opacity', 1);
+                        map.setPaintProperty('regions-outline', 'line-width', 4);
                     }, 100);
-                });
+                }
+            }
+            
+            pulse();
+        }
 
-                map.on('mouseenter', 'unclustered-point', (e) => {
-                    if (e.features && e.features.length > 0) {
-                        const hoveredFeature = e.features[0];
-                        if (hoveredFeature.properties && hoveredFeature.properties.CoverageType === 'State') {
-                            const stateName = hoveredFeature.properties.State;
-                            map.setFilter('states-layer', ['==', ['get', 'cityState'], stateName]);
-                            map.setPaintProperty('states-layer', 'fill-opacity', 0.3);
-
-                            coverageIndicator.style.display = 'block';
-                            coverageIndicator.textContent = `Coverage: ${hoveredFeature.properties.State}`;
-                        } else if (hoveredFeature.properties && hoveredFeature.properties.CoverageType === 'City') {
-                            coverageIndicator.style.display = 'block';
-                            coverageIndicator.textContent = `Coverage: ${hoveredFeature.properties.Location}, ${hoveredFeature.properties.State}`;
-                        }
-                    }
-                });
-
-                map.on('mousemove', 'unclustered-point', (e) => {
-                    if (e.originalEvent) {
-                        setCoverageIndicatorPosition(e.originalEvent.clientX, e.originalEvent.clientY);
-                    }
-                });
-
-                map.on('mouseleave', 'unclustered-point', () => {
-                    map.setFilter('states-layer', ['==', ['get', 'cityState'], '']);
-                    map.setPaintProperty('states-layer', 'fill-opacity', 0);
-
-                    coverageIndicator.style.display = 'none';
-                    coverageIndicator.textContent = '';
-                });
+        function animateSocialMediaPointsIn(regionName) {
+            map.setFilter('social-media-points', ['==', 'Region', regionName]);
+            
+            map.setPaintProperty('social-media-points', 'icon-opacity', 0);
+            
+            const regionPoints = socialMediaData.features.filter(
+                feature => feature.properties.Region === regionName
+            );
+            
+            if (regionPoints.length === 0) {
+                return;
+            }
+            
+            let currentOpacity = 0;
+            const targetOpacity = 1;
+            const step = 0.05;
+            
+            function fadeIn() {
+                if (currentOpacity >= targetOpacity) {
+                    map.setPaintProperty('social-media-points', 'icon-opacity', 1);
+                    return;
+                }
                 
-                updateFilters();
-                updateNationalIcon();
-                populateAccountsList();
+                currentOpacity += step;
+                map.setPaintProperty('social-media-points', 'icon-opacity', Math.min(1, currentOpacity));
+                
+                setTimeout(fadeIn, 50);
+            }
+            
+            setTimeout(fadeIn, 200);
+        }
+
+        function getRegionCenter(regionName) {
+            const regionCenters = {
+                'Midwest': [-89.0, 41.5],
+                'Mountain Northwest': [-110.0, 45.0],
+                'North Central': [-100.0, 47.0],
+                'North Southeast': [-82.0, 35.0],
+                'Northeast': [-74.0, 42.0],
+                'Northwest': [-120.0, 47.0],
+                'South Central': [-97.0, 32.0],
+                'South Southeast': [-84.0, 32.0],
+                'Southwest': [-111.0, 34.0],
+                'West': [-119.0, 37.0]
+            };
+            return regionCenters[regionName] || [-98.5795, 39.8283];
+        }
+
+        function getDistance(coord1, coord2) {
+            const dx = coord1[0] - coord2[0];
+            const dy = coord1[1] - coord2[1];
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        
+        function showIndividualAccount(account) {
+            const overlay = document.getElementById('cards-overlay');
+            const titleElement = document.getElementById('region-title');
+            const container = document.getElementById('cards-container');
+            
+            const name = account.Community_Name || account.Name || 'Unknown User';
+            titleElement.textContent = `${name} - Individual Account`;
+            
+            container.className = 'single-card';
+            container.innerHTML = createAccountCard(account, 0, true);
+            
+            overlay.style.display = 'flex';
+            document.getElementById('map').classList.add('dimmed');
+            
+            setTimeout(() => {
+                overlay.classList.add('visible');
+            }, 10);
+        }
+        
+        function showNationalAccounts() {
+            const nationalAccounts = socialMediaData.features.filter(
+                feature => feature.properties.Region === 'National'
+            );
+            
+            if (nationalAccounts.length === 0) {
+                alert('No national accounts found in the data.');
+                return;
+            }
+            
+            const overlay = document.getElementById('cards-overlay');
+            const titleElement = document.getElementById('region-title');
+            const container = document.getElementById('cards-container');
+            
+            titleElement.textContent = `National Social Media Accounts (${nationalAccounts.length})`;
+            
+            container.className = '';
+            const cardsHTML = nationalAccounts.map((account, index) => {
+                const props = account.properties;
+                return createAccountCard(props, index);
+            }).join('');
+            
+            container.innerHTML = cardsHTML;
+            
+            overlay.style.display = 'flex';
+            document.getElementById('map').classList.add('dimmed');
+            
+            setTimeout(() => {
+                overlay.classList.add('visible');
+            }, 10);
+        }
+
+        function showRegionCards(regionName) {
+            const overlay = document.getElementById('cards-overlay');
+            const titleElement = document.getElementById('region-title');
+            const container = document.getElementById('cards-container');
+            
+            const regionAccounts = socialMediaData.features.filter(
+                feature => feature.properties.Region === regionName
+            );
+            
+            titleElement.textContent = `${regionName} Social Media Accounts (${regionAccounts.length})`;
+            
+            container.className = '';
+            const cardsHTML = regionAccounts.map((account, index) => {
+                const props = account.properties;
+                return createAccountCard(props, index);
+            }).join('');
+            
+            container.innerHTML = cardsHTML;
+            
+            overlay.style.display = 'flex';
+            document.getElementById('map').classList.add('dimmed');
+            
+            setTimeout(() => {
+                overlay.classList.add('visible');
+            }, 10);
+        }
+
+        function createAccountCard(props) {
+            const name = props.Community_Name || 'Unknown Community';
+            const state = props.State || 'Unknown State';
+            const description = props.Description || 'No description provided.';
+            const userType = props.Professional_or_User_Customer || 'User';
+
+            const avatarLetter = name.charAt(0).toUpperCase();
+            const userLabel = userType === 'Professional' ? 'Professional' : 'User';
+
+            return `
+                <div class="account-card">
+                    <div class="card-header">
+                        <div class="account-avatar">${avatarLetter}</div>
+                        <div class="account-info">
+                            <h3>${escapeHtml(name)}</h3>
+                            <span class="badge">${escapeHtml(userLabel)}</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        ${escapeHtml(description)}
+                    </div>
+                    <div class="card-footer">
+                        ${escapeHtml(state)}
+                    </div>
+                </div>
+            `;
+        }
+
+
+        function hideCards() {
+            const overlay = document.getElementById('cards-overlay');
+            
+            overlay.classList.remove('visible');
+            document.getElementById('map').classList.remove('dimmed');
+            
+            animateSocialMediaPointsOut();
+            
+            setTimeout(() => {
+                animateOutlineOut();
+            }, 300);
+            
+            setTimeout(() => {
+                restoreFillLayer();
+            }, 600);
+            
+            currentActiveRegion = null;
+            
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                addRegionLabelsSimple();
+            }, 900);
+        }
+
+        function animateSocialMediaPointsOut() {
+            let currentOpacity = 1;
+            const step = 0.08;
+            
+            function fadeOut() {
+                if (currentOpacity <= 0) {
+                    map.setPaintProperty('social-media-points', 'icon-opacity', 0);
+                    return;
+                }
+                
+                currentOpacity -= step;
+                map.setPaintProperty('social-media-points', 'icon-opacity', Math.max(0, currentOpacity));
+                
+                setTimeout(fadeOut, 40);
+            }
+            
+            fadeOut();
+        }
+
+        function animateOutlineOut() {
+            let currentOpacity = 1;
+            let currentWidth = 4;
+            const opacityStep = 0.06;
+            const widthStep = 0.15;
+            
+            function fadeOut() {
+                if (currentOpacity <= 0) {
+                    map.setFilter('regions-outline', ['==', 'Region', '']);
+                    map.setPaintProperty('regions-outline', 'line-opacity', 0);
+                    return;
+                }
+                
+                currentOpacity -= opacityStep;
+                currentWidth -= widthStep;
+                
+                map.setPaintProperty('regions-outline', 'line-opacity', Math.max(0, currentOpacity));
+                map.setPaintProperty('regions-outline', 'line-width', Math.max(1, currentWidth));
+                
+                setTimeout(fadeOut, 30);
+            }
+            
+            fadeOut();
+        }
+
+        function restoreFillLayer() {
+            map.setFilter('regions-fill', null);
+            
+            let currentOpacity = 0.2;
+            const targetOpacity = 0.7;
+            const step = 0.03;
+            
+            function fadeIn() {
+                if (currentOpacity >= targetOpacity) {
+                    map.setPaintProperty('regions-fill', 'fill-opacity', [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        5, 0.7,
+                        8, 0
+                    ]);
+                    return;
+                }
+                
+                currentOpacity += step;
+                map.setPaintProperty('regions-fill', 'fill-opacity', [
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    5, Math.min(0.7, currentOpacity),
+                    8, 0
+                ]);
+                
+                setTimeout(fadeIn, 40);
+            }
+            
+            fadeIn();
+        }
+
+        function formatNumber(num) {
+            const numVal = parseInt(num) || 0;
+            if (numVal >= 1000000) {
+                return (numVal / 1000000).toFixed(1) + 'M';
+            }
+            if (numVal >= 1000) {
+                return (numVal / 1000).toFixed(1) + 'K';
+            }
+            return numVal.toString();
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;',
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+
+        function addRegionLabelsSimple() {
+            const regionCounts = {};
+            
+            socialMediaData.features.forEach(feature => {
+                const region = feature.properties.Region;
+                if (region && region !== 'National') {
+                    regionCounts[region] = (regionCounts[region] || 0) + 1;
+                }
+            });
+            
+            const regionCenters = {
+                'Midwest': [-89.0, 41.5],
+                'Mountain Northwest': [-110.0, 45.0],
+                'North Central': [-100.0, 47.0],
+                'North Southeast': [-82.0, 35.0],
+                'Northeast': [-74.0, 42.0],
+                'Northwest': [-120.0, 47.0],
+                'South Central': [-97.0, 32.0],
+                'South Southeast': [-84.0, 32.0],
+                'Southwest': [-111.0, 34.0],
+                'West': [-119.0, 37.0]
+            };
+            
+            Object.entries(regionCounts).forEach(([regionName, count]) => {
+                const center = regionCenters[regionName];
+                if (center && count > 0) {
+                    let size = 60;
+                    let fontSize = 16;
+                    if (count <= 5) {
+                        size = 50;
+                        fontSize = 14;
+                    } else if (count <= 15) {
+                        size = 60;
+                        fontSize = 16;
+                    } else if (count <= 30) {
+                        size = 70;
+                        fontSize = 18;
+                    } else {
+                        size = 80;
+                        fontSize = 20;
+                    }
+                    
+                    const regionColor = regionColors[regionName] || '#3B82F6';
+                    
+                    const el = document.createElement('div');
+                    el.className = 'region-count-marker';
+                    el.style.cssText = `
+                        width: ${size}px;
+                        height: ${size}px;
+                        background: ${regionColor}CC;
+                        border: 3px solid rgba(255, 255, 255, 0.9);
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: bold;
+                        font-size: ${fontSize}px;
+                        color: white;
+                        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        user-select: none;
+                    `;
+                    el.textContent = count;
+                    
+                    el.addEventListener('mouseenter', () => {
+                        el.style.background = `${regionColor}E6`;
+                        el.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.3)';
+                        el.style.borderWidth = '4px';
+                    });
+                    
+                    el.addEventListener('mouseleave', () => {
+                        el.style.background = `${regionColor}CC`;
+                        el.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+                        el.style.borderWidth = '3px';
+                    });
+                    
+                    el.addEventListener('click', () => {
+                        activateRegion(regionName);
+                    });
+                    
+                    const marker = new mapboxgl.Marker(el)
+                        .setLngLat(center)
+                        .addTo(map);
+                    
+                    if (!map.regionMarkers) map.regionMarkers = [];
+                    map.regionMarkers.push(marker);
+                }
             });
         }
 
-        map.on('zoom', updateNationalIcon);
-        map.on('move', updateNationalIcon);
-        map.on('resize', updateNationalIcon);
+        function clearRegionMarkers() {
+            if (map.regionMarkers) {
+                map.regionMarkers.forEach(marker => marker.remove());
+                map.regionMarkers = [];
+            }
+        }
 
-        map.on('mousemove', (e) => {
-            mouseX = e.originalEvent.clientX;
-            mouseY = e.originalEvent.clientY;
+        function showContextMenu(e) {
+            e.preventDefault();
+            
+            const contextMenu = document.getElementById('context-menu');
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = e.clientX + 'px';
+            contextMenu.style.top = e.clientY + 'px';
+            
+            const menuRect = contextMenu.getBoundingClientRect();
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            if (menuRect.right > windowWidth) {
+                contextMenu.style.left = (e.clientX - menuRect.width) + 'px';
+            }
+            
+            if (menuRect.bottom > windowHeight) {
+                contextMenu.style.top = (e.clientY - menuRect.height) + 'px';
+            }
+        }
+
+        function hideContextMenu() {
+            const contextMenu = document.getElementById('context-menu');
+            contextMenu.style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeMap();
         });
 
-        function populateAccountsList() {
-            const accountsList = document.getElementById('accounts-list');
-            accountsList.innerHTML = '';
-
-            if (!nationalAccountData) {
-                fetch('NationalAccountData.json')
-                    .then(response => response.json())
-                    .then(data => {
-                        nationalAccountData = data;
-                        displayFilteredAccounts();
-                    });
-            } else {
-                displayFilteredAccounts();
+        window.addEventListener('resize', () => {
+            if (map) {
+                map.resize();
             }
-
-            function displayFilteredAccounts() {
-                let filteredData = filterAccountsByVisibleArea() || [];
-                
-                filteredData.forEach(account => {
-                    const accountBox = document.createElement('div');
-                    accountBox.className = 'account-box';
-
-                    const accountInfo = document.createElement('div');
-                    accountInfo.className = 'account-info';
-                    
-                    const accountName = document.createElement('div');
-                    accountName.className = 'community-name';
-                    accountName.textContent = account.Community_Name;
-                    
-                    const locationInfo = document.createElement('div');
-                    locationInfo.style.fontSize = '12px';
-                    locationInfo.style.color = '#666';
-                    
-                    if (account.CoverageType === 'National') {
-                        locationInfo.textContent = 'Nationwide Coverage';
-                    } else if (account.CoverageType === 'State' && account.State) {
-                        locationInfo.textContent = account.State;
-                    } else if (account.CoverageType === 'City' && account.Location && account.State) {
-                        locationInfo.textContent = `${account.Location}, ${account.State}`;
-                    }
-                    
-                    accountInfo.appendChild(accountName);
-                    accountInfo.appendChild(locationInfo);
-
-                    const coverageType = document.createElement('span');
-                    coverageType.className = `coverage-type coverage-${account.CoverageType.toLowerCase()}`;
-                    coverageType.textContent = account.CoverageType;
-
-                    accountBox.appendChild(accountInfo);
-                    accountBox.appendChild(coverageType);
-
-                    accountBox.addEventListener('click', () => {
-                        if (account.Coordinates && account.Coordinates.length === 2) {
-                            map.flyTo({ 
-                                center: account.Coordinates, 
-                                zoom: account.CoverageType === 'National' ? 4 : 
-                                      account.CoverageType === 'State' ? 6 : 8 
-                            });
-                        } else if (account.CoverageType === 'National') {
-                            map.flyTo({ center: kansasCenter, zoom: 4 });
-                        }
-                    });
-
-                    accountBox.addEventListener('mouseenter', () => {
-                        if (account.CoverageType === 'National') {
-                            map.setPaintProperty('national-social', 'fill-opacity', 0.3);
-                        } else if (account.CoverageType === 'State' && account.State) {
-                            map.setFilter('states-layer', ['==', ['get', 'cityState'], account.State]);
-                            map.setPaintProperty('states-layer', 'fill-opacity', 0.3);
-                        } else if (account.CoverageType === 'City' && account.Coordinates && account.Coordinates.length === 2) {
-                            if (!map.getSource('temp-city-highlight')) {
-                                map.addSource('temp-city-highlight', {
-                                    type: 'geojson',
-                                    data: {
-                                        type: 'Feature',
-                                        geometry: {
-                                            type: 'Point',
-                                            coordinates: account.Coordinates
-                                        },
-                                        properties: {}
-                                    }
-                                });
-                                
-                                map.addLayer({
-                                    id: 'city-highlight-circle',
-                                    type: 'circle',
-                                    source: 'temp-city-highlight',
-                                    paint: {
-                                        'circle-radius': 15,
-                                        'circle-color': '#FFC107',
-                                        'circle-opacity': 0.4,
-                                        'circle-stroke-width': 2,
-                                        'circle-stroke-color': '#FFC107'
-                                    }
-                                });
-                            } else {
-                                map.getSource('temp-city-highlight').setData({
-                                    type: 'Feature',
-                                    geometry: {
-                                        type: 'Point',
-                                        coordinates: account.Coordinates
-                                    },
-                                    properties: {}
-                                });
-                                
-                                map.setLayoutProperty('city-highlight-circle', 'visibility', 'visible');
-                            }
-                        }
-                    });
-
-                    accountBox.addEventListener('mouseleave', () => {
-                        map.setPaintProperty('national-social', 'fill-opacity', 0);
-                        map.setFilter('states-layer', ['==', ['get', 'cityState'], '']);
-                        map.setPaintProperty('states-layer', 'fill-opacity', 0);
-                        
-                        if (map.getLayer('city-highlight-circle')) {
-                            map.setLayoutProperty('city-highlight-circle', 'visibility', 'none');
-                        }
-                    });
-
-                    accountsList.appendChild(accountBox);
-                });
-            }
-        }
-
-        function filterAccountsByVisibleArea() {
-            if (!map || !nationalAccountData) return [];
-            
-            const bounds = map.getBounds();
-            const visibleAccounts = [];
-            
-            let visibleFeatures = map.querySourceFeatures('social');
-            
-            let renderedFeatures = map.queryRenderedFeatures({ 
-                layers: ['clusters', 'unclustered-point'] 
-            });
-            
-            let visibleClusterIds = new Set();
-            renderedFeatures.forEach(feature => {
-                if (feature.properties && feature.properties.cluster_id) {
-                    visibleClusterIds.add(feature.properties.cluster_id);
-                }
-            });
-            
-            console.log('Map bounds:', bounds.toArray());
-            console.log('Visible features count:', visibleFeatures.length);
-            console.log('Rendered features count:', renderedFeatures.length);
-            console.log('Visible cluster IDs:', [...visibleClusterIds]);
-            
-            nationalAccountData.forEach(account => {
-                console.log('Checking account:', account);
-                if (!currentFilters.includes(account.CoverageType)) {
-                    console.log('Skipping account due to filter:', account.CoverageType);
-                    return;
-                }
-                
-                if (searchTerm) {
-                    const locationStr = account.Location ? account.Location.toString().toLowerCase() : '';
-                    const stateStr = account.State ? account.State.toLowerCase() : '';
-                    const cityStr = account.City ? account.City.toLowerCase() : '';
-                    const nameStr = account.Community_Name ? account.Community_Name.toLowerCase() : '';
-                    
-                    if (!(locationStr.includes(searchTerm) || 
-                        stateStr.includes(searchTerm) || 
-                        cityStr.includes(searchTerm) ||
-                        nameStr.includes(searchTerm))) {
-                        console.log('Skipping account due to search term:', searchTerm);
-                        return;
-                    }
-                }
-                
-                if (account.CoverageType === 'National') {
-                    visibleAccounts.push(account);
-                    return;
-                }
-                
-                if (account.Location_Decimal) {
-                    let coordinates = account.Location_Decimal.split(',').map(item => item.trim());
-                    console.log('Account Location_Decimal:', coordinates);
-                    const lng = coordinates[1];
-                    const lat = coordinates[0];
-                    
-                    if (bounds.contains([lng, lat])) {
-                        visibleAccounts.push(account);
-                        return;
-                    } else {
-                        console.log('Account coordinates not in bounds:', account.Coordinates);
-                    }
-                    
-                    if (account.CoverageType === 'State' && account.State) {
-                        const stateFeatures = map.queryRenderedFeatures({ 
-                            layers: ['states-layer'] 
-                        });
-                        
-                        for (let feature of stateFeatures) {
-                            if (feature.properties && feature.properties.name === account.State) {
-                                visibleAccounts.push(account);
-                                return;
-                            }
-                        }
-                    }
-                    
-                    for (let feature of visibleFeatures) {
-                        if (feature.properties && feature.properties.cluster) {
-                            const clusterCoords = feature.geometry.coordinates;
-                            
-                            const distance = Math.sqrt(
-                                Math.pow(clusterCoords[0] - lng, 2) + 
-                                Math.pow(clusterCoords[1] - lat, 2)
-                            );
-                            
-                            const zoomLevel = map.getZoom();
-                            let threshold = 0.5; 
-                            
-                            if (zoomLevel > 10) {
-                                threshold = 0.1;
-                            } else if (zoomLevel > 6) {
-                                threshold = 0.2;
-                            }
-                            
-                            if (distance < threshold) {
-                                visibleAccounts.push(account);
-                                return;
-                            }
-                        }
-                    }
-                } else {
-                    console.log('No coordinates for account:', account);
-                }
-            });
-            
-            console.log('Filtered visible accounts:', visibleAccounts.length);
-            return visibleAccounts;
-        }
-
-        map.on('moveend', populateAccountsList);
-        map.on('zoomend', populateAccountsList);
-
-
-        function initializeHighlightLayers() {
-            if (!map.getSource('temp-city-highlight')) {
-                map.addSource('temp-city-highlight', {
-                    type: 'geojson',
-                    data: {
-                        type: 'Feature',
-                        geometry: {
-                            type: 'Point',
-                            coordinates: [0, 0]
-                        },
-                        properties: {}
-                    }
-                });
-                
-                map.addLayer({
-                    id: 'city-highlight-circle',
-                    type: 'circle',
-                    source: 'temp-city-highlight',
-                    paint: {
-                        'circle-radius': 15,
-                        'circle-color': '#FFC107',
-                        'circle-opacity': 0.4,
-                        'circle-stroke-width': 2,
-                        'circle-stroke-color': '#FFC107'
-                    },
-                    layout: {
-                        'visibility': 'none'
-                    }
-                });
-            }
-        }
-
-        map.on('load', function() {
-           map.loadImage(
-                'facebook-icon.png',
-                (error, image) => {
-                    if (error) throw error;
-                    map.addImage('fblogo', image);
-                    loadData();
-                    
-                    setTimeout(initializeHighlightLayers, 1000);
-                }
-            );
         });
     </script>
 </body>
