@@ -376,9 +376,9 @@
 
     <div id="context-menu">
         <div class="context-menu-header">View accounts...</div>
-        <div class="context-menu-item" data-value="25 Miles">25 Miles</div>
-        <div class="context-menu-item" data-value="State">State</div>
-        <div class="context-menu-item" data-value="Region">Region</div>
+        <div class="context-menu-item" data-value="25 Miles">Within 100 Miles</div>
+        <div class="context-menu-item" data-value="State">In State</div>
+        <div class="context-menu-item" data-value="Region">In Region</div>
         <div class="context-menu-item" data-value="National Accounts">View National Accounts</div>
     </div>
    
@@ -401,7 +401,11 @@
         let map;
         let regionsData = null;
         let socialMediaData = null;
+        let statesData = null;
         let currentActiveRegion = null;
+        let currentActiveState = null;
+        let searchCircleMarker = null;
+        let clickedCoordinates = null;
 
         function initializeMap() {
             map = new mapboxgl.Map({
@@ -420,17 +424,20 @@
 
         async function loadData() {
             try {
-                const [regionsResponse, socialMediaResponse] = await Promise.all([
+                const [regionsResponse, socialMediaResponse, statesResponse] = await Promise.all([
                     fetch('regions.geojson'),
-                    fetch('SocialMedia.geojson')
+                    fetch('SocialMedia.geojson'),
+                    fetch('states.geojson')
                 ]);
 
                 regionsData = await regionsResponse.json();
                 socialMediaData = await socialMediaResponse.json();
+                statesData = await statesResponse.json();
 
                 console.log('Data loaded successfully');
                 console.log('Regions:', regionsData.features.length);
                 console.log('Social Media Points:', socialMediaData.features.length);
+                console.log('States:', statesData.features.length);
             } catch (error) {
                 console.error('Error loading data:', error);
             }
@@ -464,6 +471,44 @@
                     ]
                 }
             });
+            map.addSource('states', {
+                type: 'geojson',
+                data: statesData
+            });
+
+            map.addLayer({
+                id: 'states-outline',
+                type: 'line',
+                source: 'states',
+                paint: {
+                    'line-color': '#f7cf92',
+                    'line-width': 1,
+                    'line-opacity': 0.5
+                }
+            });
+
+            map.addLayer({
+                id: 'states-highlighted',
+                type: 'fill',
+                source: 'states',
+                paint: {
+                    'fill-color': '#3B82F6',
+                    'fill-opacity': 0.3
+                },
+                filter: ['==', 'NAME', '']
+            });
+
+            map.addLayer({
+                id: 'states-highlighted-outline',
+                type: 'line',
+                source: 'states',
+                paint: {
+                    'line-color': '#3B82F6',
+                    'line-width': 3,
+                    'line-opacity': 1
+                },
+                filter: ['==', 'NAME', '']
+            });
 
             map.addLayer({
                 id: 'regions-outline',
@@ -482,6 +527,25 @@
                     'line-opacity': 0
                 },
                 filter: ['==', 'Region', ''] 
+            });
+
+            map.addSource('search-circle', {
+                type: 'geojson',
+                data: {
+                    type: 'FeatureCollection',
+                    features: []
+                }
+            });
+
+            map.addLayer({
+                id: 'search-circle-line',
+                type: 'line',
+                source: 'search-circle',
+                paint: {
+                    'line-color': '#FF6B6B',
+                    'line-width': 3,
+                    'line-opacity': 0.8
+                }
             });
 
             map.addSource('social-media', {
@@ -534,15 +598,21 @@
 
                 addRegionLabelsSimple();
             });
+            
+            map.addLayer({
+                id: 'states-hit',
+                type: 'fill',
+                source: 'states',
+                paint: {
+                    'fill-color': '#000000',
+                    'fill-opacity': 0
+                },
+                layout: {},
+            }, 'regions-outline');
         }
 
         function setupInteractions() {
-            map.on('click', 'regions-fill', (e) => {
-                if (map.getZoom() < 6 && e.features.length > 0) {
-                    const regionName = e.features[0].properties.Region;
-                    activateRegion(regionName);
-                }
-            });
+            map.on('contextmenu', handleRightClick);
             
             map.on('click', 'social-media-points-unfiltered', (e) => {
                 if (map.getZoom() >= 6 && e.features.length > 0) {
@@ -551,10 +621,15 @@
                 }
             });
 
-            map.on('mouseenter', 'regions-fill', () => {
-                if (map.getZoom() < 8) {
-                    map.getCanvas().style.cursor = 'pointer';
+            map.on('click', 'social-media-points', (e) => {
+                if (e.features.length > 0) {
+                    const account = e.features[0].properties;
+                    showIndividualAccount(account);
                 }
+            });
+
+            map.on('mouseenter', 'regions-fill', () => {
+                map.getCanvas().style.cursor = 'pointer';
             });
 
             map.on('mouseleave', 'regions-fill', () => {
@@ -562,12 +637,18 @@
             });
             
             map.on('mouseenter', 'social-media-points-unfiltered', () => {
-                if (map.getZoom() >= 8) {
-                    map.getCanvas().style.cursor = 'pointer';
-                }
+                map.getCanvas().style.cursor = 'pointer';
             });
 
             map.on('mouseleave', 'social-media-points-unfiltered', () => {
+                map.getCanvas().style.cursor = '';
+            });
+
+            map.on('mouseenter', 'social-media-points', () => {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+
+            map.on('mouseleave', 'social-media-points', () => {
                 map.getCanvas().style.cursor = '';
             });
 
@@ -580,8 +661,6 @@
                 }
             });
 
-            document.addEventListener('contextmenu', showContextMenu);
-
             document.addEventListener('click', (e) => {
                 const contextMenu = document.getElementById('context-menu');
                 if (!contextMenu.contains(e.target)) {
@@ -589,9 +668,314 @@
                 }
             });
             
-            document.getElementById('context-menu').addEventListener('click', (e) => {
-                e.stopPropagation();
+            document.getElementById('context-menu').addEventListener('click', handleContextMenuClick);
+        }
+
+        function handleRightClick(e) {
+            e.preventDefault();
+            clickedCoordinates = [e.lngLat.lng, e.lngLat.lat];
+            
+            updateContextMenuOptions(e);
+            
+            showContextMenu(e.originalEvent);
+        }
+
+        function updateContextMenuOptions(e) {
+            const contextMenu = document.getElementById('context-menu');
+            const features = map.queryRenderedFeatures(e.point);
+            
+            const existingItems = contextMenu.querySelectorAll('.context-menu-item');
+            existingItems.forEach(item => item.remove());
+            
+            const milesItem = document.createElement('div');
+            milesItem.className = 'context-menu-item';
+            milesItem.setAttribute('data-value', '25 Miles');
+            milesItem.innerHTML = '<span>Search within 100 Miles</span>';
+            contextMenu.appendChild(milesItem);
+            
+            const regionFeature = features.find(f => f.source === 'regions');
+            if (regionFeature) {
+                const regionItem = document.createElement('div');
+                regionItem.className = 'context-menu-item';
+                regionItem.setAttribute('data-value', 'Region');
+                regionItem.setAttribute('data-region', regionFeature.properties.Region);
+                regionItem.innerHTML = `<span>Within ${regionFeature.properties.Region} Region</span>`;
+                contextMenu.appendChild(regionItem);
+            }
+            
+            const stateFeature = features.find(f => f.layer && f.layer.id === 'states-hit');
+            if (stateFeature) {
+                const stateItem = document.createElement('div');
+                stateItem.className = 'context-menu-item';
+                stateItem.setAttribute('data-value', 'State');
+                stateItem.setAttribute('data-state', stateFeature.properties.cityState);
+                stateItem.innerHTML = `<span>Within ${stateFeature.properties.cityState}</span>`;
+                contextMenu.appendChild(stateItem);
+            }
+            
+            const nationalItem = document.createElement('div');
+            nationalItem.className = 'context-menu-item';
+            nationalItem.setAttribute('data-value', 'National Accounts');
+            nationalItem.innerHTML = '<span>View National Accounts</span>';
+            contextMenu.appendChild(nationalItem);
+        }
+
+        function handleContextMenuClick(e) {
+            e.stopPropagation();
+            const item = e.target.closest('.context-menu-item');
+            if (!item) return;
+            
+            const value = item.getAttribute('data-value');
+            
+            switch (value) {
+                case '25 Miles':
+                    searchWithin25Miles();
+                    break;
+                case 'Region':
+                    const regionName = item.getAttribute('data-region');
+                    activateRegion(regionName);
+                    break;
+                case 'State':
+                    const stateName = item.getAttribute('data-state');
+                    highlightState(stateName);
+                    break;
+                case 'National Accounts':
+                    showNationalAccounts();
+                    break;
+            }
+            
+            hideContextMenu();
+        }
+
+        function searchWithin25Miles() {
+            if (!clickedCoordinates) return;
+            
+            clearSearchCircle();
+            
+            const center = clickedCoordinates;
+            const radiusInDegrees = 100 / 69;
+            const points = 64;
+            const coordinates = [];
+            
+            for (let i = 0; i < points; i++) {
+                const angle = (i / points) * 2 * Math.PI;
+                const x = center[0] + radiusInDegrees * Math.cos(angle);
+                const y = center[1] + radiusInDegrees * Math.sin(angle);
+                coordinates.push([x, y]);
+            }
+            coordinates.push(coordinates[0]); 
+            
+            const circleFeature = {
+                type: 'Feature',
+                geometry: {
+                    type: 'Polygon',
+                    coordinates: [coordinates]
+                }
+            };
+            
+            map.getSource('search-circle').setData({
+                type: 'FeatureCollection',
+                features: [circleFeature]
             });
+            
+            // Fixed: Filter out features with null geometry before processing
+            const pointsWithin = socialMediaData.features.filter(feature => {
+                // Check if feature has valid geometry and coordinates
+                if (!feature.geometry || !feature.geometry.coordinates) {
+                    console.warn('Feature with null or missing geometry found:', feature);
+                    return false;
+                }
+                
+                const coords = feature.geometry.coordinates;
+                
+                // Additional validation: ensure coordinates are valid numbers
+                if (!Array.isArray(coords) || coords.length < 2 || 
+                    typeof coords[0] !== 'number' || typeof coords[1] !== 'number' ||
+                    isNaN(coords[0]) || isNaN(coords[1])) {
+                    console.warn('Feature with invalid coordinates found:', feature);
+                    return false;
+                }
+                
+                const distance = getDistanceInMiles(center, coords);
+                return distance <= 100;
+            });
+            
+            console.log(`Found ${pointsWithin.length} social media accounts within 100 miles`);
+            
+            if (pointsWithin.length > 0) {
+                showFilteredAccounts('100 Miles Search', pointsWithin);
+            } else {
+                alert('No social media accounts found within 100 miles of this location.');
+            }
+        }
+
+        function highlightState(stateName) {
+            currentActiveState = stateName;
+            clearActiveRegion();
+
+            map.setPaintProperty('regions-fill', 'fill-opacity', 0);
+            map.setPaintProperty('regions-outline', 'line-opacity', 0);
+
+            map.setFilter('states-highlighted', ['==', 'NAME', stateName]);
+            map.setFilter('states-highlighted-outline', ['==', 'NAME', stateName]);
+            map.setPaintProperty('states-highlighted-outline', 'line-opacity', 1);
+            map.setPaintProperty('states-highlighted-outline', 'line-width', 4);
+
+            const stateAccounts = socialMediaData.features.filter(
+                feature => feature.properties.State === stateName
+            );
+
+            if (stateAccounts.length > 0) {
+                map.setFilter('social-media-points', ['==', 'State', stateName]);
+                map.setPaintProperty('social-media-points', 'icon-opacity', 1);
+                map.setPaintProperty('social-media-points-unfiltered', 'icon-opacity', 0);
+                showFilteredAccounts(`${stateName} State`, stateAccounts);
+            } else {
+                alert(`No social media accounts found for ${stateName}.`);
+            }
+
+            const stateBounds = getStateBounds(stateName);
+            if (stateBounds) {
+                map.fitBounds(stateBounds, { padding: 50 });
+            }
+        }
+
+        function getStateBounds(stateName) {
+            const stateFeature = statesData.features.find(
+                feature => feature.properties.cityState === stateName
+            );
+
+            console.log(`State bounds for ${stateName}:`, stateFeature);
+            
+            if (!stateFeature) return null;
+            
+            const coordinates = stateFeature.geometry.coordinates;
+            let bounds = new mapboxgl.LngLatBounds();
+            
+            function addCoordinatesToBounds(coords) {
+                if (Array.isArray(coords[0])) {
+                    coords.forEach(coord => addCoordinatesToBounds(coord));
+                } else {
+                    bounds.extend(coords);
+                }
+            }
+            
+            addCoordinatesToBounds(coordinates);
+            return bounds;
+        }
+
+        function showFilteredAccounts(title, accounts) {
+            const overlay = document.getElementById('cards-overlay');
+            const titleElement = document.getElementById('region-title');
+            const container = document.getElementById('cards-container');
+            
+            titleElement.textContent = `${title} (${accounts.length})`;
+            
+            container.className = '';
+            const cardsHTML = accounts.map((account, index) => {
+                const props = account.properties;
+                return createAccountCard(props, index);
+            }).join('');
+            
+            container.innerHTML = cardsHTML;
+            
+            overlay.style.display = 'flex';
+            document.getElementById('map').classList.add('dimmed');
+            
+            setTimeout(() => {
+                overlay.classList.add('visible');
+            }, 10);
+        }
+
+        function clearActiveRegion() {
+            currentActiveRegion = null;
+            map.setFilter('regions-outline', ['==', 'Region', '']);
+            map.setPaintProperty('regions-outline', 'line-opacity', 0);
+            
+            map.setPaintProperty('regions-fill', 'fill-opacity', [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                5, 0.7,
+                8, 0
+            ]);
+            
+            clearRegionMarkers();
+        }
+
+        function clearActiveState() {
+            currentActiveState = null;
+            map.setFilter('states-highlighted', ['==', 'NAME', '']);
+            map.setFilter('states-highlighted-outline', ['==', 'NAME', '']);
+        }
+
+        function clearSearchCircle() {
+            map.getSource('search-circle').setData({
+                type: 'FeatureCollection',
+                features: []
+            });
+        }
+
+        function getDistanceInMiles(coord1, coord2) {
+            const R = 3959; 
+            const dLat = (coord2[1] - coord1[1]) * Math.PI / 180;
+            const dLon = (coord2[0] - coord1[0]) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(coord1[1] * Math.PI / 180) * Math.cos(coord2[1] * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        function hideCards() {
+            const overlay = document.getElementById('cards-overlay');
+            
+            overlay.classList.remove('visible');
+            document.getElementById('map').classList.remove('dimmed');
+            
+            clearActiveRegion();
+            clearActiveState();
+            clearSearchCircle();
+            
+            map.setPaintProperty('social-media-points', 'icon-opacity', 0);
+            map.setPaintProperty('social-media-points-unfiltered', 'icon-opacity', [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                5, 0,
+                8, 1
+            ]);
+            
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                addRegionLabelsSimple();
+            }, 300);
+        }
+
+        function showContextMenu(e) {
+            e.preventDefault();
+            
+            const contextMenu = document.getElementById('context-menu');
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = e.clientX + 'px';
+            contextMenu.style.top = e.clientY + 'px';
+            
+            const menuRect = contextMenu.getBoundingClientRect();
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            if (menuRect.right > windowWidth) {
+                contextMenu.style.left = (e.clientX - menuRect.width) + 'px';
+            }
+            
+            if (menuRect.bottom > windowHeight) {
+                contextMenu.style.top = (e.clientY - menuRect.height) + 'px';
+            }
+        }
+
+        function hideContextMenu() {
+            const contextMenu = document.getElementById('context-menu');
+            contextMenu.style.display = 'none';
         }
 
         function activateRegion(regionName) {
@@ -1076,32 +1460,6 @@
                 map.regionMarkers.forEach(marker => marker.remove());
                 map.regionMarkers = [];
             }
-        }
-
-        function showContextMenu(e) {
-            e.preventDefault();
-            
-            const contextMenu = document.getElementById('context-menu');
-            contextMenu.style.display = 'block';
-            contextMenu.style.left = e.clientX + 'px';
-            contextMenu.style.top = e.clientY + 'px';
-            
-            const menuRect = contextMenu.getBoundingClientRect();
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-            
-            if (menuRect.right > windowWidth) {
-                contextMenu.style.left = (e.clientX - menuRect.width) + 'px';
-            }
-            
-            if (menuRect.bottom > windowHeight) {
-                contextMenu.style.top = (e.clientY - menuRect.height) + 'px';
-            }
-        }
-
-        function hideContextMenu() {
-            const contextMenu = document.getElementById('context-menu');
-            contextMenu.style.display = 'none';
         }
 
         document.addEventListener('DOMContentLoaded', () => {
