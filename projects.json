@@ -1,0 +1,157 @@
+[
+  {
+    "group": "Other",
+    "projects": [
+      {
+        "name": "Jamaica Historical",
+        "path": "jamaica-historical/index.html",
+        "description": "Comines historical maps with filterable points of interest"
+      },
+      {
+        "name": "Mapbox Screencaps",
+        "path": "mapbox-screencaps/index.html",
+        "description": "Experimenting with screenshot functionality for Mapbox GL, along with zoom labels"
+      },
+      {
+        "name": "Ongoing Projects",
+        "path": "ongoing-projects/index.html",
+        "description": "Simple map visualizing ongoing construction projects"
+      },
+      {
+        "name": "Parcel Adder",
+        "path": "parcel-adder/index.html",
+        "description": "Application for adding parcels to a collection for later analysis"
+      },
+      {
+        "name": "Poi Highlight",
+        "path": "poi-highlight/index.html",
+        "description": "Simple search for addresses and POIs using Overpass API"
+      },
+      {
+        "name": "SW Virginia RAMP",
+        "path": "RAMP/index.html",
+        "description": "Shows Virginia's entepreneurial ecosystem by city, with a focus on Southwest Virginia"
+      },
+      {
+        "name": "Texas Isochrones",
+        "path": "texas/index.html",
+        "description": "Simple Application deriving isochrones from a given point"
+      },
+      {
+        "name": "Vail",
+        "path": "vail/index.html",
+        "description": "3D Map showing a netowrk with custom icons"
+      },
+      {
+        "name": "Xml",
+        "path": "xml/index.html",
+        "description": "3D Application for viewing of contours on a site"
+      }
+    ]
+  },
+  {
+    "group": "Catanimation",
+    "projects": [
+      {
+        "name": "Animation Testing",
+        "path": "catanimation/animation-testing/animation-testing/index.html",
+        "description": "Quick test of updated animation parameters for cat animation"
+      },
+      {
+        "name": "Bone Tester",
+        "path": "catanimation/bone-tester/index.html",
+        "description": "Visualizes bones and connection points for cat skeleton"
+      }
+    ]
+  },
+  {
+    "group": "Gpx",
+    "projects": [
+      {
+        "name": "GPX Video App",
+        "path": "gpx/video-app/index.html",
+        "description": "Views 360 degree videos with GPX map data overlay, along with annotations"
+      },
+      {
+        "name": "Gpx Encoder",
+        "path": "gpx/gpx-encoder/index.html",
+        "description": "Quick hostable script to encode GPX files into a JSON"
+      },
+      {
+        "name": "Original Streetwalk Application",
+        "path": "gpx/previous-version/index.html",
+        "description": "Original version of the GPX application with more map focus and video I took myself"
+      },
+      {
+        "name": "Table Test",
+        "path": "gpx/table-test/index.html",
+        "description": "Simple application to test the table functionality of the GPX library."
+      }
+    ]
+  },
+  {
+    "group": "Real Estate",
+    "projects": [
+      {
+        "name": "Agents",
+        "path": "real-estate/agents/index.html",
+        "description": "Displays a list of real estate agents with their details"
+      },
+      {
+        "name": "Business Partners",
+        "path": "real-estate/business-partners/index.html",
+        "description": "Similar to Agents, but for business partners"
+      },
+      {
+        "name": "Data Zone Select",
+        "path": "real-estate/data-zone-select/index.html",
+        "description": "Allows users to set a custom POI and pull in data"
+      },
+      {
+        "name": "One Stop Shop",
+        "path": "real-estate/one-stop-shop/index.html",
+        "description": "Attempt to combine previous applications into one page (unfinished)"
+      },
+      {
+        "name": "Poi Search",
+        "path": "real-estate/poi-search/index.html",
+        "description": "Utilizes Overpass API to search for POIs in area of interest"
+      },
+      {
+        "name": "Social Media V1",
+        "path": "real-estate/social-media/social-media-v1/index.html",
+        "description": "First version of social media applicaiton"
+      },
+      {
+        "name": "Social Media V2",
+        "path": "real-estate/social-media/social-media-v2/index.html",
+        "description": "Second version of social media application, utilizing cards and clusters, with national hover ball"
+      },
+      {
+        "name": "Social Media V3",
+        "path": "real-estate/social-media/index.html",
+        "description": "Third version of social media application, showcasing regions and right click search functionality"
+      },
+      {
+        "name": "Unified Data Map",
+        "path": "real-estate/unified-data-map/index.html",
+        "description": "Adds table function to rank different properties by selected data"
+      },
+      {
+        "name": "Simple Data Map",
+        "path": "real-estate/unified-data-map/original/index.html",
+        "description": "Pulls in census data with fudged data for testing purposes"
+      },
+      {
+        "name": "Zip Code Schools",
+        "path": "real-estate/zip-code-schools/index.html",
+        "description": "Testing zip code points as data fetching mechanism"
+      },
+      {
+        "name": "Render Query",
+        "path": "real-estate/zip-code-schools/render-query/index.html",
+        "description": "Testing rendering of MongoDB data with polygon intersection usint Turf.js"
+      }
+    ]
+  }
+]

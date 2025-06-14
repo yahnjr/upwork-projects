@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project Gallery</title>
+  <style>
+    :root {
+      --bg-color: #121212;
+      --card-color: #1e1e1e;
+      --text-color: #ffffff;
+      --muted-text: #aaaaaa;
+      --accent-color: #3f51b5;
+    }
+
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: system-ui, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+    }
+
+    .group {
+      margin-bottom: 3rem;
+    }
+
+    .group h2 {
+      margin: 0 0 1rem;
+      font-size: 1.5rem;
+      border-left: 5px solid var(--accent-color);
+      padding-left: 0.5rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--card-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+    }
+
+    .card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.25rem;
+      color: var(--accent-color);
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 1rem;
+      color: var(--muted-text);
+    }
+
+    @media (min-width: 1024px) {
+      .grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Project Gallery</h1>
+  <div id="gallery"></div>
+
+  <script>
+    fetch('projects.json')
+      .then(response => response.json())
+      .then(groups => {
+        const container = document.getElementById('gallery');
+
+        groups.forEach(group => {
+          const section = document.createElement('div');
+          section.className = 'group';
+
+          const heading = document.createElement('h2');
+          heading.textContent = group.group;
+          section.appendChild(heading);
+
+          const grid = document.createElement('div');
+          grid.className = 'grid';
+
+          group.projects.forEach(project => {
+            const card = document.createElement('a');
+            card.className = 'card';
+            card.href = project.path;
+            card.target = '_blank';
+            card.innerHTML = `
+              <h3>${project.name}</h3>
+              <p>${project.description || ''}</p>
+            `;
+            grid.appendChild(card);
+          });
+
+          section.appendChild(grid);
+          container.appendChild(section);
+        });
+      })
+      .catch(error => {
+        console.error('Error loading projects.json:', error);
+        document.getElementById('gallery').innerHTML = '<p>Could not load projects.</p>';
+      });
+  </script>
+
+</body>
+</html>

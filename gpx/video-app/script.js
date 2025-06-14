@@ -1,3 +1,8 @@
+if (!window.location.search || window.location.search === '?') {
+    const defaultParams = '?video=Hillview04-22-2025&Additional-Videos=Hillview04-23-2025';
+    window.location.search = defaultParams;
+}
+
 let map;
 let baseFileName = null;
 let currentVideoTime = 0;

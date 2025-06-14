@@ -9,7 +9,7 @@ let debugMode = true;
 let mode = null;
 let drawing = false;
 let currentPolygon = null;
-let isDrawing = falwe;
+let isDrawing = false;
 let currentShape = null;
 let startPoint = {};
 
