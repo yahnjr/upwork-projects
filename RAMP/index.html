@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virginia Cities Services Map</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            border-radius: 0;
+        }
+
+        .map-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .map-overlay h2 {
+            color: #2d3748;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .map-overlay p {
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .services-panel {
+            position: fixed;
+            right: -400px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 380px;
+            max-height: 80vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1001;
+            overflow: hidden;
+        }
+
+        .services-panel.active {
+            right: 20px;
+        }
+
+        .services-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .services-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .services-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .services-content {
+            padding: 20px;
+            max-height: calc(80vh - 100px);
+            overflow-y: auto;
+        }
+
+        .service-item {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .service-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .service-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .service-name {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .service-type {
+            color: #667eea;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .mapboxgl-popup-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            font-family: inherit;
+        }
+
+        .mapboxgl-popup-tip {
+            border-top-color: rgba(255, 255, 255, 0.95) !important;
+        }
+
+        .popup-content {
+            text-align: center;
+        }
+
+        .popup-content h4 {
+            color: #2d3748;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .popup-content p {
+            color: #718096;
+            font-size: 12px;
+        }
+
+        /* Custom scrollbar */
+        .services-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .services-content::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 2px;
+        }
+
+        .services-content::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 2px;
+        }
+
+        .services-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.7);
+        }
+
+        /* Loading animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+
+        .loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <div class="map-overlay">
+        <h2>Virginia Cities</h2>
+        <p>Hover over cities to explore available services and resources</p>
+    </div>
+
+    <div class="services-panel" id="servicesPanel">
+        <div class="services-header">
+            <button class="close-btn" onclick="closeServicesPanel()">&times;</button>
+            <h3 id="cityName">City Services</h3>
+            <p>Available services and resources</p>
+        </div>
+        <div class="services-content" id="servicesContent">
+            <div class="loading"></div>
+        </div>
+    </div>
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
+        
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/dark-v11',
+            center: [-79.4, 37.5], // Centered on Virginia
+            zoom: 7,
+            pitch: 45,
+            bearing: 0
+        });
+
+        let citiesData = {};
+        let servicesData = {};
+        let currentPopup = null;
+        async function loadDataFiles() {
+            try {
+                const citiesResponse = await fetch('VACities.geojson');
+                const servicesResponse = await fetch('ecosystem.json');
+                citiesData = await citiesResponse.json();
+                servicesData = await servicesResponse.json();
+                
+                console.log('Data loaded successfully');
+                initializeMap();
+            } catch (error) {
+                console.error('Error loading data files:', error);
+                // Fallback to sample data
+                citiesData = sampleCitiesData;
+                servicesData = sampleServicesData;
+                initializeMap();
+            }
+        }
+
+        function initializeMap() {
+            map.on('load', () => {
+                // Add cities source
+                map.addSource('cities', {
+                    'type': 'geojson',
+                    'data': citiesData
+                });
+
+                // Add cities layer
+                map.addLayer({
+                    'id': 'cities-layer',
+                    'type': 'circle',
+                    'source': 'cities',
+                    'paint': {
+                        'circle-radius': [
+                            'interpolate',
+                            ['linear'],
+                            ['zoom'],
+                            5, 8,
+                            10, 15
+                        ],
+                        'circle-color': '#667eea',
+                        'circle-stroke-width': 2,
+                        'circle-stroke-color': '#ffffff',
+                        'circle-opacity': 0.8
+                    }
+                });
+
+                // Add hover effects
+                map.on('mouseenter', 'cities-layer', (e) => {
+                    map.getCanvas().style.cursor = 'pointer';
+                    
+                    const coordinates = e.features[0].geometry.coordinates.slice();
+                    const cityName = e.features[0].properties.City;
+                    
+                    // Show popup
+                    if (currentPopup) currentPopup.remove();
+                    currentPopup = new mapboxgl.Popup({
+                        closeButton: false,
+                        closeOnClick: false,
+                        offset: [0, -15]
+                    })
+                    .setLngLat(coordinates)
+                    .setHTML(`
+                        <div class="popup-content">
+                            <h4>${cityName}</h4>
+                            <p>Click to view services</p>
+                        </div>
+                    `)
+                    .addTo(map);
+                    
+                    // Show services panel
+                    showServicesPanel(cityName);
+                });
+
+                map.on('mouseleave', 'cities-layer', () => {
+                    map.getCanvas().style.cursor = '';
+                    if (currentPopup) {
+                        currentPopup.remove();
+                        currentPopup = null;
+                    }
+                });
+
+                // Add click handler for cities
+                map.on('click', 'cities-layer', (e) => {
+                    const cityName = e.features[0].properties.City;
+                    showServicesPanel(cityName);
+                });
+            });
+        }
+
+        function showServicesPanel(cityName) {
+            const panel = document.getElementById('servicesPanel');
+            const cityNameElement = document.getElementById('cityName');
+            const servicesContent = document.getElementById('servicesContent');
+            
+            cityNameElement.textContent = cityName;
+            
+            // Filter services for this city
+            const cityServices = servicesData.filter(service => 
+                service.Location && service.Location.toLowerCase() === cityName.toLowerCase()
+            );
+            
+            // Build services HTML
+            if (cityServices.length > 0) {
+                servicesContent.innerHTML = cityServices.map(service => `
+                    <div class="service-item">
+                        <div class="service-name">${service.Org}</div>
+                        <div class="service-type">${service.Profile || 'Service'}</div>
+                    </div>
+                `).join('');
+            } else {
+                servicesContent.innerHTML = `
+                    <div class="service-item">
+                        <div class="service-name">No services found</div>
+                        <div class="service-type">Please check back later</div>
+                    </div>
+                `;
+            }
+            
+            panel.classList.add('active');
+        }
+
+        function closeServicesPanel() {
+            const panel = document.getElementById('servicesPanel');
+            panel.classList.remove('active');
+        }
+
+        // Close panel when clicking outside
+        document.addEventListener('click', (e) => {
+            const panel = document.getElementById('servicesPanel');
+            if (!panel.contains(e.target) && !e.target.closest('.mapboxgl-popup')) {
+                closeServicesPanel();
+            }
+        });
+
+        // Initialize the application
+        loadDataFiles();
+    </script>
+</body>
+</html>

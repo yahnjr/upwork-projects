@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drive Time Isochrone App</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+        }
+        
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        .sidebar {
+            width: 350px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .search-section {
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #34495e;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #2980b9, #21618c);
+            transform: translateY(-1px);
+        }
+        
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .results-section {
+            margin-top: 20px;
+        }
+        
+        .legend {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .legend h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #7f8c8d;
+            margin-top: 10px;
+        }
+        
+        .api-key-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .api-key-section h3 {
+            margin: 0 0 10px 0;
+            color: #856404;
+        }
+        
+        .api-key-section p {
+            margin: 0 0 10px 0;
+            font-size: 13px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>Drive Time Isochrones</h1>
+            
+            <div class="api-key-section">
+                <h3>Setup Required</h3>
+                <p>Enter your Mapbox access token to use this application:</p>
+                <div class="input-group">
+                    <input type="text" id="accessToken" placeholder="pk.your_mapbox_access_token_here">
+                </div>
+            </div>
+            
+            <div class="search-section">
+                <div class="input-group">
+                    <label for="searchInput">Search for a location:</label>
+                    <input type="text" id="searchInput" placeholder="Enter address or place name">
+                </div>
+                <button class="btn" id="searchBtn" disabled>Search & Generate Isochrones</button>
+            </div>
+            
+            <div id="loadingDiv" class="loading" style="display: none;">
+                Generating isochrones...
+            </div>
+            
+            <div id="errorDiv" class="error" style="display: none;"></div>
+            
+            <div class="results-section">
+                <div class="legend">
+                    <h3>Drive Time Legend</h3>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: rgba(255, 0, 0, 0.3);"></div>
+                        <span>15 minutes</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: rgba(255, 165, 0, 0.3);"></div>
+                        <span>30 minutes</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: rgba(0, 128, 0, 0.3);"></div>
+                        <span>60 minutes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script>
+        let map;
+        let accessToken = '';
+        
+        // Initialize map with a default view
+        function initMap() {
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [-98.5795, 39.8283], // Center of US
+                zoom: 4
+            });
+            
+            map.addControl(new mapboxgl.NavigationControl());
+        }
+        
+        document.getElementById('accessToken').addEventListener('input', function(e) {
+            accessToken = e.target.value.trim();
+            const searchBtn = document.getElementById('searchBtn');
+            
+            if (accessToken.startsWith('pk.')) {
+                searchBtn.disabled = false;
+                mapboxgl.accessToken = accessToken;
+                
+                // Reinitialize map with access token
+                if (map) {
+                    map.remove();
+                }
+                initMap();
+                
+                hideError();
+            } else {
+                searchBtn.disabled = true;
+            }
+        });
+        
+        document.getElementById('searchBtn').addEventListener('click', performSearch);
+        
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !document.getElementById('searchBtn').disabled) {
+                performSearch();
+            }
+        });
+        
+        async function performSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) {
+                showError('Please enter a location to search for.');
+                return;
+            }
+            
+            showLoading();
+            hideError();
+            
+            try {
+                // Geocode the search query
+                const coordinates = await geocodeLocation(query);
+                
+                // Generate isochrones
+                await generateIsochrones(coordinates);
+                
+                hideLoading();
+            } catch (error) {
+                hideLoading();
+                showError(error.message);
+            }
+        }
+        
+        async function geocodeLocation(query) {
+            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${accessToken}&limit=1`;
+            
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Failed to search for location. Please check your access token.');
+            }
+            
+            const data = await response.json();
+            
+            if (!data.features || data.features.length === 0) {
+                throw new Error('Location not found. Please try a different search term.');
+            }
+            
+            return data.features[0].center;
+        }
+        
+        async function generateIsochrones(coordinates) {
+            const [lng, lat] = coordinates;
+            const times = [15, 30, 60]; // minutes
+            const colors = ['#FF0000', '#FFA500', '#008000']; // red, orange, green
+            
+            // Clear existing isochrone layers
+            clearIsochrones();
+            
+            // Add marker for the center point
+            new mapboxgl.Marker({color: '#000'})
+                .setLngLat([lng, lat])
+                .addTo(map);
+            
+            // Generate isochrones for each time interval
+            for (let i = 0; i < times.length; i++) {
+                const time = times[i];
+                const color = colors[i];
+                
+                try {
+                    const isochrone = await fetchIsochrone(lng, lat, time);
+                    addIsochroneToMap(isochrone, time, color);
+                } catch (error) {
+                    console.warn(`Failed to generate ${time}-minute isochrone:`, error);
+                }
+            }
+            
+            // Fit map to show all isochrones
+            map.flyTo({
+                center: [lng, lat],
+                zoom: 10,
+                duration: 2000
+            });
+        }
+        
+        async function fetchIsochrone(lng, lat, minutes) {
+            const url = `https://api.mapbox.com/isochrone/v1/mapbox/driving/${lng},${lat}?contours_minutes=${minutes}&polygons=true&access_token=${accessToken}`;
+            
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Failed to generate ${minutes}-minute isochrone`);
+            }
+            
+            const data = await response.json();
+            return data;
+        }
+        
+        function addIsochroneToMap(isochrone, time, color) {
+            const sourceId = `isochrone-${time}`;
+            const layerId = `isochrone-layer-${time}`;
+            
+            // Add source
+            map.addSource(sourceId, {
+                type: 'geojson',
+                data: isochrone
+            });
+            
+            // Add fill layer
+            map.addLayer({
+                id: layerId,
+                type: 'fill',
+                source: sourceId,
+                paint: {
+                    'fill-color': color,
+                    'fill-opacity': 0.3
+                }
+            });
+            
+            // Add outline layer
+            map.addLayer({
+                id: `${layerId}-outline`,
+                type: 'line',
+                source: sourceId,
+                paint: {
+                    'line-color': color,
+                    'line-width': 2,
+                    'line-opacity': 0.8
+                }
+            });
+        }
+        
+        function clearIsochrones() {
+            const times = [15, 30, 60];
+            
+            times.forEach(time => {
+                const sourceId = `isochrone-${time}`;
+                const layerId = `isochrone-layer-${time}`;
+                const outlineLayerId = `${layerId}-outline`;
+                
+                if (map.getLayer(layerId)) map.removeLayer(layerId);
+                if (map.getLayer(outlineLayerId)) map.removeLayer(outlineLayerId);
+                if (map.getSource(sourceId)) map.removeSource(sourceId);
+            });
+            
+            // Clear existing markers
+            const markers = document.querySelectorAll('.mapboxgl-marker');
+            markers.forEach(marker => marker.remove());
+        }
+        
+        function showLoading() {
+            document.getElementById('loadingDiv').style.display = 'block';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingDiv').style.display = 'none';
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorDiv');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+        
+        function hideError() {
+            document.getElementById('errorDiv').style.display = 'none';
+        }
+        
+        // Initialize the map on page load (without access token initially)
+        window.addEventListener('load', function() {
+            // Just show the container without initializing Mapbox until token is provided
+            document.getElementById('map').style.background = '#e9ecef';
+            document.getElementById('map').innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #6c757d; font-size: 18px;">Enter your Mapbox access token to initialize the map</div>';
+        });
+    </script>
+</body>
+</html>
