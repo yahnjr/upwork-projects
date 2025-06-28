@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>MapLibre + Three.js OBJ Model</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
+  <style>
+    body, html { margin: 0; padding: 0; height: 100%; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    #controls {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      z-index: 1000;
+    }
+    button {
+      margin-top: 5px;
+      padding: 5px 10px;
+      background: #444;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #666;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="controls">
+    <div>3D OBJ Model Demo</div>
+    <button id="startAnimationBtn">Start Animation</button>
+  </div>
+
+  <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+
+  <script>
+    let isAnimating = false;
+    let threeLayer = null;
+    let animationPath = [];
+    let animationIndex = 0;
+    let animationProgress = 0;
+    const animationSpeed = 0.01; // Adjust for speed
+
+    const geoPath = [
+      [-122.447303, 37.753574], // start
+      [-122.447000, 37.753600],
+      [-122.446700, 37.753650],
+      [-122.446400, 37.753720],
+      [-122.446100, 37.753800],
+      [-122.445800, 37.753900],
+      [-122.445600, 37.754100],
+      [-122.445800, 37.754300], // loop back
+      [-122.446100, 37.754400],
+      [-122.446400, 37.754450],
+      [-122.446700, 37.754420],
+      [-122.447000, 37.754300],
+      [-122.447303, 37.754000] // close loop
+    ];
+
+    const map = new maplibregl.Map({
+      container: 'map',
+      style: {
+        version: 8,
+        sources: {
+          'osm': {
+            type: 'raster',
+            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+            tileSize: 256,
+            attribution: '© OpenStreetMap contributors'
+          }
+        },
+        layers: [
+          {
+            id: 'osm',
+            type: 'raster',
+            source: 'osm'
+          }
+        ]
+      },
+      center: [-122.447303, 37.753574],
+      zoom: 17,
+      pitch: 60,
+      bearing: -17.6,
+      antialias: true
+    });
+
+    function convertGeoPath(originLngLat, geoCoords) {
+      const origin = maplibregl.MercatorCoordinate.fromLngLat(originLngLat, 0);
+      return geoCoords.map(([lng, lat]) => {
+        const coord = maplibregl.MercatorCoordinate.fromLngLat({ lng, lat }, 0);
+        return new THREE.Vector3(
+          (coord.x - origin.x) / origin.meterInMercatorCoordinateUnits(),
+          (coord.y - origin.y) / origin.meterInMercatorCoordinateUnits(),
+          0
+        );
+      });
+    }
+
+    map.on('load', () => {
+      threeLayer = {
+        id: 'threejs-layer',
+        type: 'custom',
+        renderingMode: '3d',
+
+        onAdd: function (map, gl) {
+          this.camera = new THREE.Camera();
+          this.scene = new THREE.Scene();
+
+          this.renderer = new THREE.WebGLRenderer({
+            canvas: map.getCanvas(),
+            context: gl,
+            antialias: true
+          });
+          this.renderer.autoClear = false;
+
+          const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+          this.scene.add(ambientLight);
+
+          const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+          directionalLight.position.set(50, 200, 100);
+          this.scene.add(directionalLight);
+
+          const modelOrigin = [-122.447303, 37.753574];
+          this.modelTransform = {
+            translateX: maplibregl.MercatorCoordinate.fromLngLat(modelOrigin, 0).x,
+            translateY: maplibregl.MercatorCoordinate.fromLngLat(modelOrigin, 0).y,
+            translateZ: maplibregl.MercatorCoordinate.fromLngLat(modelOrigin, 0).z,
+            rotateX: Math.PI / 2,
+            rotateY: 0,
+            rotateZ: 0,
+            scale: maplibregl.MercatorCoordinate.fromLngLat(modelOrigin, 0).meterInMercatorCoordinateUnits()
+          };
+
+          // Convert the geo path to relative positions
+          animationPath = convertGeoPath(modelOrigin, geoPath);
+        },
+
+        loadOBJModel: function (objText) {
+          const loader = new THREE.OBJLoader();
+          const object = loader.parse(objText);
+
+          if (this.modelParent) {
+            this.scene.remove(this.modelParent);
+          }
+
+          // Set color
+          object.traverse(child => {
+            if (child instanceof THREE.Mesh) {
+              child.material = new THREE.MeshPhongMaterial({ color: 0xff2222 });
+            }
+          });
+
+          // Create a parent Object3D for animation
+          const parent = new THREE.Object3D();
+          parent.position.copy(animationPath[0]);
+          object.rotation.set(0, Math.PI / 2, 0); // Try 90° Y rotation
+          parent.add(object);
+          this.modelParent = parent;
+          this.scene.add(parent);
+        },
+
+        render: function (gl, matrix) {
+          const rotationX = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(1, 0, 0), this.modelTransform.rotateX);
+          const rotationY = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(0, 1, 0), this.modelTransform.rotateY);
+          const rotationZ = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(0, 0, 1), this.modelTransform.rotateZ);
+
+          const m = new THREE.Matrix4().fromArray(matrix);
+          const l = new THREE.Matrix4()
+            .makeTranslation(this.modelTransform.translateX, this.modelTransform.translateY, this.modelTransform.translateZ)
+            .scale(new THREE.Vector3(this.modelTransform.scale, -this.modelTransform.scale, this.modelTransform.scale))
+            .multiply(rotationX)
+            .multiply(rotationY)
+            .multiply(rotationZ);
+
+          this.camera.projectionMatrix = m.multiply(l);
+
+          if (this.modelParent && isAnimating && animationPath.length >= 2) {
+            const curr = animationPath[animationIndex];
+            const next = animationPath[(animationIndex + 1) % animationPath.length];
+
+            // Position
+            this.modelParent.position.lerpVectors(curr, next, animationProgress);
+
+            // Rotation to face direction (around Y axis)
+            const direction = new THREE.Vector3().subVectors(next, curr).normalize();
+            const angle = Math.atan2(direction.x, direction.y);
+            this.modelParent.rotation.set(0, angle + Math.PI, 0);
+
+            animationProgress += animationSpeed;
+            if (animationProgress >= 1) {
+              animationProgress = 0;
+              animationIndex = (animationIndex + 1) % animationPath.length;
+            }
+          }
+
+          this.renderer.resetState();
+          this.renderer.render(this.scene, this.camera);
+          map.triggerRepaint();
+        }
+      };
+
+      map.addLayer(threeLayer);
+
+      // Load the model by default
+      fetch('sources/cagiva-v593/cagiva-v593.obj')
+        .then(response => response.text())
+        .then(objText => {
+          threeLayer.loadOBJModel(objText);
+        })
+        .catch(() => alert('Failed to load model.obj'));
+    });
+
+    document.getElementById('startAnimationBtn').addEventListener('click', () => {
+      isAnimating = true;
+    });
+  </script>
+</body>
+</html>

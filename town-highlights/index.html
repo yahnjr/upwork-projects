@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Town Highlights</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #2c3e50;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 350px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 20px rgba(0,0,0,0.1);
+            border-radius: 0 20px 20px 0;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.3);
+            border-radius: 10px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.7;
+            color: #666;
+        }
+
+        .filter-container {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .filter-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 12px 16px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: left;
+        }
+
+        .filter-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateX(5px);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+            font-weight: 600;
+        }
+
+        .business-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .business-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .business-card.active {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .business-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .business-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .business-category {
+            font-size: 13px;
+            padding: 4px 12px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 20px;
+            display: inline-block;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        #map {
+            flex: 1;
+            position: relative;
+            border-radius: 20px 0 0 20px;
+            overflow: hidden;
+        }
+
+        .mapboxgl-popup-content {
+            background: rgba(255, 255, 255, 0.95);
+            color: #2c3e50;
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            backdrop-filter: blur(10px);
+            max-width: 300px;
+        }
+
+        .popup-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .popup-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .popup-category {
+            font-size: 13px;
+            padding: 4px 12px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 20px;
+            display: inline-block;
+            color: #667eea;
+        }
+
+        .loading, .no-data, .error {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .loading {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .no-data {
+            background: rgba(149, 165, 166, 0.1);
+            color: #7f8c8d;
+        }
+
+        .error {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+
+        .business-card.hidden {
+            display: none;
+        }
+
+        .status-message {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .status-success {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="header">
+                <h1>Taxenbach Directory</h1>
+                <p>Discover local gems</p>
+            </div>
+
+            <div class="filter-container">
+                <div class="filter-title">🏷️ Filter by Category</div>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-category="all">All Categories</button>
+                </div>
+            </div>
+
+            <div id="business-list">
+                <div class="loading">
+                    <p>🔍 Loading businesses...</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="map"></div>
+    </div>
+
+    <script>
+        // Replace with your Mapbox access token
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
+
+        // Initialize map centered on specified coordinates
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/iformaher/cmcfzem65000v01rchrydci2q',
+            center: [12.962413210793594, 47.292427396226906],
+            zoom: 12
+        });
+
+        let businesses = [];
+        let markers = [];
+        let activeBusinessId = null;
+        let currentFilter = 'all';
+
+        // Color palette for different categories
+        const categoryColors = {
+            'restaurant': '#e74c3c',
+            'hotel': '#3498db',
+            'shop': '#f39c12',
+            'service': '#9b59b6',
+            'entertainment': '#e67e22',
+            'default': '#667eea'
+        };
+
+        function getBusinessColor(category) {
+            const cat = category ? category.toLowerCase() : '';
+            return categoryColors[cat] || categoryColors['default'];
+        }
+
+        function createCustomMarker(business) {
+            const color = getBusinessColor(business.properties.Category);
+            
+            const el = document.createElement('div');
+            el.style.cssText = `
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                background: ${color};
+                border: 3px solid white;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 12px;
+                font-weight: bold;
+            `;
+            
+            const categoryEmojis = {
+                'restaurant': '🍽️',
+                'hotel': '🏨',
+                'shop': '🛍️',
+                'service': '🔧',
+                'entertainment': '🎭',
+                'default': '📍'
+            };
+            
+            const emoji = categoryEmojis[business.properties.Category?.toLowerCase()] || categoryEmojis['default'];
+            el.innerHTML = emoji;
+
+            return el;
+        }
+
+        function loadBusinesses(geojsonData) {
+            try {
+                // Clear existing markers
+                markers.forEach(marker => marker.remove());
+                markers = [];
+
+                if (!geojsonData.features || !Array.isArray(geojsonData.features)) {
+                    throw new Error('Invalid GeoJSON format: features array not found');
+                }
+
+                businesses = geojsonData.features;
+                
+                if (businesses.length === 0) {
+                    document.getElementById('business-list').innerHTML = '<div class="no-data"><p>No businesses found in the file</p></div>';
+                    return;
+                }
+
+                // Extract unique categories and update filter buttons
+                const categories = [...new Set(businesses
+                    .map(b => b.properties.Category)
+                    .filter(cat => cat && cat.trim())
+                    .map(cat => cat.toLowerCase())
+                )];
+
+                updateFilterButtons(categories);
+
+                // Calculate bounds
+                const bounds = new mapboxgl.LngLatBounds();
+
+                // Create markers
+                businesses.forEach((business, index) => {
+                    if (!business.geometry || !business.geometry.coordinates) {
+                        console.warn(`Business at index ${index} missing coordinates`);
+                        return;
+                    }
+
+                    const coords = business.geometry.coordinates;
+                    bounds.extend(coords);
+
+                    const popupContent = `
+                        <div>
+                            ${business.properties.ImagePath ? `<img src="${business.properties.ImagePath}" alt="${business.properties.Name}" class="popup-image" onerror="this.style.display='none'">` : ''}
+                            <div class="popup-name">${business.properties.Name || 'Unknown Business'}</div>
+                            <div class="popup-category">${business.properties.Category || 'Uncategorized'}</div>
+                        </div>
+                    `;
+
+                    const popup = new mapboxgl.Popup({
+                        offset: 25,
+                        closeButton: true,
+                        closeOnClick: false
+                    }).setHTML(popupContent);
+
+                    const marker = new mapboxgl.Marker({
+                        element: createCustomMarker(business)
+                    })
+                    .setLngLat(coords)
+                    .setPopup(popup)
+                    .addTo(map);
+
+                    marker.getElement().addEventListener('click', () => {
+                        setActiveBusinessCard(index);
+                    });
+
+                    markers.push(marker);
+                });
+
+                // Fit map to show all businesses
+                if (businesses.length > 0) {
+                    map.fitBounds(bounds, { padding: 50 });
+                }
+
+                updateBusinessList();
+
+            } catch (error) {
+                console.error('Error loading businesses:', error);
+                document.getElementById('business-list').innerHTML = `
+                    <div class="error">
+                        <p>❌ Error loading GeoJSON</p>
+                        <p style="font-size: 12px; margin-top: 5px;">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function updateFilterButtons(categories) {
+            const filterContainer = document.querySelector('.filter-buttons');
+            filterContainer.innerHTML = `
+                <button class="filter-btn active" data-category="all">All Categories</button>
+                ${categories.map(cat => `
+                    <button class="filter-btn" data-category="${cat}">
+                        ${getCategoryEmoji(cat)} ${cat.charAt(0).toUpperCase() + cat.slice(1)}
+                    </button>
+                `).join('')}
+            `;
+
+            // Re-attach event listeners
+            initializeFilters();
+        }
+
+        function getCategoryEmoji(category) {
+            const emojis = {
+                'restaurant': '🍽️',
+                'hotel': '🏨',  
+                'shop': '🛍️',
+                'service': '🔧',
+                'entertainment': '🎭'
+            };
+            return emojis[category.toLowerCase()] || '📍';
+        }
+
+        function updateBusinessList() {
+            const listContainer = document.getElementById('business-list');
+            
+            if (businesses.length === 0) {
+                return;
+            }
+
+            const filteredBusinesses = currentFilter === 'all' 
+                ? businesses 
+                : businesses.filter(business => 
+                    business.properties.Category?.toLowerCase() === currentFilter.toLowerCase()
+                );
+
+            if (filteredBusinesses.length === 0) {
+                listContainer.innerHTML = '<div class="no-data"><p>No businesses match the current filter</p></div>';
+                updateMarkerVisibility();
+                return;
+            }
+
+            listContainer.innerHTML = businesses.map((business, index) => {
+                const isVisible = currentFilter === 'all' || 
+                    business.properties.Category?.toLowerCase() === currentFilter.toLowerCase();
+                
+                return `
+                    <div class="business-card ${isVisible ? '' : 'hidden'}" data-index="${index}">
+                        ${business.properties.ImagePath ? `<img src="${business.properties.ImagePath}" alt="${business.properties.Name}" class="business-image" onerror="this.style.display='none'">` : ''}
+                        <div class="business-name">${business.properties.Name || 'Unknown Business'}</div>
+                        <div class="business-category">${getCategoryEmoji(business.properties.Category)} ${business.properties.Category || 'Uncategorized'}</div>
+                    </div>
+                `;
+            }).join('');
+
+            // Add click events
+            document.querySelectorAll('.business-card:not(.hidden)').forEach(card => {
+                const originalIndex = parseInt(card.dataset.index);
+                card.addEventListener('click', () => {
+                    const coords = businesses[originalIndex].geometry.coordinates;
+                    map.flyTo({
+                        center: coords,
+                        zoom: 15,
+                        duration: 1000
+                    });
+                    
+                    markers[originalIndex].togglePopup();
+                    setActiveBusinessCard(originalIndex);
+                });
+            });
+
+            updateMarkerVisibility();
+        }
+
+        function updateMarkerVisibility() {
+            markers.forEach((marker, index) => {
+                if (index >= businesses.length) return;
+                
+                const business = businesses[index];
+                const isVisible = currentFilter === 'all' || 
+                    business.properties.Category?.toLowerCase() === currentFilter.toLowerCase();
+                
+                const element = marker.getElement();
+                if (isVisible) {
+                    element.style.display = 'flex';
+                } else {
+                    element.style.display = 'none';
+                    marker.getPopup().remove();
+                }
+            });
+        }
+
+        function setActiveBusinessCard(index) {
+            document.querySelectorAll('.business-card').forEach(card => {
+                card.classList.remove('active');
+            });
+
+            const activeCard = document.querySelector(`[data-index="${index}"]`);
+            if (activeCard && !activeCard.classList.contains('hidden')) {
+                activeCard.classList.add('active');
+                activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            activeBusinessId = index;
+        }
+
+        function initializeFilters() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.category;
+                    updateBusinessList();
+                });
+            });
+        }
+
+        // Auto-load highlights.geojson
+        async function autoLoadGeoJSON() {
+            try {
+                const response = await fetch('./highlights.geojson');
+                
+                if (response.ok) {
+                    const geojsonData = await response.json();
+                    loadBusinesses(geojsonData);
+                } else {
+                    document.getElementById('business-list').innerHTML = `
+                        <div class="error">
+                            <p>❌ Could not load highlights.geojson</p>
+                            <p style="font-size: 12px; margin-top: 5px;">Make sure the file exists in the same directory</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('business-list').innerHTML = `
+                    <div class="error">
+                        <p>❌ Error loading highlights.geojson</p>
+                        <p style="font-size: 12px; margin-top: 5px;">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize when map loads
+        map.on('load', () => {
+            autoLoadGeoJSON();
+            initializeFilters();
+        });
+
+        // Add map controls
+        map.addControl(new mapboxgl.NavigationControl());
+        map.addControl(new mapboxgl.FullscreenControl());
+    </script>
+</body>
+</html>

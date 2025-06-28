@@ -43,7 +43,7 @@
         "description": "3D Map showing a netowrk with custom icons"
       },
       {
-        "name": "Xml",
+        "name": "XML Viewer",
         "path": "xml/index.html",
         "description": "3D Application for viewing of contours on a site"
       }

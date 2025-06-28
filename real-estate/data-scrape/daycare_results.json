@@ -1,0 +1,2732 @@
+{
+  "summary": {
+    "total_bases_processed": 193,
+    "total_daycares_found": 53,
+    "generated_at": "2025-06-17 22:08:13"
+  },
+  "bases": [
+    {
+      "base_name": "Base_1",
+      "base_id": "base_1",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_2",
+      "base_id": "base_2",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_3",
+      "base_id": "base_3",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_4",
+      "base_id": "base_4",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_5",
+      "base_id": "base_5",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_6",
+      "base_id": "base_6",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_7",
+      "base_id": "base_7",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_8",
+      "base_id": "base_8",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_9",
+      "base_id": "base_9",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_10",
+      "base_id": "base_10",
+      "daycare_count": 3,
+      "daycares": [
+        {
+          "id": 11167024585,
+          "type": "node",
+          "lat": 34.9008392,
+          "lon": -92.1323111,
+          "tags": {
+            "addr:city": "Jacksonville",
+            "addr:housenumber": "1257",
+            "addr:postcode": "72099",
+            "addr:state": "AR",
+            "addr:street": "Lachmund Drive",
+            "amenity": "childcare",
+            "name": "Child Development Center"
+          },
+          "military_base": {
+            "name": "Base_10",
+            "id": "base_10"
+          },
+          "name": "Child Development Center",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": "Lachmund Drive",
+            "city": "Jacksonville",
+            "state": "AR",
+            "postcode": "72099"
+          }
+        },
+        {
+          "id": 11167069465,
+          "type": "node",
+          "lat": 34.8962627,
+          "lon": -92.15903,
+          "tags": {
+            "addr:city": "Jacksonville",
+            "addr:housenumber": "1990",
+            "addr:postcode": "72099",
+            "addr:state": "AR",
+            "addr:street": "Arnold Drive",
+            "amenity": "childcare",
+            "name": "Child Development Center"
+          },
+          "military_base": {
+            "name": "Base_10",
+            "id": "base_10"
+          },
+          "name": "Child Development Center",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": "Arnold Drive",
+            "city": "Jacksonville",
+            "state": "AR",
+            "postcode": "72099"
+          }
+        },
+        {
+          "id": 1156485223,
+          "type": "way",
+          "lat": 34.9007948,
+          "lon": -92.1321095,
+          "tags": {
+            "addr:city": "Jacksonville",
+            "addr:housenumber": "1257",
+            "addr:postcode": "72099",
+            "addr:state": "AR",
+            "addr:street": "Lachmund Drive",
+            "amenity": "childcare",
+            "building": "yes",
+            "description": "Child Development Center",
+            "name": "LR1257",
+            "opening_hours": "Mo-Fr 06:00-18:00"
+          },
+          "military_base": {
+            "name": "Base_10",
+            "id": "base_10"
+          },
+          "name": "LR1257",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": "Mo-Fr 06:00-18:00",
+          "address": {
+            "street": "Lachmund Drive",
+            "city": "Jacksonville",
+            "state": "AR",
+            "postcode": "72099"
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_11",
+      "base_id": "base_11",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_12",
+      "base_id": "base_12",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_13",
+      "base_id": "base_13",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_14",
+      "base_id": "base_14",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_15",
+      "base_id": "base_15",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_16",
+      "base_id": "base_16",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_17",
+      "base_id": "base_17",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_18",
+      "base_id": "base_18",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_19",
+      "base_id": "base_19",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_20",
+      "base_id": "base_20",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_21",
+      "base_id": "base_21",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_22",
+      "base_id": "base_22",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_23",
+      "base_id": "base_23",
+      "daycare_count": 2,
+      "daycares": [
+        {
+          "id": 1173582166,
+          "type": "way",
+          "lat": 32.8904252,
+          "lon": -117.1303874,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes"
+          },
+          "military_base": {
+            "name": "Base_23",
+            "id": "base_23"
+          },
+          "name": "Unnamed Daycare",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        },
+        {
+          "id": 1176840311,
+          "type": "way",
+          "lat": 32.8915149,
+          "lon": -117.1159677,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "FAA Merry-Go-Around"
+          },
+          "military_base": {
+            "name": "Base_23",
+            "id": "base_23"
+          },
+          "name": "FAA Merry-Go-Around",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_24",
+      "base_id": "base_24",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_25",
+      "base_id": "base_25",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_26",
+      "base_id": "base_26",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_27",
+      "base_id": "base_27",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_28",
+      "base_id": "base_28",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_29",
+      "base_id": "base_29",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_30",
+      "base_id": "base_30",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_31",
+      "base_id": "base_31",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_32",
+      "base_id": "base_32",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_33",
+      "base_id": "base_33",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_34",
+      "base_id": "base_34",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_35",
+      "base_id": "base_35",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_36",
+      "base_id": "base_36",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_37",
+      "base_id": "base_37",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_38",
+      "base_id": "base_38",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_39",
+      "base_id": "base_39",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_40",
+      "base_id": "base_40",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_41",
+      "base_id": "base_41",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_42",
+      "base_id": "base_42",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_43",
+      "base_id": "base_43",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 1010788840,
+          "type": "way",
+          "lat": 38.8320404,
+          "lon": -104.7028447,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Building 1350 - Child Development Center (Main)"
+          },
+          "military_base": {
+            "name": "Base_43",
+            "id": "base_43"
+          },
+          "name": "Building 1350 - Child Development Center (Main)",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_44",
+      "base_id": "base_44",
+      "daycare_count": 2,
+      "daycares": [
+        {
+          "id": 1273037937,
+          "type": "way",
+          "lat": 38.8118204,
+          "lon": -104.5329773,
+          "tags": {
+            "addr:city": "Colorado Springs",
+            "addr:housenumber": "60",
+            "addr:postcode": "80912",
+            "addr:state": "CO",
+            "addr:street": "Hahn Avenue",
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Schriever Child Development Center",
+            "opening_hours": "Mo-Fi 06:30-17:30",
+            "operator": "50th Support Squadron",
+            "operator:type": "government",
+            "phone": "+1 719 567 4742",
+            "website": "https://50fss.com/child-development-center/"
+          },
+          "military_base": {
+            "name": "Base_44",
+            "id": "base_44"
+          },
+          "name": "Schriever Child Development Center",
+          "amenity": "childcare",
+          "phone": "+1 719 567 4742",
+          "website": "https://50fss.com/child-development-center/",
+          "opening_hours": "Mo-Fi 06:30-17:30",
+          "address": {
+            "street": "Hahn Avenue",
+            "city": "Colorado Springs",
+            "state": "CO",
+            "postcode": "80912"
+          }
+        },
+        {
+          "id": 1379405242,
+          "type": "way",
+          "lat": 38.811641,
+          "lon": -104.5328895,
+          "tags": {
+            "addr:city": "Colorado Springs",
+            "addr:housenumber": "60",
+            "addr:postcode": "80912",
+            "addr:state": "CO",
+            "addr:street": "Hahn Avenue",
+            "amenity": "childcare",
+            "name": "Schriever Child Development Center",
+            "opening_hours": "Mo-Fi 06:30-17:30",
+            "operator": "50th Support Squadron",
+            "operator:type": "government",
+            "phone": "+1 719 567 4742",
+            "website": "https://50fss.com/child-development-center/"
+          },
+          "military_base": {
+            "name": "Base_44",
+            "id": "base_44"
+          },
+          "name": "Schriever Child Development Center",
+          "amenity": "childcare",
+          "phone": "+1 719 567 4742",
+          "website": "https://50fss.com/child-development-center/",
+          "opening_hours": "Mo-Fi 06:30-17:30",
+          "address": {
+            "street": "Hahn Avenue",
+            "city": "Colorado Springs",
+            "state": "CO",
+            "postcode": "80912"
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_45",
+      "base_id": "base_45",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 4025121073,
+          "type": "node",
+          "lat": 38.9805324,
+          "lon": -104.8632714,
+          "tags": {
+            "amenity": "kindergarten",
+            "source": "Mapbox"
+          },
+          "military_base": {
+            "name": "Base_45",
+            "id": "base_45"
+          },
+          "name": "Unnamed Daycare",
+          "amenity": "kindergarten",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_46",
+      "base_id": "base_46",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_47",
+      "base_id": "base_47",
+      "daycare_count": 2,
+      "daycares": [
+        {
+          "id": 67266382,
+          "type": "way",
+          "lat": 38.8415504,
+          "lon": -77.0198644,
+          "tags": {
+            "addr:housenumber": "4456",
+            "addr:street": "Tinker Street Southwest",
+            "amenity": "kindergarten",
+            "building": "yes",
+            "dataset": "buildings",
+            "dcgis:captureyear": "19990331",
+            "dcgis:gis_id": "41321",
+            "dcgis:lot": "0013",
+            "dcgis:square": "PAR",
+            "name": "Child Development Center I",
+            "opening_hours": "Mo-Fr 06:00-18:00",
+            "phone": "+1 202-767-2890",
+            "source": "dcgis"
+          },
+          "military_base": {
+            "name": "Base_47",
+            "id": "base_47"
+          },
+          "name": "Child Development Center I",
+          "amenity": "kindergarten",
+          "phone": "+1 202-767-2890",
+          "website": null,
+          "opening_hours": "Mo-Fr 06:00-18:00",
+          "address": {
+            "street": "Tinker Street Southwest",
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        },
+        {
+          "id": 67266990,
+          "type": "way",
+          "lat": 38.8412436,
+          "lon": -77.0211054,
+          "tags": {
+            "addr:housenumber": "4455",
+            "addr:street": "Tinker Street Southwest",
+            "amenity": "kindergarten",
+            "building": "yes",
+            "dataset": "buildings",
+            "dcgis:captureyear": "20050405",
+            "dcgis:gis_id": "2004",
+            "dcgis:lot": "0013",
+            "dcgis:square": "PAR",
+            "name": "Child Development Center II",
+            "opening_hours": "Mo-Fr 06:00-18:00",
+            "phone": "+1 202-404-8070",
+            "source": "dcgis"
+          },
+          "military_base": {
+            "name": "Base_47",
+            "id": "base_47"
+          },
+          "name": "Child Development Center II",
+          "amenity": "kindergarten",
+          "phone": "+1 202-404-8070",
+          "website": null,
+          "opening_hours": "Mo-Fr 06:00-18:00",
+          "address": {
+            "street": "Tinker Street Southwest",
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_48",
+      "base_id": "base_48",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_49",
+      "base_id": "base_49",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_50",
+      "base_id": "base_50",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_51",
+      "base_id": "base_51",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_52",
+      "base_id": "base_52",
+      "daycare_count": 3,
+      "daycares": [
+        {
+          "id": 696746507,
+          "type": "way",
+          "lat": 30.4136452,
+          "lon": -86.7039903,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Child Development Center - West"
+          },
+          "military_base": {
+            "name": "Base_52",
+            "id": "base_52"
+          },
+          "name": "Child Development Center - West",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        },
+        {
+          "id": 696746508,
+          "type": "way",
+          "lat": 30.4144673,
+          "lon": -86.7035161,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Child Development Center - Main"
+          },
+          "military_base": {
+            "name": "Base_52",
+            "id": "base_52"
+          },
+          "name": "Child Development Center - Main",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        },
+        {
+          "id": 704224179,
+          "type": "way",
+          "lat": 30.417938,
+          "lon": -86.6761188,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "ref": "91168"
+          },
+          "military_base": {
+            "name": "Base_52",
+            "id": "base_52"
+          },
+          "name": "Unnamed Daycare",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_53",
+      "base_id": "base_53",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_54",
+      "base_id": "base_54",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_55",
+      "base_id": "base_55",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_56",
+      "base_id": "base_56",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_57",
+      "base_id": "base_57",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_58",
+      "base_id": "base_58",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_59",
+      "base_id": "base_59",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_60",
+      "base_id": "base_60",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_61",
+      "base_id": "base_61",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_62",
+      "base_id": "base_62",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_63",
+      "base_id": "base_63",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_64",
+      "base_id": "base_64",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 5652802523,
+          "type": "node",
+          "lat": 33.4193944,
+          "lon": -82.1628332,
+          "tags": {
+            "addr:city": "Fort Eisenhower",
+            "addr:country": "US",
+            "addr:housenumber": "54300",
+            "addr:postcode": "30905",
+            "addr:state": "GA",
+            "addr:street": "45th Street",
+            "amenity": "childcare",
+            "name": "Child Development Center",
+            "website": "https://eisenhower.armymwr.com/programs/main-cdc"
+          },
+          "military_base": {
+            "name": "Base_64",
+            "id": "base_64"
+          },
+          "name": "Child Development Center",
+          "amenity": "childcare",
+          "phone": null,
+          "website": "https://eisenhower.armymwr.com/programs/main-cdc",
+          "opening_hours": null,
+          "address": {
+            "street": "45th Street",
+            "city": "Fort Eisenhower",
+            "state": "GA",
+            "postcode": "30905"
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_65",
+      "base_id": "base_65",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_66",
+      "base_id": "base_66",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_67",
+      "base_id": "base_67",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_68",
+      "base_id": "base_68",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_69",
+      "base_id": "base_69",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_70",
+      "base_id": "base_70",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_71",
+      "base_id": "base_71",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_72",
+      "base_id": "base_72",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_73",
+      "base_id": "base_73",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_74",
+      "base_id": "base_74",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_75",
+      "base_id": "base_75",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_76",
+      "base_id": "base_76",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_77",
+      "base_id": "base_77",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_78",
+      "base_id": "base_78",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_79",
+      "base_id": "base_79",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_80",
+      "base_id": "base_80",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_81",
+      "base_id": "base_81",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_82",
+      "base_id": "base_82",
+      "daycare_count": 3,
+      "daycares": [
+        {
+          "id": 610242246,
+          "type": "way",
+          "lat": 39.3434642,
+          "lon": -94.9387249,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Santa Fe Child Day Care"
+          },
+          "military_base": {
+            "name": "Base_82",
+            "id": "base_82"
+          },
+          "name": "Santa Fe Child Day Care",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        },
+        {
+          "id": 681023384,
+          "type": "way",
+          "lat": 39.339927,
+          "lon": -94.9205085,
+          "tags": {
+            "addr:city": "Fort Leavenworth",
+            "addr:housenumber": "130",
+            "addr:postcode": "66027",
+            "addr:state": "KS",
+            "addr:street": "Dickman Avenue",
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Osage School Age Center",
+            "operator": "Army Community Service"
+          },
+          "military_base": {
+            "name": "Base_82",
+            "id": "base_82"
+          },
+          "name": "Osage School Age Center",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": "Dickman Avenue",
+            "city": "Fort Leavenworth",
+            "state": "KS",
+            "postcode": "66027"
+          }
+        },
+        {
+          "id": 1123965271,
+          "type": "way",
+          "lat": 39.3383085,
+          "lon": -94.9204802,
+          "tags": {
+            "addr:city": "Fort Leavenworth",
+            "addr:housenumber": "120",
+            "addr:postcode": "66027",
+            "addr:state": "KS",
+            "addr:street": "Dickman Avenue",
+            "amenity": "childcare",
+            "name": "Main Child Development Center",
+            "operator": "Army Community Service"
+          },
+          "military_base": {
+            "name": "Base_82",
+            "id": "base_82"
+          },
+          "name": "Main Child Development Center",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": "Dickman Avenue",
+            "city": "Fort Leavenworth",
+            "state": "KS",
+            "postcode": "66027"
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_83",
+      "base_id": "base_83",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 4435299049,
+          "type": "node",
+          "lat": 39.0654491,
+          "lon": -96.8267713,
+          "tags": {
+            "addr:city": "Fort Riley",
+            "addr:housenumber": "2410",
+            "addr:postcode": "66442",
+            "addr:state": "KS",
+            "addr:street": "Saddlehorn Road",
+            "amenity": "childcare",
+            "name": "Forsyth CDC"
+          },
+          "military_base": {
+            "name": "Base_83",
+            "id": "base_83"
+          },
+          "name": "Forsyth CDC",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": "Saddlehorn Road",
+            "city": "Fort Riley",
+            "state": "KS",
+            "postcode": "66442"
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_84",
+      "base_id": "base_84",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 140087220,
+          "type": "way",
+          "lat": 37.6293821,
+          "lon": -97.249885,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Child Development Center",
+            "ref": "337"
+          },
+          "military_base": {
+            "name": "Base_84",
+            "id": "base_84"
+          },
+          "name": "Child Development Center",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_85",
+      "base_id": "base_85",
+      "daycare_count": 2,
+      "daycares": [
+        {
+          "id": 851941560,
+          "type": "way",
+          "lat": 36.602717,
+          "lon": -87.4489423,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes"
+          },
+          "military_base": {
+            "name": "Base_85",
+            "id": "base_85"
+          },
+          "name": "Unnamed Daycare",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        },
+        {
+          "id": 1340685214,
+          "type": "way",
+          "lat": 36.6273498,
+          "lon": -87.4503486,
+          "tags": {
+            "addr:city": "Fort Campbell",
+            "addr:housenumber": "2187",
+            "addr:postcode": "42223",
+            "addr:state": "TN",
+            "addr:street": "Kentucky Avenue",
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Kentucky Hourly Care CDC",
+            "note": "As of 16 May 2024, services are suspended at this facility. It is being converted to a Full-Day care. See tagged website for updates.",
+            "opening_hours": "\"Temporarily closed\"",
+            "website": "https://campbell.armymwr.com/programs/cys-s/hourly-care"
+          },
+          "military_base": {
+            "name": "Base_85",
+            "id": "base_85"
+          },
+          "name": "Kentucky Hourly Care CDC",
+          "amenity": "childcare",
+          "phone": null,
+          "website": "https://campbell.armymwr.com/programs/cys-s/hourly-care",
+          "opening_hours": "\"Temporarily closed\"",
+          "address": {
+            "street": "Kentucky Avenue",
+            "city": "Fort Campbell",
+            "state": "TN",
+            "postcode": "42223"
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_86",
+      "base_id": "base_86",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 9864869021,
+          "type": "node",
+          "lat": 37.8977702,
+          "lon": -85.9621538,
+          "tags": {
+            "amenity": "childcare",
+            "name": "Donna Kirby School Age Center"
+          },
+          "military_base": {
+            "name": "Base_86",
+            "id": "base_86"
+          },
+          "name": "Donna Kirby School Age Center",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_87",
+      "base_id": "base_87",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_88",
+      "base_id": "base_88",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_89",
+      "base_id": "base_89",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 367131961,
+          "type": "node",
+          "lat": 29.8235,
+          "lon": -90.0105,
+          "tags": {
+            "addr:state": "LA",
+            "amenity": "kindergarten",
+            "ele": "0",
+            "gnis:feature_id": "2429262",
+            "name": "NAS Child Development Center",
+            "source": "USGS Geonames"
+          },
+          "military_base": {
+            "name": "Base_89",
+            "id": "base_89"
+          },
+          "name": "NAS Child Development Center",
+          "amenity": "kindergarten",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": "LA",
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_90",
+      "base_id": "base_90",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_91",
+      "base_id": "base_91",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_92",
+      "base_id": "base_92",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_93",
+      "base_id": "base_93",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_94",
+      "base_id": "base_94",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_95",
+      "base_id": "base_95",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_96",
+      "base_id": "base_96",
+      "daycare_count": 2,
+      "daycares": [
+        {
+          "id": 800856159,
+          "type": "way",
+          "lat": 39.1191327,
+          "lon": -76.7372845,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "layer": "1"
+          },
+          "military_base": {
+            "name": "Base_96",
+            "id": "base_96"
+          },
+          "name": "Unnamed Daycare",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        },
+        {
+          "id": 836907512,
+          "type": "way",
+          "lat": 39.1161909,
+          "lon": -76.7206149,
+          "tags": {
+            "amenity": "kindergarten",
+            "building": "yes",
+            "name": "Child and Youth Services",
+            "operator": "United States Department of Defense"
+          },
+          "military_base": {
+            "name": "Base_96",
+            "id": "base_96"
+          },
+          "name": "Child and Youth Services",
+          "amenity": "kindergarten",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_97",
+      "base_id": "base_97",
+      "daycare_count": 2,
+      "daycares": [
+        {
+          "id": 314742557,
+          "type": "way",
+          "lat": 38.8165395,
+          "lon": -76.8515283,
+          "tags": {
+            "addr:city": "Joint Base Andrews",
+            "addr:country": "US",
+            "addr:housenumber": "3725",
+            "addr:postcode": "20762",
+            "addr:state": "MD",
+            "addr:street": "Fetchet Avenue",
+            "amenity": "childcare",
+            "building": "yes",
+            "email": "chandre.coleman@us.af.mil;brittany.bell.2@us.af.mil",
+            "name": "Judith P. Hoyer Child Development Center",
+            "opening_hours": "Mo-Fr 06:15-17:45;Sa,Su,PH off",
+            "phone": "+1 240 857 3207;+1 240 857 3197",
+            "short_name": "JP Hoyer CDC;CDC 3",
+            "website": "https://andrewsfss.com/child-development-centers/"
+          },
+          "military_base": {
+            "name": "Base_97",
+            "id": "base_97"
+          },
+          "name": "Judith P. Hoyer Child Development Center",
+          "amenity": "childcare",
+          "phone": "+1 240 857 3207;+1 240 857 3197",
+          "website": "https://andrewsfss.com/child-development-centers/",
+          "opening_hours": "Mo-Fr 06:15-17:45;Sa,Su,PH off",
+          "address": {
+            "street": "Fetchet Avenue",
+            "city": "Joint Base Andrews",
+            "state": "MD",
+            "postcode": "20762"
+          }
+        },
+        {
+          "id": 536156406,
+          "type": "way",
+          "lat": 38.797752,
+          "lon": -76.8881157,
+          "tags": {
+            "addr:city": "Joint Base Andrews",
+            "addr:country": "US",
+            "addr:housenumber": "4783",
+            "addr:postcode": "20762",
+            "addr:state": "MD",
+            "addr:street": "San Antonio Boulevard",
+            "amenity": "childcare",
+            "building": "yes",
+            "email": "cissy.sharpe@us.af.mil",
+            "name": "Child Development Center",
+            "opening_hours": "Mo-Fr 07:00-17:00;PH off",
+            "phone": "+1 301 981 3323;+1 301 981 3324",
+            "ref": "2",
+            "short_name": "CDC;CDC 2",
+            "website": "https://andrewsfss.com/child-development-centers/"
+          },
+          "military_base": {
+            "name": "Base_97",
+            "id": "base_97"
+          },
+          "name": "Child Development Center",
+          "amenity": "childcare",
+          "phone": "+1 301 981 3323;+1 301 981 3324",
+          "website": "https://andrewsfss.com/child-development-centers/",
+          "opening_hours": "Mo-Fr 07:00-17:00;PH off",
+          "address": {
+            "street": "San Antonio Boulevard",
+            "city": "Joint Base Andrews",
+            "state": "MD",
+            "postcode": "20762"
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_98",
+      "base_id": "base_98",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_99",
+      "base_id": "base_99",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_100",
+      "base_id": "base_100",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 1078570126,
+          "type": "way",
+          "lat": 38.997636,
+          "lon": -77.0918865,
+          "tags": {
+            "amenity": "kindergarten",
+            "name": "CDC 1"
+          },
+          "military_base": {
+            "name": "Base_100",
+            "id": "base_100"
+          },
+          "name": "CDC 1",
+          "amenity": "kindergarten",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_101",
+      "base_id": "base_101",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_102",
+      "base_id": "base_102",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_103",
+      "base_id": "base_103",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_104",
+      "base_id": "base_104",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_105",
+      "base_id": "base_105",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_106",
+      "base_id": "base_106",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_107",
+      "base_id": "base_107",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_108",
+      "base_id": "base_108",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_109",
+      "base_id": "base_109",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_110",
+      "base_id": "base_110",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_111",
+      "base_id": "base_111",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_112",
+      "base_id": "base_112",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_113",
+      "base_id": "base_113",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_114",
+      "base_id": "base_114",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_115",
+      "base_id": "base_115",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_116",
+      "base_id": "base_116",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_117",
+      "base_id": "base_117",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_118",
+      "base_id": "base_118",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_119",
+      "base_id": "base_119",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_120",
+      "base_id": "base_120",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 1186139639,
+          "type": "way",
+          "lat": 40.0339068,
+          "lon": -74.3231848,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "source": "microsoft/BuildingFootprints"
+          },
+          "military_base": {
+            "name": "Base_120",
+            "id": "base_120"
+          },
+          "name": "Unnamed Daycare",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_121",
+      "base_id": "base_121",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_122",
+      "base_id": "base_122",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_123",
+      "base_id": "base_123",
+      "daycare_count": 2,
+      "daycares": [
+        {
+          "id": 953310704,
+          "type": "way",
+          "lat": 34.4013861,
+          "lon": -103.3309474,
+          "tags": {
+            "addr:city": "Cannon AFB",
+            "addr:housenumber": "335",
+            "addr:state": "NM",
+            "addr:street": "D L Ingram Avenue",
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Cannon Child Development Center",
+            "phone": "+1-575-784-2704",
+            "ref": "1435"
+          },
+          "military_base": {
+            "name": "Base_123",
+            "id": "base_123"
+          },
+          "name": "Cannon Child Development Center",
+          "amenity": "childcare",
+          "phone": "+1-575-784-2704",
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": "D L Ingram Avenue",
+            "city": "Cannon AFB",
+            "state": "NM",
+            "postcode": null
+          }
+        },
+        {
+          "id": 953310705,
+          "type": "way",
+          "lat": 34.4003695,
+          "lon": -103.3296903,
+          "tags": {
+            "addr:city": "Cannon AFB",
+            "addr:housenumber": "333",
+            "addr:state": "NM",
+            "addr:street": "D L Ingram Avenue",
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "School Age Care Facility"
+          },
+          "military_base": {
+            "name": "Base_123",
+            "id": "base_123"
+          },
+          "name": "School Age Care Facility",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": "D L Ingram Avenue",
+            "city": "Cannon AFB",
+            "state": "NM",
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_124",
+      "base_id": "base_124",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 955166954,
+          "type": "way",
+          "lat": 32.8330865,
+          "lon": -106.0835711,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Child Development Center West",
+            "ref": "650"
+          },
+          "military_base": {
+            "name": "Base_124",
+            "id": "base_124"
+          },
+          "name": "Child Development Center West",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_125",
+      "base_id": "base_125",
+      "daycare_count": 3,
+      "daycares": [
+        {
+          "id": 317406007,
+          "type": "way",
+          "lat": 35.059868,
+          "lon": -106.5991624,
+          "tags": {
+            "addr:street": "Maxwell Street Southeast",
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Maxwell Child Development Center (1914)",
+            "name_1": "Maxwell CDC",
+            "old_name": "Maxwell Child Care Center",
+            "phone": "+1-505-853-5521",
+            "ref": "1914"
+          },
+          "military_base": {
+            "name": "Base_125",
+            "id": "base_125"
+          },
+          "name": "Maxwell Child Development Center (1914)",
+          "amenity": "childcare",
+          "phone": "+1-505-853-5521",
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": "Maxwell Street Southeast",
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        },
+        {
+          "id": 706082677,
+          "type": "way",
+          "lat": 35.0492331,
+          "lon": -106.5586372,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "DOE Child Care",
+            "ref": "20401"
+          },
+          "military_base": {
+            "name": "Base_125",
+            "id": "base_125"
+          },
+          "name": "DOE Child Care",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        },
+        {
+          "id": 737948230,
+          "type": "way",
+          "lat": 35.0588598,
+          "lon": -106.5561146,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Gibson Child Development Center",
+            "name_1": "Gibson CDC",
+            "phone": "+1-505-846-1103",
+            "ref": "20160"
+          },
+          "military_base": {
+            "name": "Base_125",
+            "id": "base_125"
+          },
+          "name": "Gibson Child Development Center",
+          "amenity": "childcare",
+          "phone": "+1-505-846-1103",
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_126",
+      "base_id": "base_126",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 106595786,
+          "type": "way",
+          "lat": 32.3850895,
+          "lon": -106.4887782,
+          "tags": {
+            "addr:city": "White Sands",
+            "addr:housenumber": "272",
+            "addr:street": "Picatinny Avenue",
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Thomas JP Jones CDC Child Development Center",
+            "ref": "272",
+            "source": "NAIP"
+          },
+          "military_base": {
+            "name": "Base_126",
+            "id": "base_126"
+          },
+          "name": "Thomas JP Jones CDC Child Development Center",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": "Picatinny Avenue",
+            "city": "White Sands",
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_127",
+      "base_id": "base_127",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_128",
+      "base_id": "base_128",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_129",
+      "base_id": "base_129",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_130",
+      "base_id": "base_130",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_131",
+      "base_id": "base_131",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_132",
+      "base_id": "base_132",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_133",
+      "base_id": "base_133",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_134",
+      "base_id": "base_134",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_135",
+      "base_id": "base_135",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_136",
+      "base_id": "base_136",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_137",
+      "base_id": "base_137",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_138",
+      "base_id": "base_138",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_139",
+      "base_id": "base_139",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_140",
+      "base_id": "base_140",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_141",
+      "base_id": "base_141",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_142",
+      "base_id": "base_142",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_143",
+      "base_id": "base_143",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_144",
+      "base_id": "base_144",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_145",
+      "base_id": "base_145",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_146",
+      "base_id": "base_146",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_147",
+      "base_id": "base_147",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_148",
+      "base_id": "base_148",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_149",
+      "base_id": "base_149",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_150",
+      "base_id": "base_150",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_151",
+      "base_id": "base_151",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_152",
+      "base_id": "base_152",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_153",
+      "base_id": "base_153",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_154",
+      "base_id": "base_154",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_155",
+      "base_id": "base_155",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_156",
+      "base_id": "base_156",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_157",
+      "base_id": "base_157",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_158",
+      "base_id": "base_158",
+      "daycare_count": 5,
+      "daycares": [
+        {
+          "id": 1015339018,
+          "type": "way",
+          "lat": 31.1346044,
+          "lon": -97.7658168,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Fort Hood CDC"
+          },
+          "military_base": {
+            "name": "Base_158",
+            "id": "base_158"
+          },
+          "name": "Fort Hood CDC",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        },
+        {
+          "id": 1017914812,
+          "type": "way",
+          "lat": 31.1360435,
+          "lon": -97.7218379,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes"
+          },
+          "military_base": {
+            "name": "Base_158",
+            "id": "base_158"
+          },
+          "name": "Unnamed Daycare",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        },
+        {
+          "id": 1021293618,
+          "type": "way",
+          "lat": 31.1363688,
+          "lon": -97.755341,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Meadows CDC"
+          },
+          "military_base": {
+            "name": "Base_158",
+            "id": "base_158"
+          },
+          "name": "Meadows CDC",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        },
+        {
+          "id": 1021875818,
+          "type": "way",
+          "lat": 31.1293274,
+          "lon": -97.7710952,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Darnall Child Development Center"
+          },
+          "military_base": {
+            "name": "Base_158",
+            "id": "base_158"
+          },
+          "name": "Darnall Child Development Center",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        },
+        {
+          "id": 1023887708,
+          "type": "way",
+          "lat": 31.1149297,
+          "lon": -97.8368722,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes"
+          },
+          "military_base": {
+            "name": "Base_158",
+            "id": "base_158"
+          },
+          "name": "Unnamed Daycare",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_159",
+      "base_id": "base_159",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_160",
+      "base_id": "base_160",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_161",
+      "base_id": "base_161",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 657501128,
+          "type": "way",
+          "lat": 29.3952563,
+          "lon": -98.6203912,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Lackland Child Development Center"
+          },
+          "military_base": {
+            "name": "Base_161",
+            "id": "base_161"
+          },
+          "name": "Lackland Child Development Center",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_162",
+      "base_id": "base_162",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_163",
+      "base_id": "base_163",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_164",
+      "base_id": "base_164",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_165",
+      "base_id": "base_165",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_166",
+      "base_id": "base_166",
+      "daycare_count": 2,
+      "daycares": [
+        {
+          "id": 1262030519,
+          "type": "way",
+          "lat": 29.536091,
+          "lon": -98.2876756,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Child Development Center",
+            "ref": "1072",
+            "source": "microsoft/BuildingFootprints"
+          },
+          "military_base": {
+            "name": "Base_166",
+            "id": "base_166"
+          },
+          "name": "Child Development Center",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        },
+        {
+          "id": 1290156064,
+          "type": "way",
+          "lat": 29.5287441,
+          "lon": -98.2738547,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Child Development Center Annex",
+            "ref": "734"
+          },
+          "military_base": {
+            "name": "Base_166",
+            "id": "base_166"
+          },
+          "name": "Child Development Center Annex",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_167",
+      "base_id": "base_167",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_168",
+      "base_id": "base_168",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_169",
+      "base_id": "base_169",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_170",
+      "base_id": "base_170",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_171",
+      "base_id": "base_171",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_172",
+      "base_id": "base_172",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_173",
+      "base_id": "base_173",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_174",
+      "base_id": "base_174",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 231493058,
+          "type": "way",
+          "lat": 38.8715049,
+          "lon": -77.0767922,
+          "tags": {
+            "addr:housenumber": "102",
+            "addr:postcode": "22211",
+            "addr:street": "Carpenter Road",
+            "alt_name": "Cody CDC",
+            "amenity": "kindergarten",
+            "building": "yes",
+            "name": "Cody Child Development Center"
+          },
+          "military_base": {
+            "name": "Base_174",
+            "id": "base_174"
+          },
+          "name": "Cody Child Development Center",
+          "amenity": "kindergarten",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": "Carpenter Road",
+            "city": null,
+            "state": null,
+            "postcode": "22211"
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_175",
+      "base_id": "base_175",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_176",
+      "base_id": "base_176",
+      "daycare_count": 2,
+      "daycares": [
+        {
+          "id": 8599459948,
+          "type": "node",
+          "lat": 37.0684866,
+          "lon": -76.3592461,
+          "tags": {
+            "addr:city": "Hampton",
+            "addr:postcode": "23665",
+            "addr:state": "VA",
+            "amenity": "childcare",
+            "email": "jblewebupdates@gmail.com",
+            "name": "Child Development Center",
+            "phone": "+1 (757) 764-3585",
+            "website": "https://jbleforcesupport.com/langley/child-development-center"
+          },
+          "military_base": {
+            "name": "Base_176",
+            "id": "base_176"
+          },
+          "name": "Child Development Center",
+          "amenity": "childcare",
+          "phone": "+1 (757) 764-3585",
+          "website": "https://jbleforcesupport.com/langley/child-development-center",
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": "Hampton",
+            "state": "VA",
+            "postcode": "23665"
+          }
+        },
+        {
+          "id": 344016817,
+          "type": "way",
+          "lat": 37.0685804,
+          "lon": -76.3590749,
+          "tags": {
+            "addr:city": "Hampton",
+            "addr:housenumber": "117",
+            "addr:postcode": "23665",
+            "addr:state": "VA",
+            "addr:street": "Burrell Loop Road",
+            "amenity": "childcare",
+            "building": "yes",
+            "layer": "1",
+            "name": "Gen Russ Child Development Center",
+            "opening_hours": "Mo-Fr 06:30-18:00",
+            "ref": "70"
+          },
+          "military_base": {
+            "name": "Base_176",
+            "id": "base_176"
+          },
+          "name": "Gen Russ Child Development Center",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": "Mo-Fr 06:30-18:00",
+          "address": {
+            "street": "Burrell Loop Road",
+            "city": "Hampton",
+            "state": "VA",
+            "postcode": "23665"
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_177",
+      "base_id": "base_177",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 876597787,
+          "type": "way",
+          "lat": 38.5340406,
+          "lon": -77.3337501,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes"
+          },
+          "military_base": {
+            "name": "Base_177",
+            "id": "base_177"
+          },
+          "name": "Unnamed Daycare",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_178",
+      "base_id": "base_178",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_179",
+      "base_id": "base_179",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 402565674,
+          "type": "way",
+          "lat": 36.7841128,
+          "lon": -75.960368,
+          "tags": {
+            "addr:city": "Virginia Beach",
+            "addr:housenumber": "1789",
+            "addr:postcode": "23461",
+            "addr:street": "Regulus Avenue",
+            "amenity": "childcare",
+            "building": "yes",
+            "height": "17'",
+            "name": "Child Development Center",
+            "start_date": "2012"
+          },
+          "military_base": {
+            "name": "Base_179",
+            "id": "base_179"
+          },
+          "name": "Child Development Center",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": "Regulus Avenue",
+            "city": "Virginia Beach",
+            "state": null,
+            "postcode": "23461"
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_180",
+      "base_id": "base_180",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_181",
+      "base_id": "base_181",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_182",
+      "base_id": "base_182",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_183",
+      "base_id": "base_183",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_184",
+      "base_id": "base_184",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_185",
+      "base_id": "base_185",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_186",
+      "base_id": "base_186",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_187",
+      "base_id": "base_187",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 443113629,
+          "type": "way",
+          "lat": 47.63963,
+          "lon": -117.6490198,
+          "tags": {
+            "amenity": "childcare",
+            "building": "yes"
+          },
+          "military_base": {
+            "name": "Base_187",
+            "id": "base_187"
+          },
+          "name": "Unnamed Daycare",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_188",
+      "base_id": "base_188",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 624301148,
+          "type": "way",
+          "lat": 47.1337786,
+          "lon": -122.5795315,
+          "tags": {
+            "addr:housenumber": "202",
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Child Care"
+          },
+          "military_base": {
+            "name": "Base_188",
+            "id": "base_188"
+          },
+          "name": "Child Care",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_189",
+      "base_id": "base_189",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_190",
+      "base_id": "base_190",
+      "daycare_count": 1,
+      "daycares": [
+        {
+          "id": 458008560,
+          "type": "way",
+          "lat": 47.6886856,
+          "lon": -122.7109432,
+          "tags": {
+            "addr:housenumber": "2902",
+            "amenity": "childcare",
+            "building": "yes",
+            "name": "Lighthouse"
+          },
+          "military_base": {
+            "name": "Base_190",
+            "id": "base_190"
+          },
+          "name": "Lighthouse",
+          "amenity": "childcare",
+          "phone": null,
+          "website": null,
+          "opening_hours": null,
+          "address": {
+            "street": null,
+            "city": null,
+            "state": null,
+            "postcode": null
+          }
+        }
+      ]
+    },
+    {
+      "base_name": "Base_191",
+      "base_id": "base_191",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_192",
+      "base_id": "base_192",
+      "daycare_count": 0,
+      "daycares": []
+    },
+    {
+      "base_name": "Base_193",
+      "base_id": "base_193",
+      "daycare_count": 0,
+      "daycares": []
+    }
+  ]
+}
