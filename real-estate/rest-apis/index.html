@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapbox ArcGIS REST API Demo</title>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        .sidebar {
+            width: 600px;
+            background: white;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        h2 {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .layer-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .layer-option {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .layer-option:hover {
+            border-color: #007bff;
+        }
+        
+        .layer-option.active {
+            border-color: #007bff;
+            background: #f0f8ff;
+        }
+        
+        .layer-option input[type="radio"] {
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+        
+        .layer-info {
+            flex: 1;
+        }
+        
+        .layer-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .layer-url {
+            font-size: 12px;
+            color: #666;
+            word-break: break-all;
+        }
+        
+        .query-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .query-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        input, select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .query-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: background 0.2s ease;
+        }
+        
+        .query-button:hover {
+            background: #0056b3;
+        }
+        
+        .query-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .parameters-section {
+            margin-top: 20px;
+        }
+        
+        .parameter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .parameter-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .parameter-value {
+            color: #666;
+            font-family: monospace;
+        }
+        
+        .full-url {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f1f3f4;
+            border-radius: 4px;
+            border: 1px solid #d1d5db;
+        }
+        
+        .url-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .copy-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .copy-button:hover {
+            background: #218838;
+        }
+        
+        .url-text {
+            font-family: monospace;
+            font-size: 12px;
+            color: #333;
+            line-height: 1.4;
+            word-break: break-all;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        
+        .success {
+            color: #155724;
+            background: #d4edda;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>ArcGIS REST API Demo</h1>
+            
+            <div class="layer-section">
+                <h2>Select Layer</h2>
+                
+                <div class="layer-option" onclick="selectLayer('nri')">
+                    <input type="radio" name="layer" value="nri" id="nri">
+                    <div class="layer-info">
+                        <div class="layer-name">National Risk Index Census Tracts</div>
+                        <div class="layer-url">https://services.arcgis.com/XG15cJAlne2vxtgt/arcgis/rest/services/National_Risk_Index_Census_Tracts/FeatureServer/0</div>
+                    </div>
+                </div>
+                
+                <div class="layer-option" onclick="selectLayer('flood')">
+                    <input type="radio" name="layer" value="flood" id="flood">
+                    <div class="layer-info">
+                        <div class="layer-name">USA Flood Hazard Reduced Set</div>
+                        <div class="layer-url">https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_Flood_Hazard_Reduced_Set_gdb/FeatureServer/0</div>
+                    </div>
+                </div>
+                
+                <div class="layer-option" onclick="selectLayer('affordability')">
+                    <input type="radio" name="layer" value="affordability" id="affordability">
+                    <div class="layer-info">
+                        <div class="layer-name">Location Affordability Index</div>
+                        <div class="layer-url">https://services1.arcgis.com/4yjifSiIG17X0gW4/arcgis/rest/services/Location_Affordability_Index/FeatureServer/1</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="query-section">
+                <h2>Query Parameters</h2>
+                
+                <div class="query-controls">
+                    <div class="control-group">
+                        <label for="returnGeometry">Return Geometry</label>
+                        <select id="returnGeometry">
+                            <option value="true">true</option>
+                            <option value="false">false</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="outFields">Output Fields</label>
+                        <input type="text" id="outFields" value="*" placeholder="*">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="where">Where Clause</label>
+                        <input type="text" id="where" value="1=1" placeholder="1=1">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="outSR">Output Spatial Reference</label>
+                        <input type="text" id="outSR" value="4326" placeholder="4326">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="resultRecordCount">Max Records</label>
+                        <input type="number" id="resultRecordCount" value="10" min="1" max="1000">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="f">Format</label>
+                        <select id="f">
+                            <option value="json">JSON</option>
+                            <option value="geojson">GeoJSON</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="query-button" onclick="executeQuery()" id="queryBtn">Execute Query</button>
+                
+                <div class="parameters-section">
+                    <h2>Query Parameters Breakdown</h2>
+                    <div id="parametersDisplay"></div>
+                    
+                    <div class="full-url">
+                        <div class="url-header">
+                            <strong>Full Query URL:</strong>
+                            <button class="copy-button" onclick="copyUrl()">Copy</button>
+                        </div>
+                        <div class="url-text" id="fullUrl">Select a layer to see the query URL</div>
+                    </div>
+                </div>
+                
+                <div id="queryResult"></div>
+            </div>
+        </div>
+        
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script>
+        const layers = {
+            nri: {
+                name: 'National Risk Index Census Tracts',
+                url: 'https://services.arcgis.com/XG15cJAlne2vxtgt/arcgis/rest/services/National_Risk_Index_Census_Tracts/FeatureServer/0',
+                styleField: 'RISK_SCORE',
+                styleType: 'ramp',
+                colorRamp: ['#FFFF00', '#FF8000', '#FF0000', '#8000FF'], // Yellow to Red to Purple
+                minValue: 0,
+                maxValue: 100
+            },
+            flood: {
+                name: 'USA Flood Hazard Reduced Set',
+                url: 'https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_Flood_Hazard_Reduced_Set_gdb/FeatureServer/0',
+                styleField: 'SFHA_TF',
+                styleType: 'unique',
+                uniqueValues: {
+                    'T': '#0000FF', // Blue
+                    'F': '#8000FF'  // Purple
+                }
+            },
+            affordability: {
+                name: 'Location Affordability Index',
+                url: 'https://services1.arcgis.com/4yjifSiIG17X0gW4/arcgis/rest/services/Location_Affordability_Index/FeatureServer/1',
+                styleField: 'hh7_ht_renters',
+                styleType: 'ramp',
+                colorRamp: ['#00FF00', '#0000FF', '#FFFF00', '#FF8000', '#FF0000'], 
+                minValue: 0,
+                maxValue: 80
+            }
+        };
+
+        let currentLayer = null;
+        let map = null;
+        let currentUrl = '';
+
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ'; 
+
+        function initMap() {
+            try {
+                map = new mapboxgl.Map({
+                    container: 'map',
+                    style: 'mapbox://styles/mapbox/light-v11',
+                    center: [-98.5, 39.8],
+                    zoom: 4
+                });
+                
+                map.on('load', function() {
+                    console.log('Map loaded successfully');
+                });
+                
+                map.on('error', function(e) {
+                    console.log('Map error (likely due to access token):', e);
+                });
+            } catch (error) {
+                console.log('Mapbox initialization error (likely due to access token):', error);
+                document.getElementById('map').innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f0f0f0; color: #666;"><div style="text-align: center;"><h3>Map Display</h3><p>Add your Mapbox access token to enable map display</p></div></div>';
+            }
+        }
+
+        // Select layer function
+        function selectLayer(layerId) {
+            currentLayer = layerId;
+            
+            // Update radio button
+            document.getElementById(layerId).checked = true;
+            
+            // Update visual selection
+            document.querySelectorAll('.layer-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.getElementById(layerId).closest('.layer-option').classList.add('active');
+            
+            // Update query display
+            updateQueryDisplay();
+        }
+
+        // Update query parameters display
+        function updateQueryDisplay() {
+            if (!currentLayer) return;
+            
+            const params = getQueryParameters();
+            const parametersDiv = document.getElementById('parametersDisplay');
+            const fullUrlDiv = document.getElementById('fullUrl');
+            
+            // Build parameters display
+            let parametersHtml = '';
+            Object.entries(params).forEach(([key, value]) => {
+                let displayValue = value;
+                if (key === 'geometry' && typeof value === 'string') {
+                    // Add line breaks after commas and braces for readability
+                    displayValue = value.replace(/([,{])/g, '$1\n').replace(/}/g, '}\n');
+                }
+                parametersHtml += `
+                    <div class="parameter-item">
+                        <span class="parameter-name">${key}:</span>
+                        <span class="parameter-value" style="white-space: pre-line;">${displayValue}</span>
+                    </div>
+                `;
+            });
+            parametersDiv.innerHTML = parametersHtml;
+            
+            // Build full URL with better formatting
+            const baseUrl = layers[currentLayer].url + '/query';
+            const urlParams = new URLSearchParams(params);
+            currentUrl = baseUrl + '?' + urlParams.toString();
+            
+            // Format URL with line breaks for better readability
+            const formattedUrl = currentUrl.replace(/&/g, '&\n');
+            fullUrlDiv.textContent = formattedUrl;
+        }
+
+        // Get current query parameters
+        function getQueryParameters() {
+            const params = {
+                where: document.getElementById('where').value || '1=1',
+                outFields: document.getElementById('outFields').value || '*',
+                returnGeometry: document.getElementById('returnGeometry').value,
+                outSR: document.getElementById('outSR').value || '4326',
+                resultRecordCount: document.getElementById('resultRecordCount').value || '10',
+                f: document.getElementById('f').value || 'json'
+            };
+            
+            // Add geometry filter based on map extent
+            if (map) {
+                const bounds = map.getBounds();
+                const geometry = {
+                    xmin: bounds.getWest(),
+                    ymin: bounds.getSouth(),
+                    xmax: bounds.getEast(),
+                    ymax: bounds.getNorth(),
+                    spatialReference: { wkid: 4326 }
+                };
+                params.geometry = JSON.stringify(geometry);
+                params.geometryType = 'esriGeometryEnvelope';
+                params.spatialRel = 'esriSpatialRelIntersects';
+            }
+            
+            return params;
+        }
+
+        // Copy URL to clipboard
+        function copyUrl() {
+            if (!currentUrl) return;
+            
+            navigator.clipboard.writeText(currentUrl).then(() => {
+                const button = document.querySelector('.copy-button');
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = '#28a745';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#28a745';
+                }, 2000);
+            });
+        }
+
+        // Calculate area in square kilometers
+        function calculateMapArea() {
+            if (!map) return 0;
+            
+            const bounds = map.getBounds();
+            const sw = bounds.getSouthWest();
+            const ne = bounds.getNorthEast();
+            
+            // Approximate area calculation using the haversine formula
+            const R = 6371; // Earth's radius in km
+            const dLat = (ne.lat - sw.lat) * Math.PI / 180;
+            const dLon = (ne.lng - sw.lng) * Math.PI / 180;
+            const avgLat = (sw.lat + ne.lat) / 2 * Math.PI / 180;
+            
+            const width = R * dLon * Math.cos(avgLat);
+            const height = R * dLat;
+            
+            return Math.abs(width * height);
+        }
+
+        // Get color based on value and layer style
+        function getFeatureColor(value, layerConfig) {
+            if (layerConfig.styleType === 'unique') {
+                return layerConfig.uniqueValues[value] || '#666666';
+            } else if (layerConfig.styleType === 'ramp') {
+                const normalizedValue = Math.max(0, Math.min(1, 
+                    (value - layerConfig.minValue) / (layerConfig.maxValue - layerConfig.minValue)
+                ));
+                return interpolateColor(layerConfig.colorRamp, normalizedValue);
+            }
+            return '#007bff';
+        }
+
+        // Interpolate color from color ramp
+        function interpolateColor(colorRamp, value) {
+            if (value <= 0) return colorRamp[0];
+            if (value >= 1) return colorRamp[colorRamp.length - 1];
+            
+            const scaledValue = value * (colorRamp.length - 1);
+            const index = Math.floor(scaledValue);
+            const fraction = scaledValue - index;
+            
+            if (index >= colorRamp.length - 1) {
+                return colorRamp[colorRamp.length - 1];
+            }
+            
+            const color1 = hexToRgb(colorRamp[index]);
+            const color2 = hexToRgb(colorRamp[index + 1]);
+            
+            const r = Math.round(color1.r + (color2.r - color1.r) * fraction);
+            const g = Math.round(color1.g + (color2.g - color1.g) * fraction);
+            const b = Math.round(color1.b + (color2.b - color1.b) * fraction);
+            
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        // Convert hex to RGB
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        // Execute query
+        async function executeQuery() {
+            if (!currentLayer) {
+                alert('Please select a layer first');
+                return;
+            }
+            
+            if (!map) {
+                alert('Map not initialized. Please wait for map to load.');
+                return;
+            }
+            
+            // Check if map area is reasonable (roughly city scale - max 10000 sq km)
+            const mapArea = calculateMapArea();
+            if (mapArea > 10000) {
+                alert(`Map area is too large (${Math.round(mapArea)} km²). Please zoom in to city scale (max ~10,000 km²) to execute query.`);
+                return;
+            }
+            
+            const button = document.getElementById('queryBtn');
+            const resultDiv = document.getElementById('queryResult');
+
+            if (map) {
+                if (map.getLayer('query-results')) {
+                    map.removeLayer('query-results');
+                }
+                if (map.getLayer('query-results-stroke')) {
+                    map.removeLayer('query-results-stroke');
+                }
+                if (map.getSource('query-results')) {
+                    map.removeSource('query-results');
+                }
+            }
+            
+            button.disabled = true;
+            button.textContent = 'Executing...';
+            resultDiv.innerHTML = '<div class="loading">Executing query...</div>';
+            
+            try {
+                const response = await fetch(currentUrl);
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error.message || 'Query failed');
+                }
+                
+                const featureCount = data.features ? data.features.length : 0;
+                const mapAreaText = mapArea < 1 ? `${Math.round(mapArea * 100) / 100} km²` : `${Math.round(mapArea)} km²`;
+                
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <strong>Query Successful!</strong><br>
+                        Retrieved ${featureCount} features from ${layers[currentLayer].name}<br>
+                        <small>Map area: ${mapAreaText}</small>
+                    </div>
+                `;
+                
+                // Always try to add to map if we have features
+                if (map && data.features && data.features.length > 0) {
+                    addDataToMap(data);
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <strong>Query Failed:</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Execute Query';
+            }
+        }
+
+        // Add data to map
+        function addDataToMap(data) {
+            if (!map) return;
+            
+            try {
+                // Remove existing layer if it exists
+                if (map.getLayer('query-results')) {
+                    map.removeLayer('query-results');
+                }
+                if (map.getLayer('query-results-stroke')) {
+                    map.removeLayer('query-results-stroke');
+                }
+                if (map.getSource('query-results')) {
+                    map.removeSource('query-results');
+                }
+                
+                // Convert ArcGIS JSON to GeoJSON if needed
+                let geojsonData;
+                if (data.features && data.features[0] && data.features[0].geometry) {
+                    // ArcGIS JSON format
+                    geojsonData = {
+                        type: 'FeatureCollection',
+                        features: data.features.map(feature => ({
+                            type: 'Feature',
+                            geometry: convertArcGISGeometry(feature.geometry),
+                            properties: feature.attributes || {}
+                        }))
+                    };
+                } else {
+                    // Already GeoJSON format
+                    geojsonData = data;
+                }
+                
+                // Add new data
+                map.addSource('query-results', {
+                    type: 'geojson',
+                    data: geojsonData
+                });
+                
+                // Get layer configuration
+                const layerConfig = layers[currentLayer];
+                
+                // Determine geometry type and add appropriate layer with styling
+                if (geojsonData.features.length > 0) {
+                    const geometryType = geojsonData.features[0].geometry.type;
+                    
+                    if (geometryType === 'Point' || geometryType === 'MultiPoint') {
+                        // Create color expression for points
+                        const colorExpression = createColorExpression(layerConfig);
+                        
+                        map.addLayer({
+                            id: 'query-results',
+                            type: 'circle',
+                            source: 'query-results',
+                            paint: {
+                                'circle-radius': 6,
+                                'circle-color': colorExpression,
+                                'circle-stroke-color': '#ffffff',
+                                'circle-stroke-width': 1
+                            }
+                        });
+                    } else if (geometryType === 'LineString' || geometryType === 'MultiLineString') {
+                        const colorExpression = createColorExpression(layerConfig);
+                        
+                        map.addLayer({
+                            id: 'query-results',
+                            type: 'line',
+                            source: 'query-results',
+                            paint: {
+                                'line-color': colorExpression,
+                                'line-width': 3
+                            }
+                        });
+                    } else {
+                        // Polygon or MultiPolygon
+                        const colorExpression = createColorExpression(layerConfig);
+                        
+                        map.addLayer({
+                            id: 'query-results',
+                            type: 'fill',
+                            source: 'query-results',
+                            paint: {
+                                'fill-color': colorExpression,
+                                'fill-opacity': 0.7
+                            }
+                        });
+                        
+                        map.addLayer({
+                            id: 'query-results-stroke',
+                            type: 'line',
+                            source: 'query-results',
+                            paint: {
+                                'line-color': '#ffffff',
+                                'line-width': 1
+                            }
+                        });
+                    }
+                }
+                
+                // Add popup on click
+                map.on('click', 'query-results', function(e) {
+                    const properties = e.features[0].properties;
+                    let popupContent = '<strong>Feature Properties:</strong><br>';
+                    Object.entries(properties).forEach(([key, value]) => {
+                        if (value !== null && value !== undefined) {
+                            popupContent += `<strong>${key}:</strong> ${value}<br>`;
+                        }
+                    });
+                    
+                    new mapboxgl.Popup()
+                        .setLngLat(e.lngLat)
+                        .setHTML(popupContent)
+                        .addTo(map);
+                });
+                
+                // Change cursor on hover
+                map.on('mouseenter', 'query-results', function() {
+                    map.getCanvas().style.cursor = 'pointer';
+                });
+                
+                map.on('mouseleave', 'query-results', function() {
+                    map.getCanvas().style.cursor = '';
+                });
+                
+            } catch (error) {
+                console.error('Error adding data to map:', error);
+            }
+        }
+
+        // Create color expression for Mapbox GL JS
+        function createColorExpression(layerConfig) {
+            if (layerConfig.styleType === 'unique') {
+                // Create case expression for unique values
+                const caseExpression = ['case'];
+                Object.entries(layerConfig.uniqueValues).forEach(([value, color]) => {
+                    caseExpression.push(['==', ['get', layerConfig.styleField], value]);
+                    caseExpression.push(color);
+                });
+                caseExpression.push('#666666'); // default color
+                return caseExpression;
+            } else if (layerConfig.styleType === 'ramp') {
+                // Create interpolation expression for color ramp
+                const interpolateExpression = [
+                    'interpolate',
+                    ['linear'],
+                    ['get', layerConfig.styleField]
+                ];
+                
+                const stepSize = (layerConfig.maxValue - layerConfig.minValue) / (layerConfig.colorRamp.length - 1);
+                layerConfig.colorRamp.forEach((color, index) => {
+                    const value = layerConfig.minValue + (stepSize * index);
+                    interpolateExpression.push(value);
+                    interpolateExpression.push(color);
+                });
+                
+                return interpolateExpression;
+            }
+            
+            return '#007bff'; // default color
+        }
+        
+        // Convert ArcGIS geometry to GeoJSON geometry
+        function convertArcGISGeometry(arcgisGeometry) {
+            if (arcgisGeometry.x !== undefined && arcgisGeometry.y !== undefined) {
+                // Point geometry
+                return {
+                    type: 'Point',
+                    coordinates: [arcgisGeometry.x, arcgisGeometry.y]
+                };
+            } else if (arcgisGeometry.paths) {
+                // LineString geometry
+                return {
+                    type: 'LineString',
+                    coordinates: arcgisGeometry.paths[0]
+                };
+            } else if (arcgisGeometry.rings) {
+                // Polygon geometry
+                return {
+                    type: 'Polygon',
+                    coordinates: arcgisGeometry.rings
+                };
+            }
+            
+            return arcgisGeometry; // Return as-is if already in correct format
+        }
+
+        // Add event listeners for parameter changes
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize map
+            initMap();
+            
+            // Add event listeners to form inputs
+            const inputs = ['where', 'outFields', 'returnGeometry', 'outSR', 'resultRecordCount', 'f'];
+            inputs.forEach(inputId => {
+                document.getElementById(inputId).addEventListener('change', updateQueryDisplay);
+                document.getElementById(inputId).addEventListener('input', updateQueryDisplay);
+            });
+            
+            // Select first layer by default
+            selectLayer('nri');
+            
+            // Update query display when map moves
+            setTimeout(() => {
+                if (map) {
+                    map.on('moveend', updateQueryDisplay);
+                    map.on('zoomend', updateQueryDisplay);
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
