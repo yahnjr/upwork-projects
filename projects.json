@@ -98,6 +98,11 @@
         "description": "Displays a list of real estate agents with their details"
       },
       {
+        "name": "Coverage Viewer",
+        "path": "real-estate/coverage-viewer/index.html",
+        "description": "Allows users to view coverage areas of real estate agents and lenders"
+      },
+      {
         "name": "Business Partners",
         "path": "real-estate/business-partners/index.html",
         "description": "Similar to Agents, but for business partners"
@@ -106,11 +111,6 @@
         "name": "Data Zone Select",
         "path": "real-estate/data-zone-select/index.html",
         "description": "Allows users to set a custom POI and pull in data"
-      },
-      {
-        "name": "One Stop Shop",
-        "path": "real-estate/one-stop-shop/index.html",
-        "description": "Attempt to combine previous applications into one page (unfinished)"
       },
       {
         "name": "Poi Search",
@@ -134,7 +134,7 @@
       },
       {
         "name": "Unified Data Map",
-        "path": "real-estate/unified-data-map/index.html",
+        "path": "https://yahnjr.github.io/upwork-projects/real-estate/unified-data-map/original/index.html?selected=12329,12266,12352,12260,12349",
         "description": "Adds table function to rank different properties by selected data"
       },
       {
@@ -146,11 +146,6 @@
         "name": "Zip Code Schools",
         "path": "real-estate/zip-code-schools/index.html",
         "description": "Testing zip code points as data fetching mechanism"
-      },
-      {
-        "name": "Render Query",
-        "path": "real-estate/zip-code-schools/render-query/index.html",
-        "description": "Testing rendering of MongoDB data with polygon intersection usint Turf.js"
       }
     ]
   }

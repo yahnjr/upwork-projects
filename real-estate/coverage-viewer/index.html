@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapbox Lenders & Realtors</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 450px;
+            background: #ffffff;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            background: #f8f9fa;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #0066cc;
+            background: #ffffff;
+            border-bottom-color: #0066cc;
+        }
+
+        .tab:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #6c757d;
+            margin: 5px 0;
+        }
+
+        .card-bio {
+            color: #555;
+            line-height: 1.5;
+            margin: 15px 0;
+        }
+
+        .view-coverage-btn {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s ease;
+        }
+
+        .view-coverage-btn:hover {
+            background: #0052a3;
+        }
+
+        .link {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: #6c757d;
+        }
+
+        .error {
+            color: #dc3545;
+            text-align: center;
+            padding: 20px;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            margin: 20px;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #6c757d;
+            padding: 40px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="tabs">
+                <div class="tab active" data-tab="lenders">Lenders</div>
+                <div class="tab" data-tab="realtors">Realtors</div>
+            </div>
+            <div class="content">
+                <div id="lenders-content" class="tab-content active">
+                    <div class="loading">Loading lenders...</div>
+                </div>
+                <div id="realtors-content" class="tab-content" style="display: none;">
+                    <div class="loading">Loading realtors...</div>
+                </div>
+            </div>
+        </div>
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize the map
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaWZvcm1haGVyIiwiYSI6ImNsaHBjcnAwNDF0OGkzbnBzZmUxM2Q2bXgifQ.fIyIgSwq1WWVk9CKlXRXiQ';
+        
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [-98.5795, 39.8283], // Center of USA
+            zoom: 4
+        });
+
+        // Global variables
+        let lendersData = null;
+        let realtorsData = null;
+        let activeTab = 'lenders';
+
+        // Load GeoJSON data
+        async function loadGeoJSON(filename) {
+            try {
+                const response = await fetch(filename);
+                if (!response.ok) {
+                    throw new Error(`Failed to load ${filename}: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error(`Error loading ${filename}:`, error);
+                return null;
+            }
+        }
+
+        // Create card HTML
+        function createLenderCard(feature) {
+            const { name, link, bio } = feature.properties;
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="card-title">${name || 'Unnamed Lender'}</h3>
+                            ${link ? `<a href="${link}" class="link" target="_blank">Visit Website</a>` : ''}
+                        </div>
+                    </div>
+                    <div class="card-bio">${bio || 'No bio available'}</div>
+                    <button class="view-coverage-btn" onclick="viewCoverage('${name}', 'lender')">
+                        View Coverage
+                    </button>
+                </div>
+            `;
+        }
+
+        function createRealtorCard(feature) {
+            const { name, brokerage, bio } = feature.properties;
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="card-title">${name || 'Unnamed Realtor'}</h3>
+                            ${brokerage ? `<div class="card-subtitle">${brokerage}</div>` : ''}
+                        </div>
+                    </div>
+                    <div class="card-bio">${bio || 'No bio available'}</div>
+                    <button class="view-coverage-btn" onclick="viewCoverage('${name}', 'realtor')">
+                        View Coverage
+                    </button>
+                </div>
+            `;
+        }
+
+        // Update sidebar content
+        function updateSidebarContent() {
+            const lendersContent = document.getElementById('lenders-content');
+            const realtorsContent = document.getElementById('realtors-content');
+
+            console.log('Updating sidebar content for activeTab:', activeTab);
+            console.log('Lenders data available:', !!lendersData);
+            console.log('Realtors data available:', !!realtorsData);
+
+            if (activeTab === 'lenders') {
+                if (lendersData && lendersData.features) {
+                    console.log('Lenders features count:', lendersData.features.length);
+                    if (lendersData.features.length > 0) {
+                        lendersContent.innerHTML = lendersData.features.map(createLenderCard).join('');
+                    } else {
+                        lendersContent.innerHTML = '<div class="no-data">No lenders data available</div>';
+                    }
+                } else {
+                    console.log('No lenders data or features');
+                    lendersContent.innerHTML = '<div class="error">Failed to load lenders data</div>';
+                }
+            } else {
+                if (realtorsData && realtorsData.features) {
+                    console.log('Realtors features count:', realtorsData.features.length);
+                    if (realtorsData.features.length > 0) {
+                        realtorsContent.innerHTML = realtorsData.features.map(createRealtorCard).join('');
+                    } else {
+                        realtorsContent.innerHTML = '<div class="no-data">No realtors data available</div>';
+                    }
+                } else {
+                    console.log('No realtors data or features');
+                    realtorsContent.innerHTML = '<div class="error">Failed to load realtors data</div>';
+                }
+            }
+        }
+
+        // Update map layers
+        function updateMapLayers() {
+            // Remove existing layers
+            if (map.getLayer('lenders-layer')) {
+                map.removeLayer('lenders-layer');
+            }
+            if (map.getLayer('realtors-layer')) {
+                map.removeLayer('realtors-layer');
+            }
+            if (map.getSource('lenders-source')) {
+                map.removeSource('lenders-source');
+            }
+            if (map.getSource('realtors-source')) {
+                map.removeSource('realtors-source');
+            }
+
+            // Add active layer
+            if (activeTab === 'lenders' && lendersData) {
+                map.addSource('lenders-source', {
+                    type: 'geojson',
+                    data: lendersData
+                });
+
+                map.addLayer({
+                    id: 'lenders-layer',
+                    type: 'circle',
+                    source: 'lenders-source',
+                    paint: {
+                        'circle-radius': 8,
+                        'circle-color': '#0066cc',
+                        'circle-stroke-color': '#ffffff',
+                        'circle-stroke-width': 2
+                    }
+                });
+            } else if (activeTab === 'realtors' && realtorsData) {
+                map.addSource('realtors-source', {
+                    type: 'geojson',
+                    data: realtorsData
+                });
+
+                map.addLayer({
+                    id: 'realtors-layer',
+                    type: 'circle',
+                    source: 'realtors-source',
+                    paint: {
+                        'circle-radius': 8,
+                        'circle-color': '#28a745',
+                        'circle-stroke-color': '#ffffff',
+                        'circle-stroke-width': 2
+                    }
+                });
+            }
+        }
+
+        // Tab switching functionality
+        function switchTab(tabName) {
+            console.log('Switching to tab:', tabName);
+            activeTab = tabName;
+            
+            // Update tab appearance
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Update content visibility
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            document.getElementById(`${tabName}-content`).style.display = 'block';
+            
+            // Update sidebar content for the new tab
+            updateSidebarContent();
+            
+            // Update map layers
+            updateMapLayers();
+        }
+
+        // Event listeners
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchTab(tab.dataset.tab);
+            });
+        });
+
+       // View coverage functionality
+        async function viewCoverage(name, type) {
+            try {
+                // Remove existing coverage layers
+                clearCoverageLayer();
+                
+                // Find the feature data
+                let feature = null;
+                if (type === 'lender' && lendersData) {
+                    feature = lendersData.features.find(f => f.properties.name === name);
+                } else if (type === 'realtor' && realtorsData) {
+                    feature = realtorsData.features.find(f => f.properties.name === name);
+                }
+                
+                if (!feature) {
+                    alert(`Could not find ${type} data for ${name}`);
+                    return;
+                }
+                
+                if (type === 'lender') {
+                    await showLenderCoverage(feature);
+                } else if (type === 'realtor') {
+                    await showRealtorCoverage(feature);
+                }
+            } catch (error) {
+                console.error('Error showing coverage:', error);
+                alert('Error loading coverage data. Please try again.');
+            }
+        }
+
+        // Clear coverage layer
+        function clearCoverageLayer() {
+            if (map.getLayer('coverage-layer')) {
+                map.removeLayer('coverage-layer');
+            }
+            if (map.getSource('coverage-source')) {
+                map.removeSource('coverage-source');
+            }
+            // Remove selected point highlight
+            if (map.getLayer('selected-point-layer')) {
+                map.removeLayer('selected-point-layer');
+            }
+            if (map.getSource('selected-point-source')) {
+                map.removeSource('selected-point-source');
+            }
+            // Hide clear button
+            const clearBtn = document.getElementById('clearCoverageBtn');
+            if (clearBtn) {
+                clearBtn.classList.remove('show');
+            }
+            // Reset map view
+            map.flyTo({
+                center: [-98.5795, 39.8283],
+                zoom: 4
+            });
+        }
+        
+        function highlightSelectedPoint(geometry) {
+            // Remove previous highlight
+            if (map.getLayer('selected-point-layer')) {
+                map.removeLayer('selected-point-layer');
+            }
+            if (map.getSource('selected-point-source')) {
+                map.removeSource('selected-point-source');
+            }
+            // Only highlight Point geometry
+            let point = null;
+            if (geometry && geometry.type === 'Point') {
+                point = geometry.coordinates;
+            } else if (geometry && geometry.type === 'MultiPoint') {
+                point = geometry.coordinates[0];
+            }
+            if (!point) return;
+            map.addSource('selected-point-source', {
+                type: 'geojson',
+                data: {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: point
+                    }
+                }
+            });
+            map.addLayer({
+                id: 'selected-point-layer',
+                type: 'circle',
+                source: 'selected-point-source',
+                paint: {
+                    'circle-radius': 14,
+                    'circle-color': '#ffcc00',
+                    'circle-stroke-color': '#333',
+                    'circle-stroke-width': 3
+                }
+            });
+        }
+
+        // Show lender coverage (states)
+        async function showLenderCoverage(feature) {
+            let statesArray = feature.properties.states_array;
+            // If it's a string in Python list format, parse it
+            if (typeof statesArray === 'string') {
+                statesArray = statesArray.replace(/\[|\]|'/g, '').split(',').map(s => s.trim()).filter(s => s.length > 0);
+            }
+            if (!Array.isArray(statesArray)) {
+                statesArray = [];
+            }
+            if (!statesArray || statesArray.length === 0) {
+                alert('No coverage states found for this lender');
+                return;
+            }
+            // Build query for ArcGIS REST service
+            const statesList = statesArray.map(state => `'${state}'`).join(',');
+            const query = `STATE_ABBR IN (${statesList})`;
+            const url = `https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_States_Generalized_Boundaries/FeatureServer/0/query?where=${encodeURIComponent(query)}&outFields=*&returnGeometry=true&f=geojson`;
+            console.log('Querying states with URL:', url);
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const geoJsonData = await response.json();
+            if (!geoJsonData.features || geoJsonData.features.length === 0) {
+                alert('No state boundaries found for the specified states');
+                return;
+            }
+            // Add coverage layer to map
+            map.addSource('coverage-source', {
+                type: 'geojson',
+                data: geoJsonData
+            });
+            map.addLayer({
+                id: 'coverage-layer',
+                type: 'fill',
+                source: 'coverage-source',
+                paint: {
+                    'fill-color': '#0066cc',
+                    'fill-opacity': 0.3,
+                    'fill-outline-color': '#0066cc'
+                }
+            });
+            // Highlight selected point
+            highlightSelectedPoint(feature.geometry);
+            // Fit map to coverage bounds
+            const bounds = new mapboxgl.LngLatBounds();
+            geoJsonData.features.forEach(feature => {
+                if (feature.geometry.type === 'Polygon') {
+                    feature.geometry.coordinates[0].forEach(coord => {
+                        bounds.extend(coord);
+                    });
+                } else if (feature.geometry.type === 'MultiPolygon') {
+                    feature.geometry.coordinates.forEach(polygon => {
+                        polygon[0].forEach(coord => {
+                            bounds.extend(coord);
+                        });
+                    });
+                }
+            });
+            map.fitBounds(bounds, { padding: 50 });
+            // Show clear button
+            const clearBtn = document.getElementById('clearCoverageBtn');
+            if (clearBtn) {
+                clearBtn.classList.add('show');
+            }
+            console.log(`Loaded coverage for ${geoJsonData.features.length} states`);
+        }
+
+        // Show realtor coverage (zip codes)
+        async function showRealtorCoverage(feature) {
+            let zipCodesArray = feature.properties.coverage_zipcodes_array;
+            // If it's a string in Python list format, parse it
+            if (typeof zipCodesArray === 'string') {
+                zipCodesArray = zipCodesArray.replace(/\[|\]|'/g, '').split(',').map(z => z.trim()).filter(z => z.length > 0);
+            }
+            // Remove .0 from zip codes
+            zipCodesArray = zipCodesArray.map(z => z.replace(/\.0$/, ''));
+            if (!Array.isArray(zipCodesArray)) {
+                zipCodesArray = [];
+            }
+            if (!zipCodesArray || zipCodesArray.length === 0) {
+                alert('No coverage zip codes found for this realtor');
+                return;
+            }
+            // Build query for ArcGIS REST service
+            const zipCodesList = zipCodesArray.map(zip => `'${zip}'`).join(',');
+            const query = `ZCTA5 IN (${zipCodesList})`;
+            const url = `https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/Census_ZIP_Code_Tabulation_Areas_2010_v1/FeatureServer/0/query?where=${encodeURIComponent(query)}&outFields=*&returnGeometry=true&f=geojson`;
+            console.log('Querying zip codes with URL:', url);
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const geoJsonData = await response.json();
+            if (!geoJsonData.features || geoJsonData.features.length === 0) {
+                alert('No zip code boundaries found for the specified zip codes');
+                return;
+            }
+            // Add coverage layer to map
+            map.addSource('coverage-source', {
+                type: 'geojson',
+                data: geoJsonData
+            });
+            map.addLayer({
+                id: 'coverage-layer',
+                type: 'fill',
+                source: 'coverage-source',
+                paint: {
+                    'fill-color': '#28a745',
+                    'fill-opacity': 0.3,
+                    'fill-outline-color': '#28a745'
+                }
+            });
+            // Highlight selected point
+            highlightSelectedPoint(feature.geometry);
+            // Fit map to coverage bounds
+            const bounds = new mapboxgl.LngLatBounds();
+            geoJsonData.features.forEach(feature => {
+                if (feature.geometry.type === 'Polygon') {
+                    feature.geometry.coordinates[0].forEach(coord => {
+                        bounds.extend(coord);
+                    });
+                } else if (feature.geometry.type === 'MultiPolygon') {
+                    feature.geometry.coordinates.forEach(polygon => {
+                        polygon[0].forEach(coord => {
+                            bounds.extend(coord);
+                        });
+                    });
+                }
+            });
+            map.fitBounds(bounds, { padding: 50 });
+            // Show clear button
+            const clearBtn = document.getElementById('clearCoverageBtn');
+            if (clearBtn) {
+                clearBtn.classList.add('show');
+            }
+            console.log(`Loaded coverage for ${geoJsonData.features.length} zip codes`);
+        }
+
+        // Initialize the application
+        map.on('load', async () => {
+            // Load GeoJSON data
+            console.log('Loading GeoJSON files...');
+            lendersData = await loadGeoJSON('lenders.geojson');
+            realtorsData = await loadGeoJSON('realtors.geojson');
+            
+            console.log('Lenders data:', lendersData);
+            console.log('Realtors data:', realtorsData);
+            
+            // Update sidebar content
+            updateSidebarContent();
+            
+            // Update map layers
+            updateMapLayers();
+        });
+
+        // Handle map click events for popups
+        map.on('click', 'lenders-layer', (e) => {
+            const properties = e.features[0].properties;
+            const popup = new mapboxgl.Popup({ offset: 25 })
+                .setLngLat(e.lngLat)
+                .setHTML(`
+                    <div style="font-family: inherit;">
+                        <h4 style="margin: 0 0 10px 0;">${properties.name}</h4>
+                        ${properties.link ? `<a href="${properties.link}" target="_blank" style="color: #0066cc;">Visit Website</a><br>` : ''}
+                        <p style="margin: 10px 0 0 0; font-size: 14px;">${properties.bio || 'No bio available'}</p>
+                    </div>
+                `)
+                .addTo(map);
+        });
+
+        map.on('click', 'realtors-layer', (e) => {
+            const properties = e.features[0].properties;
+            const popup = new mapboxgl.Popup({ offset: 25 })
+                .setLngLat(e.lngLat)
+                .setHTML(`
+                    <div style="font-family: inherit;">
+                        <h4 style="margin: 0 0 5px 0;">${properties.name}</h4>
+                        ${properties.brokerage ? `<p style="margin: 0 0 10px 0; color: #6c757d; font-size: 14px;">${properties.brokerage}</p>` : ''}
+                        <p style="margin: 10px 0 0 0; font-size: 14px;">${properties.bio || 'No bio available'}</p>
+                    </div>
+                `)
+                .addTo(map);
+        });
+        z
+
+        // Change cursor on hover
+        map.on('mouseenter', 'lenders-layer', () => {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+
+        map.on('mouseleave', 'lenders-layer', () => {
+            map.getCanvas().style.cursor = '';
+        });
+
+        map.on('mouseenter', 'realtors-layer', () => {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+
+        map.on('mouseleave', 'realtors-layer', () => {
+            map.getCanvas().style.cursor = '';
+        });
+    </script>
+</body>
+</html>
